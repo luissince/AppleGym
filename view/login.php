@@ -65,7 +65,7 @@ if (isset($_SESSION["IdEmpleado"])) {
         } else {
 
             $.ajax({
-                url: "../SistemGymBackEnd/empleados/Obtener_Empleados_For_Login.php",
+                url: "../app/empleados/Obtener_Empleados_For_Login.php",
                 method: "GET",
                 data: {
                     "usuario": ($("#txtUsuario").val()).trim(),

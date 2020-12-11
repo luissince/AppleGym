@@ -388,7 +388,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
     function loadTableClientes() {
         $.ajax({
-            url: "../SistemGymBackEnd/cliente/Obtener_Clientes.php",
+            url: "../app/cliente/Obtener_Clientes.php",
             method: "",
             data: {
                 opcion: 1,
@@ -451,7 +451,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
     function registrarCliente(dni, apellidos, nombres, genero, nacimiento, codigo, email, celular, direccion) {
 
         $.ajax({
-            url: "../SistemGymBackEnd/cliente/Crud_Clientes.php",
+            url: "../app/cliente/Crud_Clientes.php",
             method: "POST",
             accepts: "application/json",
             contentType: "application/json",
@@ -519,7 +519,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
         $("#titulo-modal").append('<i class="fa fa-user"></i> Editar Cliente');
         idClienteUpdate = idCliente;
         $.ajax({
-            url: "../SistemGymBackEnd/cliente/Obtener_Clientes_By_Id.php",
+            url: "../app/cliente/Obtener_Clientes_By_Id.php",
             method: "POST",
             accepts: "application/json",
             contentType: "application/json",
