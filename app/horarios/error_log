@@ -1,0 +1,7 @@
+[04-Nov-2019 17:46:35 UTC] PHP Fatal error:  Call to undefined method HorarioAdo::getAllCountEmpleado() in /home/cipjunin/public_html/gympro.cip-junin.org.pe/backendSysGym/horarios/Obtener_Horarios.php on line 14
+[04-Nov-2019 17:46:37 UTC] PHP Fatal error:  Call to undefined method HorarioAdo::getAllCountEmpleado() in /home/cipjunin/public_html/gympro.cip-junin.org.pe/backendSysGym/horarios/Obtener_Horarios.php on line 14
+[04-Nov-2019 17:46:46 UTC] PHP Fatal error:  Call to undefined method HorarioAdo::getAllCountEmpleado() in /home/cipjunin/public_html/gympro.cip-junin.org.pe/backendSysGym/horarios/Obtener_Horarios.php on line 14
+[04-Nov-2019 17:46:55 UTC] PHP Fatal error:  Call to undefined method HorarioAdo::getAllCountEmpleado() in /home/cipjunin/public_html/gympro.cip-junin.org.pe/backendSysGym/horarios/Obtener_Horarios.php on line 14
+[04-Nov-2019 17:47:41 UTC] PHP Notice:  Array to string conversion in /home/cipjunin/public_html/gympro.cip-junin.org.pe/backendSysGym/horarios/Obtener_Horarios.php on line 15
+[04-Nov-2019 18:01:55 UTC] PHP Notice:  Array to string conversion in /home/cipjunin/public_html/gympro.cip-junin.org.pe/backendSysGym/horarios/HorarioAdo.php on line 26
+[04-Nov-2019 18:16:46 UTC] PHP Notice:  Undefined variable: body in /home/cipjunin/public_html/gympro.cip-junin.org.pe/backendSysGym/horarios/Obtener_Horarios.php on line 15
