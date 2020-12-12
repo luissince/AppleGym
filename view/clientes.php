@@ -149,14 +149,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         <div class="modal-body">
 
                             <div class="row">
-                                <div class="col-md-8 col-sm-12 col-xs-12">
+                                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
                                     <div class="form-group">
                                         <input type="search" class="form-control"
                                             placeholder="Buscar por apellidos, nombres o dni"
                                             aria-controls="sampleTable" id="txtSearch">
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-12 col-xs-12">
+                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
                                     <div class="form-group">
                                         <div class="text-right">
                                             <button class="btn btn-primary" id="btnAnterior">
@@ -175,9 +175,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
+                            </div><div class="row">
+                                    <div class="col-md-12 ">
                                         <div class="tile">
                                             <div class="tile-body">
                                                 <div class="table-responsive">
@@ -195,20 +194,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                                 <th class="sorting" aria-controls="sampleTable"
                                                                     rowspan="1" colspan="1" style="width: 72px;">Celular
                                                                 </th>
-                                                                <!-- <th class="sorting" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 72px;">Email
-                                                                </th> -->
-                                                                <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 29px;">Dirección</th> -->
                                                                 <th class="sorting" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 69px;">
-                                                                    Membresia</th>
-                                                                <!-- <th class="sorting" aria-controls="sampleTable"
                                                                     rowspan="1" colspan="1" style="width: 59px;">Estado
-                                                                </th> -->
-                                                                
+                                                                </th>
+                                                                <th class="sorting" aria-controls="sampleTable"
+                                                                    rowspan="1" colspan="1" style="width: 69px;">Membresia
+                                                                </th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody id="">
+                                                        <tbody id="tbListaCliente">
                                                             <!-- tbLista -->
                                                         </tbody>
                                                     </table>
@@ -218,15 +212,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     </div>
                                 </div>
 
-                            </div>
                         </div>
                         <div class="modal-footer">
-                            <p class="text-left text-danger">Todos los campos marcados con <i
-                                    class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
-                            <button type="button" class="btn btn-success" id="btnGuardarModal">
-                                <i class="fa fa-save"></i> Guardar</button>
-                            <button type="button" class="btn btn-danger" id="btnCancelModal">
-                                <i class="fa fa-remove"></i> Cancelar</button>
+                            <br>
                         </div>
                     </div>
                 </div>
@@ -324,6 +312,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
     let state = false;
 
     let idClienteUpdate = "";
+
+    let tbListaCliente = $("#tbListaCliente")
 
     $(document).ready(function() {
 
@@ -433,6 +423,78 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 loadTableClientes($("#txtSearch").val().trim());
                 break;
         }
+    }
+
+    function listaClientes(text){
+        $.ajax({
+            url: "../app/cliente/Obtener_Clientes.php",
+            method: "",
+            data: {
+                opcion: 2,
+                page: paginacion,
+                datos: text
+            },
+            beforeSend: function() {
+                // state = true;
+                tbListaCliente.empty();
+                tbListaCliente.append(
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                );
+                totalPaginacion = 0;
+            },
+            success: function(result) {
+                let data = JSON.parse(result);
+                if (data.estado == 1) {
+                    tbListaCliente.empty();
+                    for (let cliente of data.clientes) {
+
+                        // let btnUpdate =
+                        //     '<button class="btn btn-warning btn-sm" onclick="loadUpdateCliente(\'' +
+                        //     cliente.idCliente + '\')">' +
+                        //     '<i class="fa fa-wrench"></i> Editar' +
+                        //     '</button>';
+                        // let btnPerfil =
+                        //     '<button class="btn btn-info btn-sm" onclick="loadDataPerfil(\'' +
+                        //     cliente.idCliente + '\')">' +
+                        //     '<i class="fa fa-user-circle"></i> Perfil' +
+                        //     '</button>';
+
+                        tbLista.append('<tr role="row" class="odd">' +
+                            '<td class="sorting_1">' + cliente.id + '</td>' +
+                            '<td>' + cliente.dni + '</td>' +
+                            '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
+                            '<td>' + cliente.celular + '</td>' +
+                            '<td>' + estado.celular + '</td>' +
+                            '<td>' + (cliente.membresia == 1 ? cliente.membresia + " MEMBRESIA(S)" :
+                                "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
+                                " deuda(s)" : "0 deudas") + '</td>' +
+                            '</tr>');
+                    }
+                    totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
+                        10))));
+                    $("#lblPaginaActual").html(paginacion);
+                    $("#lblPaginaSiguiente").html(totalPaginacion);
+                    state = false;
+                } else {
+                    tbLista.empty();
+                    tbLista.append(
+                        '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                        data.mensaje + '</p></td></tr>');
+                    $("#lblPaginaActual").html(0);
+                    $("#lblPaginaSiguiente").html(0);
+                    state = false;
+                }
+            },
+            error: function(error) {
+                tbLista.empty();
+                tbLista.append(
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                    error.responseText + '</p></td></tr>');
+                $("#lblPaginaActual").html(0);
+                $("#lblPaginaSiguiente").html(0);
+                state = false;
+            }
+        });
     }
 
     function loadTableClientes(buscar) {
