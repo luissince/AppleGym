@@ -5536,7 +5536,7 @@ input[type="button"].btn-block {
 .pagination-sm .page-link {
     padding: 0.25rem 0.5rem;
     font-size: 0.765625rem;
-    line-height: 1.5; 
+    line-height: 1.5;
 }
 
 .pagination-sm .page-item:first-child .page-link {
@@ -15339,7 +15339,7 @@ be a descendant of the grid when it is being dragged.
 .app-content {
     min-height: calc(100vh - 50px);
     margin-top: 50px;
-    padding: 30px;
+    padding: 20px;
     background-color: #E5E5E5;
     -webkit-transition: margin-left 0.3s ease;
     -o-transition: margin-left 0.3s ease;
