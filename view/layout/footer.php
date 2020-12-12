@@ -7,3 +7,8 @@
     <script src="js/plugins/sweetalert.min.js"></script>
     <script src="js/plugins/chart.js"></script>
     <script src="js/tools.js"></script>
+
+    <!-- Page specific javascripts-->
+    <script src="js/plugins/moment.min.js"></script>
+    <script src="js/plugins/jquery-ui.custom.min.js"></script>
+    <script src="js/plugins/fullcalendar.min.js"></script>
