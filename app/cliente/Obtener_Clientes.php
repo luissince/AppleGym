@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         } else {
             print json_encode(array(
                 "estado" => 2,
-                "mensaje" => "Ha ocurrido un error"
+                "mensaje" => "No hay datos para mostrar."
             ));
         }
     }

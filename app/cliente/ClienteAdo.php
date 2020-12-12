@@ -88,6 +88,7 @@ class ClienteAdo {
             $venta = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta = ? AND estado = 0");
             // Ejecutar sentencia preparada
             $clientes->execute();
+            $count = 0;
             while ($row = $clientes->fetch()) {
 
                 $membresias->execute(array($row["idCliente"]));
@@ -101,8 +102,9 @@ class ClienteAdo {
                         $total_deudas++;
                     }
                 }
-
+                $count++;
                 array_push($array, array(
+                    "id"=>$count+$x,
                     "idCliente" => $row["idCliente"],
                     "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
