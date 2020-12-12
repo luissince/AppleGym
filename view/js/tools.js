@@ -169,4 +169,24 @@ function Tools() {
             z_index: 2000,
         });
     }
+
+    this.ModalDialog = function(title, mensaje, type, callback) {
+
+        swal({
+            title: title,
+            text: mensaje,
+            type: type,
+            showCancelButton: true,
+            confirmButtonText: "Si",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                callback(true)
+            } else {
+                callback(false)
+            }
+        });
+    }
 }

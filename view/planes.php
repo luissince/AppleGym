@@ -79,73 +79,56 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             <div class="modal-body">
                                 <div class="tab">
                                     <button class="tablinks" onclick="selectTab(event, 'basico')">Básico</button>
-                                    <button class="tablinks" onclick="selectTab(event, 'disciplina')">Disciplina</button>
+                                    <button class="tablinks"
+                                        onclick="selectTab(event, 'disciplina')">Disciplina</button>
                                 </div>
 
                                 <div id="basico" class="tabcontent">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="clave">Clave: <i
-                                                        class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="clave" type="text" name="clave" class="form-control"
-                                                    placeholder="Ingrese la clave" required="" minlength="8">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="claveAlterna">Clave Alterna: </label>
-                                                <input id="claveAlterna" type="text" name="claveAlterna" class="form-control"
-                                                    placeholder="Ingrese la clave alterna" required="" minlength="8">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
                                                 <label for="nombre">Nombre: <i
                                                         class="fa fa-fw fa-asterisk text-danger"></i></label>
                                                 <input id="nombre" type="text" name="nombre" class="form-control"
-                                                    placeholder="Ingrese el nombre del producto" required="" minlength="8">
+                                                    placeholder="Ingrese el nombre" required="" minlength="8">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="categoria">Categoria: </label>
-                                                <select id="categoria" class="form-control">
-                                                    <option value="Golosinas">Golosinas</option>
-                                                    <option value="Bebidas">Bebidas</option>
-                                                    <option value="Snacks">Snacks</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="disciplina" class="tabcontent">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="categoria">Impuesto: </label>
-                                                <select id="categoria" class="form-control">
-                                                    <option value="Ninguno">Ninguno</option>
-                                                    <option value="I.G.V.">I.G.V.</option>
-                                                    <option value="I.S.C.">I.S.C.</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="costo">Costo: <i
+                                                <label for="meses">Duración(Meses): <i
                                                         class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="costo" type="number" name="costo" class="form-control"
-                                                    placeholder="Ingrese el costo del producto" required="" minlength="6">
+                                                <input id="meses" type="number" name="meses" class="form-control"
+                                                    placeholder="Ingrese la número de meses" required="" minlength="8">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="dias">Duración(Dias): <i
+                                                        class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                <input id="dias" type="number" name="dias" class="form-control"
+                                                    placeholder="Ingrese la número de dias" required="" minlength="8">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="dias">Duración(Dias): <i
+                                                        class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                <input id="dias" type="number" name="dias" class="form-control"
+                                                    placeholder="Ingrese la número de dias" required="" minlength="8">
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="freeze">Freeze: <i
+                                                        class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                <input id="freeze" type="number" name="freeze" class="form-control"
+                                                    placeholder="Ingrese los dias libres" required="" minlength="8">
                                             </div>
                                         </div>
                                     </div>
@@ -155,23 +138,124 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <label for="precio">Precio: <i
                                                         class="fa fa-fw fa-asterisk text-danger"></i></label>
                                                 <input id="precio" type="number" name="precio" class="form-control"
-                                                    placeholder="Ingrese el precio del producto" required="" minlength="6">
+                                                    placeholder="Ingrese el precio" required="" minlength="8">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="estado">Estado: </label>
-                                                <select id="estado" class="form-control">
-                                                    <option value="Activo">Activo</option>
-                                                    <option value="Inactivo">Inactivo</option>
-                                                </select>
+                                                <label for="descripcion">Descripción: </label>
+                                                <input id="descripcion" type="text" name="descripcion"
+                                                    class="form-control" placeholder="Ingrese la descripción"
+                                                    required="" minlength="8">
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <label for="estado">Activo: </label>
+                                                <input id="estado" type="checkbox" name="estado"
+                                                    class="form-control form-form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="prueba">Prueba: </label>
+                                                <input id="prueba" type="checkbox" name="prueba"
+                                                    class="form-control form-form-control-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
+                                <div id="disciplina" class="tabcontent">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="text-center">Tipos de Plan</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="ilimitado">Ilimitado: </label>
+                                                <input id="ilimitado" type="radio" name="ilimitado"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-16">
+                                            <div class="form-group">
+                                                <label for="ilimitado">Sesiones por disciplina: </label>
+                                                <input id="ilimitado" type="radio" name="ilimitado"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Disciplinas</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <select id="estado" class="form-control">
+                                                    <option value="">Selecciona una disciplina</option>
+                                                    <option value="Maquinas">Maquinas</option>
+                                                    <option value="Baile">Baile</option>
+                                                    <option value="Sauna">Sauna</option>
+                                                    <option value="Otro">Otro...</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-success"
+                                                    id="btnAgregar">Agregar</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-hover table-bordered dataTable no-footer"
+                                                id="sampleTable" role="grid" aria-describedby="sampleTable_info">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                            colspan="1" style="width: 20px;">Nombre</th>
+                                                        <th class="sorting_asc" aria-controls="sampleTable" rowspan="1"
+                                                            colspan="1" style="width: 250px;">Sesiones
+                                                        </th>
+                                                        <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                            colspan="1" style="width: 75px;">Opción
+                                                        </th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="">
+                                                    <!-- tbLista -->
+                                                    <tr>
+                                                        <td>maquinas</td>
+                                                        
+                                                        <td>
+                                                            <input type="number" class="form-control" placeholder="Ingrese el # de sesiones">
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-danger btn-sm"><i
+                                                                    class="fa fa-times"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
 
                             <div class="modal-footer">
@@ -258,7 +342,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                         <td>S/ 10</td>
                                                         <td>1 Mes con 0 días</td>
                                                         <td>0</td>
-                                                        <td>puede ingresar todos los días  a cualquier horario</td>
+                                                        <td>puede ingresar todos los días a cualquier horario</td>
                                                         <td>Activo</td>
                                                         <td>Si</td>
                                                         <td>
@@ -321,13 +405,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
         //loadInitClientes();
 
         $('#modalCliente').on('shown.bs.modal', function(event) {
-            selectTab(event, 'informcion')
+            selectTab(event, 'basico')
             //$('#dni').trigger('focus')
         })
 
         $("#btnAdd").click(function() {
             $("#modalCliente").modal("show");
-            $("#titulo-modal").append('<i class="fa fa-shopping-bag"></i> Registrar Producto')
+            $("#titulo-modal").append('<i class="fa fa-calendar"></i> Registrar Planes')
             //$('#dni').trigger('focus')
         })
 
