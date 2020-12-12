@@ -43,70 +43,135 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <p class="h5">TOTAL A PAGAR: <b class="h5 text-info">S/ 100.00</b></p>
                                     </div>
                                 </div>
-                                <p>Tipos de pago</p>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <p>Tipos de pago</p>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="form-group text text-center">
-                                            <button type="button" class="btn btn-info" id="btnContado">
-                                                <i class="fa fa-money"></i> Contado</button>
-                                            <button type="button" class="btn btn-light" id="btnCredito">
-                                                <i class="fa fa-hourglass-half"></i> Credito</button>
+                                        <div class="form-group">
+                                            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Contado</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-selected="false">Crédito</a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <div class="accordion" id="accordionExample">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne">
-                                                    <h2 class="mb-0">
-                                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                            Efectivo
-                                                        </button>
-                                                    </h2>
-                                                </div>
+                                    </div>
 
-                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                                    <div class="card-body">
-                                                        <div class="row">
-                                                            <div class="col-md-5">
-                                                                <div class="form-group text-right">
-                                                                    <h6 class="form-control-sm">Monto: <i class="fa fa-fw fa-asterisk text-danger"></i>
-                                                                    </h6>
+                                    <div class="col-md-12">
+                                        <div class="tab-content" id="pills-tabContent">
+                                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
 
-                                                                    <h6 class="form-control-sm">vuelto</h6>
+                                                <div class="accordion" id="accordionExample">
+                                                    <div class="card">
+                                                        <div class="card-header" id="headingOne">
+                                                            <h2 class="mb-0">
+                                                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                                    Efectivo
+                                                                </button>
+                                                            </h2>
+                                                        </div>
+
+                                                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                                            <div class="card-body">
+                                                                <div class="row justify-content-center">
+                                                                    <div class="col-md-6">
+                                                                        <label>Monto: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                                        <div class="form-group">
+                                                                            <input id="monto" type="number" class="form-control form-control-sm">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row justify-content-center">
+                                                                    <div class="col-md-6">
+                                                                        <label>Vuelto:</label>
+                                                                        <div class="form-group">
+                                                                            <input id="vuelto" type="number" class="form-control form-control-sm" disabled>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-7">
-                                                                <div class="form-group">
-                                                                    <input id="monto" type="number" name="monto" class="form-control  form-control-sm" required="">
+                                                        </div>
 
-                                                                    <h6 class="form-control-sm">vuelto</h6>
+                                                    </div>
+                                                    <div class="card">
+                                                        <div class="card-header" id="headingTwo">
+                                                            <h2 class="mb-0">
+                                                                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                                    Tarjeta
+                                                                </button>
+                                                            </h2>
+                                                        </div>
+                                                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                                            <div class="card-body">
+                                                                <div class="row justify-content-center">
+                                                                    <div class="col-md-6">
+                                                                        <label>Monto: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                                        <div class="form-group">
+                                                                            <input id="montotarjeta" type="number" class="form-control form-control-sm">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row justify-content-center">
+                                                                    <div class="col-md-6">
+                                                                        <label>Número de la operación: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                                        <div class="form-group">
+                                                                            <input id="numerotarjeta" type="text" class="form-control form-control-sm">
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card">
-                                                <div class="card-header" id="headingTwo">
-                                                    <h2 class="mb-0">
-                                                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                            Tarjeta
-                                                        </button>
-                                                    </h2>
+                                            <div class="tab-pane fade" id="pills-profile" role="tabpanel">
+
+                                                <div class="tile">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>First Name</th>
+                                                                <th>Last Name</th>
+                                                                <th>Username</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td>Mark</td>
+                                                                <td>Otto</td>
+                                                                <td>@mdo</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td>Jacob</td>
+                                                                <td>Thornton</td>
+                                                                <td>@fat</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>3</td>
+                                                                <td>Larry</td>
+                                                                <td>the Bird</td>
+                                                                <td>@twitter</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                                                    <div class="card-body">
-                                                        Descripción de la tarjeta
-                                                    </div>
-                                                </div>
+
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="modal-footer">
-                                <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
                                 <button type="button" class="btn btn-success" id="btnGuardarModal">
                                     <i class="fa fa-save"></i> Guardar</button>
                                 <button type="button" class="btn btn-danger" id="btnCancelModal">
@@ -165,36 +230,38 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-3 col-md-12 col-sm-12 col-12">
-                        <p><b>Dettall del Cobro</b></p>
-                        <hr>
-                        <div class="form-group">
-                            <button class="form-control btn btn-success d-flex" id="btnCobrar">
-                                <label>Cobrar: </label>
-                                <div class="text-right">
-                                    <label>S/ 200.00</label>
+                        <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <div class="form-group">
+                                    <h4>Detalle del Cobro</h4>
                                 </div>
-                            </button>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <button id="btnCobrar" class="btn btn-success btn-block">
+                                        <div class="row">
+                                            <div class="col-md-6 text-left">
+                                                <h5>COBRAR</h5>
+                                            </div>
+                                            <div class="col-md-6 text-right">
+                                                <h5 id="lblSumaTotal">0.00</h5>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="subTotal">Comprobante:</label>
+                                <div class="form-group">
+                                    <select id="comprobante" class="form-control">
+                                        <option value="0">- Seleccione -</option>
+                                        <option value="0">Tiket</option>
+                                        <option value="1">Boleta</option>
+                                        <option value="2">Factura</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <!-- <label for="genero">Seleccione el comprobante: <i class="fa fa-fw fa-asterisk text-danger"></i></label> -->
-                            <select id="comprobante" class="form-control form-control-sm">
-                                <option value="0">Seleccione comprobante</option>
-                                <option value="0">Tiket</option>
-                                <option value="1">Boleta</option>
-                                <option value="2">Factura</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="subTotal">Sub total: </label> <span>S/ 10.00</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="subTotal">Descuento: </label> <span>S/ 00.00</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="subTotal">Total: </label> <span>S/ 10.00</span>
-                        </div>
-
                     </div>
                 </div>
             </div>
