@@ -16012,7 +16012,7 @@ be a descendant of the grid when it is being dragged.
 .tile {
     position: relative;
     background: #ffffff;
-    padding: 20px;
+    padding: 0px 10px;
     margin-bottom: 30px;
     -webkit-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
