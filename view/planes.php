@@ -545,7 +545,30 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function deleteplan(id) {
-
+                $("#modalPlan").modal('show');
+                $("#titulo-modal").append('<i class="fa fa-align-left"></i> Actualizar Plan')
+                $.ajax({
+                    url: "../app/plan/Eliminar_Planes.php",
+                    method: 'POST',
+                    accepts: "application/json",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        "idPlan": id
+                    }),
+                    beforeSend: function() {
+                        tools.ModalAlertInfo('Planes', 'Procesando petición...');
+                    },
+                    success: function(result) {
+                        if (result.estado == 1) {
+                            tools.AlertSuccess("Planes", result.mensaje);
+                        } else {
+                            tools.AlertWarning("Planes", result.mensaje);
+                        }
+                    },
+                    error: function(error) {
+                        tools.AlertError("Planes", error.responseText);
+                    }
+                });
             }
         </script>
     </body>
