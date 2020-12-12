@@ -21,121 +21,107 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <div class="app-title">
                 <div>
                     <h1><i class="fa fa-users"></i> Clientes</h1>
-                    <!-- <p>Lista General de Clientes</p> -->
                 </div>
-                <!-- <ul class="app-breadcrumb breadcrumb">
-                <li class="breadcrumb-item"><i class="fa fa-users fa-lg"></i></li>
-                <li class="breadcrumb-item"><a href="index.php">Clientes</a></li>
-            </ul> -->
             </div>
-            <div class="tile mb-4">
-                <!-- <div class="page-header">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h4 class="mb-3 line-head" id="buttons">Opciones</h4>
-                    </div>
-                </div>
-            </div> -->
-
-
-                <!-- modal nuevo/update Cliente  -->
-                <div class="row">
-                    <div class="modal fade" id="modalCliente" data-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="titulo-modal">
-                                    </h4>
-                                    <button type="button" class="close" id="btnCloseModal">
-                                        <i class="fa fa-close"></i>
-                                    </button>
+            <!-- modal nuevo/update Cliente  -->
+            <div class="row">
+                <div class="modal fade" id="modalCliente" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="dni">DNI: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="dni" type="number" name="dni" class="form-control" placeholder="Ingrese el número DNI" required="" minlength="8">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="dni">DNI: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="dni" type="number" name="dni" class="form-control" placeholder="Ingrese el número DNI" required="" minlength="8">
-                                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="apellidos">Apellidos: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="apellidos" type="text" name="apellidos" class="form-control" placeholder="Ingrese los Apellidos" required="">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="apellidos">Apellidos: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="apellidos" type="text" name="apellidos" class="form-control" placeholder="Ingrese los Apellidos" required="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="nombres">Nombres: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="nombres" type="text" name="nombres" class="form-control" placeholder="Ingrese los Nombres" required="">
-                                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nombres">Nombres: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="nombres" type="text" name="nombres" class="form-control" placeholder="Ingrese los Nombres" required="">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="genero">Genero: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <select id="genero" class="form-control">
-                                                    <option value="1">Maculino</option>
-                                                    <option value="0">Femenino</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="nacimiento">Nacimiento: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="nacimiento" type="date" name="nacimiento" class="form-control" required="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="codigo">Codigo: </label>
-                                                <input id="codigo" type="text" name="codigo" class="form-control" placeholder="Ingrese el Codigo" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="email">Email: </label>
-                                                <input id="email" type="email" name="email" class="form-control" placeholder="Ingrese el correo" required="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="celular">Celular: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="celular" type="number" name="celular" class="form-control" placeholder="Ingrese el número de celular" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="direccion">Dirección: </label>
-                                                <input id="direccion" type="text" name="direccion" class="form-control" placeholder="Ingrese la dirección" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </form>
                                 </div>
-                                <div class="modal-footer">
-                                    <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
-                                    <button type="button" class="btn btn-success" id="btnGuardarModal">
-                                        <i class="fa fa-save"></i> Guardar</button>
-                                    <button type="button" class="btn btn-danger" id="btnCancelModal">
-                                        <i class="fa fa-remove"></i> Cancelar</button>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="genero">Genero: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <select id="genero" class="form-control">
+                                                <option value="1">Maculino</option>
+                                                <option value="0">Femenino</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nacimiento">Nacimiento: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="nacimiento" type="date" name="nacimiento" class="form-control" required="">
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="codigo">Codigo: </label>
+                                            <input id="codigo" type="text" name="codigo" class="form-control" placeholder="Ingrese el Codigo" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email: </label>
+                                            <input id="email" type="email" name="email" class="form-control" placeholder="Ingrese el correo" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="celular">Celular: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="celular" type="number" name="celular" class="form-control" placeholder="Ingrese el número de celular" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="direccion">Dirección: </label>
+                                            <input id="direccion" type="text" name="direccion" class="form-control" placeholder="Ingrese la dirección" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
+                                <button type="button" class="btn btn-success" id="btnGuardarModal">
+                                    <i class="fa fa-save"></i> Guardar</button>
+                                <button type="button" class="btn btn-danger" id="btnCancelModal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="tile mb-4">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p class="bs-component">
                             <button class="btn btn-info" type="button" id="btnAdd"><i class="fa fa-plus"></i>
                                 Nuevo</button>
@@ -143,12 +129,31 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 Recargar</button>
                         </p>
                     </div>
-                    <div class="col-lg-6">
-                        <!-- <div class="d-flex flex-row"> -->
-                        <!-- <button class="btn btn-info" type="button" id="btnSearch"><i class="fa fa-search"></i></button> -->
-                        <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearch">
-                        <!-- <button class="btn btn-info" type="button" id="btnSearch"><i class="fa fa-search"></i></button> -->
-                        <!-- </div>  -->
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearch">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="text-right">
+                                <button class="btn btn-primary" id="btnAnterior">
+                                    <i class="fa fa-arrow-circle-left"></i>
+                                </button>
+                                <span class="m-2" id="lblPaginaActual">0
+                                </span>
+                                <span class="m-2">
+                                    de
+                                </span>
+                                <span class="m-2" id="lblPaginaSiguiente">0
+                                </span>
+                                <button class="btn btn-primary" id="btnSiguiente">
+                                    <i class="fa fa-arrow-circle-right"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -156,85 +161,23 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         <div class="tile">
                             <div class="tile-body">
                                 <div class="table-responsive">
-                                    <div id="sampleTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
-                                        <!-- <div class="row">
-                                            <div class="col-sm-12 col-md-6">
-                                                <div class="dataTables_length" id="sampleTable_length">
-                                                    <label>Mostrar <select name="sampleTable_length" aria-controls="sampleTable" class="form-control form-control-sm">
-                                                            <option value="10">10</option>
-                                                            <option value="25">25</option>
-                                                            <option value="50">50</option>
-                                                            <option value="100">100</option>
-                                                        </select> filas
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        <div class="col-sm-12 col-md-6">
-                                            <div class="dataTables_filter" id="sampleTable_filter">
-                                                <label>Buscar:
-                                                    <input type="search" class="form-control form-control-sm"
-                                                        placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtsearch">
-
-                                                </label>
-                                            </div>
-                                        </div> 
-                                        </div> -->
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <table class="table table-hover table-bordered dataTable no-footer" id="sampleTable" role="grid" aria-describedby="sampleTable_info">
-                                                    <thead>
-                                                        <tr role="row">
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
-                                                            <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 107px;">Dni</th>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Apellidos y Nombres</th>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Celular</th>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Email</th>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 29px;">Dirección</th>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 69px;">Membresia</th>
-                                                            <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Predeterminado</th> -->
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Opciones</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbLista">
-                                                        <!-- <tr role="row" class="odd">
-                                                    <td class="sorting_1">Airi Satou</td>
-                                                    <td>Accountant</td>
-                                                    <td>Tokyo</td>
-                                                    <td>33</td>
-                                                    <td>2008/11/28</td>
-                                                    <td>$162,700</td>
-                                                    </tr> -->
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <!-- <div class="col-sm-12 col-md-6">
-                                        <div class="dataTables_info" id="sampleTable_info" role="status" aria-live="polite">Mostrando de 1 a 10 clientes de (2)</div>
-                                    </div> -->
-                                    <div class="col-sm-12 col-md-12">
-                                        <div class="dataTables_paginate paging_simple_numbers" id="sampleTable_paginate">
-                                            <ul class="pagination">
-                                                <button class="btn btn-primary" id="btnAnterior">
-                                                    <i class="fa fa-arrow-circle-left"></i>
-                                                </button>
-                                                <li class="paginate_button page-item">
-                                                    <a id="lblPaginaActual" aria-controls="sampleTable" data-dt-idx="0" tabindex="0" class="page-link">Anterior</a>
-                                                </li>
-                                                <li class="paginate_button page-item">
-                                                    <a aria-controls="sampleTable" data-dt-idx="1" tabindex="0" class="page-link">a</a>
-                                                </li>
-                                                <li class="paginate_button page-item">
-                                                    <a id="lblPaginaSiguiente" aria-controls="sampleTable" data-dt-idx="7" tabindex="0" class="page-link">Siguiente</a>
-                                                </li>
-                                                <button class="btn btn-primary" id="btnSiguiente">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
+                                                <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 107px;">Dni</th>
+                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Apellidos y Nombres</th>
+                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Celular</th>
+                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Email</th>
+                                                <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 29px;">Dirección</th> -->
+                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 69px;">Membresia</th>
+                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Estado</th>
+                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbLista">
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -295,11 +238,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     } else if ($("#celular").val() == '' || $("#celular").val().length < 6) {
                         tools.AlertWarning("Advertencia", "Ingrese un número de celular valido")
                     } else {
-                        registrarCliente($("#dni").val(), $("#apellidos").val(), $("#nombres").val(), $(
-                                "#genero").val(),
-                            $("#nacimiento").val(), $("#codigo").val(), $("#email").val(), $("#celular")
-                            .val(),
-                            $("#direccion").val())
+                        tools.ModalDialog('Cliente', '¿Desea guardar los datos?', 'question', function(result) {
+                            if (result) {
+                                registrarCliente($("#dni").val(), $("#apellidos").val(), $("#nombres").val(), $(
+                                        "#genero").val(),
+                                    $("#nacimiento").val(), $("#codigo").val(), $("#email").val(), $("#celular")
+                                    .val(),
+                                    $("#direccion").val());
+                            }
+                        });
                     }
                 });
 
@@ -322,7 +269,11 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 $("#txtSearch").keypress(function() {
                     if ($("#txtSearch").val().trim() != '') {
-                        loadTableClientes($("#txtSearch").val().trim());
+                        if (!state) {
+                            paginacion = 1;
+                            loadTableClientes($("#txtSearch").val().trim());
+                            opcion = 1;
+                        }
                     }
                 });
 
@@ -340,6 +291,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 switch (opcion) {
                     case 0:
                         loadTableClientes("");
+                        break;
+                    case 1:
+                        loadTableClientes($("#txtSearch").val().trim());
                         break;
                 }
             }
@@ -359,6 +313,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         tbLista.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
+                        totalPaginacion = 0;
                     },
                     success: function(result) {
                         let data = JSON.parse(result);
@@ -378,8 +333,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                                     '<td>' + cliente.celular + '</td>' +
                                     '<td>' + cliente.email + '</td>' +
-                                    '<td>' + cliente.direccion + '</td>' +
-                                    '<td>' + (cliente.membresia == 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta + " deuda(s)" : "0 deudas") + '</td>' +
+                                    '<td>' + (cliente.membresia == 1 ? cliente.membresia + " MEMBRESIA(S)" :
+                                        "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
+                                        " deuda(s)" : "0 deudas") + '</td>' +
+                                    '<td>Estado</td>' +
                                     '<td>' + btnUpdate + '</td>' +
                                     '</tr>');
                             }
@@ -393,6 +350,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tbLista.append(
                                 '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                                 data.mensaje + '</p></td></tr>');
+                            $("#lblPaginaActual").html(0);
+                            $("#lblPaginaSiguiente").html(0);
                             state = false;
                         }
                     },
@@ -401,6 +360,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         tbLista.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
+                        $("#lblPaginaActual").html(0);
+                        $("#lblPaginaSiguiente").html(0);
                         state = false;
                     }
                 });
@@ -425,26 +386,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         "direccion": (direccion.toUpperCase()).trim()
                     }),
                     beforeSend: function() {
-                        $("#btnGuardarModal").empty();
-                        $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
+                        closeClearModal();
+                        tools.ModalAlertInfo('Disciplinas', 'Procesando petición...');
                     },
                     success: function(result) {
                         if (result.estado == 1) {
-                            tools.AlertSuccess("Mensaje", result.mensaje);
+                            tools.ModalAlertSuccess('Disciplinas', result.mensaje);
                             loadInitClientes();
-                            $("#btnGuardarModal").empty();
-                            $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar');
-                            closeClearModal();
                         } else {
-                            tools.AlertWarning("Mensaje", result.mensaje);
-                            $("#btnGuardarModal").empty();
-                            $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar');
+                            tools.ModalAlertWarning('Disciplinas', result.mensaje);
                         }
                     },
                     error: function(error) {
-                        tools.AlertError("Error", error.responseText);
-                        $("#btnGuardarModal").empty();
-                        $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
+                        tools.ModalAlertError("Disciplinas", error.responseText);
                     }
                 });
             }
@@ -452,7 +406,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
             function closeClearModal() {
                 $("#modalCliente").modal("hide")
                 $("#titulo-modal").empty()
-                $("#btnAccion").empty()
 
                 $("#dni").val("")
                 $("#apellidos").val("")
@@ -489,7 +442,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             $("#apellidos").val(cliente.apellidos)
                             $("#nombres").val(cliente.nombres)
                             $("#genero").val(cliente.sexo)
-                            document.getElementById("nacimiento").value = tools.getDateForma(cliente.fechaNacimiento, 'yyyy-mm-dd')
+                            document.getElementById("nacimiento").value = tools.getDateForma(cliente
+                                .fechaNacimiento, 'yyyy-mm-dd')
                             $("#codigo").val(cliente.codigo)
                             $("#email").val(cliente.email)
                             $("#celular").val(cliente.celular)

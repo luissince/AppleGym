@@ -1,12 +1,30 @@
 @charset "UTF-8";
+@font-face {
+    font-family: 'Roboto Bold';
+    src: url('../fonts/Roboto-Bold.ttf') format('truetype');
+    ;
+}
 
-/*!
- * Vali Admin
- * Author: Pratik Borsadiya
- * ================================*/
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Regular.ttf') format('truetype');
+    ;
+    font-weight: normal;
+    font-style: normal;
+}
 
-@import url(https://fonts.googleapis.com/css?family=Lato:300,400,400i,700);
-@import url(https://fonts.googleapis.com/css?family=Niconne);
+@font-face {
+    font-family: 'Roboto Black';
+    src: url('../fonts/Roboto-Black.ttf') format('truetype');
+    ;
+}
+
+@font-face {
+    font-family: 'Roboto Light';
+    src: url('../fonts/Roboto-Light.ttf') format('truetype');
+    ;
+}
+
 
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
@@ -16,7 +34,7 @@
  */
 
 :root {
-    --principal: rgba(25, 168, 136, 1);
+    --principal: rgb(147 191 32);
     --blue: #007bff;
     --indigo: #6610f2;
     --purple: #6f42c1;
@@ -33,7 +51,7 @@
     --primary: #009688;
     --secondary: #6c757d;
     --success: #28a745;
-    --info: #17a2b8;
+    --info: #026eac;
     --warning: #ffc107;
     --danger: #dc3545;
     --light: #f8f9fa;
@@ -43,7 +61,7 @@
     --breakpoint-md: 768px;
     --breakpoint-lg: 992px;
     --breakpoint-xl: 1200px;
-    --font-family-sans-serif: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-family-sans-serif: Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -55,7 +73,8 @@
 }
 
 html {
-    font-family: sans-serif;
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+    ;
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -76,7 +95,7 @@ section {
 
 body {
     margin: 0;
-    font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 0.875rem;
     font-weight: 400;
     line-height: 1.5;
@@ -210,7 +229,7 @@ pre,
 code,
 kbd,
 samp {
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 1em;
 }
 
@@ -270,9 +289,11 @@ select,
 optgroup,
 textarea {
     margin: 0;
-    font-family: inherit;
+    font-family: Roboto bold;
     font-size: inherit;
     line-height: inherit;
+    font-weight: inherit;
+    font-style: inherit;
 }
 
 button,
@@ -316,6 +337,9 @@ input[type="checkbox"] {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 0;
+    -ms-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    transform: scale(1.4);
 }
 
 input[type="date"],
@@ -1784,6 +1808,7 @@ pre code {
 }
 
 .table thead th {
+    font-family: Roboto Bold;
     vertical-align: bottom;
     border-bottom: 2px solid #dee2e6;
 }
@@ -2269,7 +2294,7 @@ textarea.form-control {
 
 .form-text {
     display: block;
-    margin-top: 0.25rem;
+    margin-top: 0.55rem;
 }
 
 .form-row {
@@ -5436,7 +5461,6 @@ input[type="button"].btn-block {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    padding-left: 0;
     list-style: none;
     border-radius: 0.25rem;
 }
@@ -5512,7 +5536,7 @@ input[type="button"].btn-block {
 .pagination-sm .page-link {
     padding: 0.25rem 0.5rem;
     font-size: 0.765625rem;
-    line-height: 1.5;
+    line-height: 1.5; 
 }
 
 .pagination-sm .page-item:first-child .page-link {
@@ -5527,9 +5551,10 @@ input[type="button"].btn-block {
 
 .badge {
     display: inline-block;
-    padding: 0.25em 0.4em;
-    font-size: 75%;
-    font-weight: 700;
+    padding: 0.35em 0.5em;
+    font-family: Roboto Bold;
+    font-size: 85%;
+    font-weight: normal;
     line-height: 1;
     text-align: center;
     white-space: nowrap;
@@ -6639,7 +6664,7 @@ a.close.disabled {
     z-index: 1070;
     display: block;
     margin: 0;
-    font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     font-style: normal;
     font-weight: 400;
     line-height: 1.5;
@@ -6764,7 +6789,7 @@ a.close.disabled {
     z-index: 1060;
     display: block;
     max-width: 276px;
-    font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     font-style: normal;
     font-weight: 400;
     line-height: 1.5;
@@ -12100,7 +12125,7 @@ body.stop-scrolling {
 }
 
 .sweet-overlay {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     left: 0;
     right: 0;
@@ -12451,7 +12476,7 @@ body.stop-scrolling {
 }
 
 .sweet-alert .sa-icon.sa-info {
-    border-color: #C9DAE1;
+    border-color: #2979a8;
 }
 
 .sweet-alert .sa-icon.sa-info::before {
@@ -12463,7 +12488,7 @@ body.stop-scrolling {
     bottom: 17px;
     border-radius: 2px;
     margin-left: -2px;
-    background-color: #C9DAE1;
+    background-color: #2979a8;
 }
 
 .sweet-alert .sa-icon.sa-info::after {
@@ -12474,7 +12499,7 @@ body.stop-scrolling {
     border-radius: 50%;
     margin-left: -3px;
     top: 19px;
-    background-color: #C9DAE1;
+    background-color: #2979a8;
 }
 
 .sweet-alert .sa-icon.sa-success {
@@ -13563,7 +13588,7 @@ body.stop-scrolling {
     border-radius: 3px;
     background: #292929;
     color: white;
-    font-family: sans-serif, Verdana;
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: smaller;
     padding: 3px;
 }
@@ -13780,7 +13805,7 @@ NOTE: use percentage font sizes or else old IE chokes
     /* text & cursor */
     font-size: 13px;
     /* normalize */
-    font-weight: 500;
+    /* font-weight: 500; */
     white-space: nowrap;
     cursor: pointer;
     text-transform: uppercase;
@@ -15373,7 +15398,7 @@ be a descendant of the grid when it is being dragged.
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    background-color: #009688;
+    background-color: #93bf20;
     z-index: 1030;
     padding-right: 15px;
 }
@@ -15396,11 +15421,13 @@ be a descendant of the grid when it is being dragged.
     flex: 1 0 auto;
     color: #fff;
     text-align: center;
-    font-family: 'Niconne';
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     padding: 0 15px;
     font-size: 26px;
     font-weight: 400;
     line-height: 50px;
+    -webkit-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 768px) {
@@ -15410,7 +15437,7 @@ be a descendant of the grid when it is being dragged.
         flex: 0 0 auto;
         display: block;
         width: 230px;
-        background-color: #007d71;
+        background-color: #95cb0a;
     }
 }
 
@@ -15446,7 +15473,7 @@ be a descendant of the grid when it is being dragged.
 .app-sidebar__toggle:focus,
 .app-sidebar__toggle:hover {
     color: #fff;
-    background-color: #00635a;
+    background-color: #749b12;
     text-decoration: none;
 }
 
@@ -15611,13 +15638,13 @@ be a descendant of the grid when it is being dragged.
     top: 0;
     bottom: 0;
     left: 0;
-    padding-top: 70px;
+    padding-top: 50px;
     width: 230px;
     overflow: auto;
     z-index: 10;
-    background-color: #222d32;
-    -webkit-box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    -webkit-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
     -webkit-transition: left 0.3s ease, width 0.3s ease;
     -o-transition: left 0.3s ease, width 0.3s ease;
     transition: left 0.3s ease, width 0.3s ease;
@@ -15654,9 +15681,10 @@ be a descendant of the grid when it is being dragged.
     display: flex;
     -webkit-box-align: center;
     -ms-flex-align: center;
+    flex-direction: column;
     align-items: center;
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     color: #fff;
 }
 
@@ -15664,12 +15692,12 @@ be a descendant of the grid when it is being dragged.
     -webkit-box-flex: 0;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
-    margin-right: 15px;
 }
 
 .app-sidebar__user-name {
     font-size: 17px;
     line-height: 1.3;
+    color: #212529;
 }
 
 .app-sidebar__user-name,
@@ -15700,7 +15728,7 @@ be a descendant of the grid when it is being dragged.
     -webkit-transition: border-left-color 0.3s ease, background-color 0.3s ease;
     -o-transition: border-left-color 0.3s ease, background-color 0.3s ease;
     transition: border-left-color 0.3s ease, background-color 0.3s ease;
-    color: #fff;
+    color: var(--dark);
 }
 
 .app-menu__item.active,
@@ -15921,7 +15949,6 @@ be a descendant of the grid when it is being dragged.
     -ms-flex-direction: row;
     flex-direction: row;
     background-color: #FFF;
-    margin: -30px -30px 30px;
     padding: 20px 30px;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -15985,10 +16012,7 @@ be a descendant of the grid when it is being dragged.
 .tile {
     position: relative;
     background: #ffffff;
-    border-radius: 3px;
     padding: 20px;
-    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     margin-bottom: 30px;
     -webkit-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
@@ -16255,7 +16279,7 @@ be a descendant of the grid when it is being dragged.
 
 .toggle-flip input[type="checkbox"]+.flip-indecator {
     position: relative;
-    width: 60px;
+    width: 100px;
     height: 30px;
     display: block;
     cursor: pointer;
@@ -16340,7 +16364,7 @@ be a descendant of the grid when it is being dragged.
 
 .material-half-bg {
     height: 100vh;
-    background-color: #e7e7e7;
+    background-color: var(--principal);
     position: fixed;
     top: 0;
     left: 0;
@@ -16478,6 +16502,7 @@ be a descendant of the grid when it is being dragged.
     display: flex;
     border-radius: 4px;
     color: #FFF;
+    margin-top: 30px;
     margin-bottom: 30px;
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -16838,7 +16863,7 @@ be a descendant of the grid when it is being dragged.
 
 .login-content .logo {
     margin-bottom: 40px;
-    font-family: "Niconne";
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     color: #fff;
 }
 
@@ -16849,8 +16874,8 @@ be a descendant of the grid when it is being dragged.
 
 .login-content .login-box {
     position: relative;
-    min-width: 350px;
-    min-height: 390px;
+    min-width: 390px;
+    min-height: 500px;
     background-color: #fff;
     -webkit-box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
     box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
@@ -16956,7 +16981,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .lockscreen-content .logo {
-    font-family: "Niconne";
+    font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     margin-bottom: 40px;
     color: #fff;
 }
