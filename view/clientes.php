@@ -21,119 +21,105 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <div class="app-title">
                 <div>
                     <h1><i class="fa fa-users"></i> Clientes</h1>
-                    <!-- <p>Lista General de Clientes</p> -->
                 </div>
-                <!-- <ul class="app-breadcrumb breadcrumb">
-                <li class="breadcrumb-item"><i class="fa fa-users fa-lg"></i></li>
-                <li class="breadcrumb-item"><a href="index.php">Clientes</a></li>
-            </ul> -->
             </div>
-            <div class="tile mb-4">
-                <!-- <div class="page-header">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h4 class="mb-3 line-head" id="buttons">Opciones</h4>
-                    </div>
-                </div>
-            </div> -->
-
-
-                <!-- modal nuevo/update Cliente  -->
-                <div class="row">
-                    <div class="modal fade" id="modalCliente" data-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="titulo-modal">
-                                    </h4>
-                                    <button type="button" class="close" id="btnCloseModal">
-                                        <i class="fa fa-close"></i>
-                                    </button>
+            <!-- modal nuevo/update Cliente  -->
+            <div class="row">
+                <div class="modal fade" id="modalCliente" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="dni">DNI: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="dni" type="number" name="dni" class="form-control" placeholder="Ingrese el número DNI" required="" minlength="8">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="dni">DNI: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="dni" type="number" name="dni" class="form-control" placeholder="Ingrese el número DNI" required="" minlength="8">
-                                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="apellidos">Apellidos: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="apellidos" type="text" name="apellidos" class="form-control" placeholder="Ingrese los Apellidos" required="">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="apellidos">Apellidos: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="apellidos" type="text" name="apellidos" class="form-control" placeholder="Ingrese los Apellidos" required="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="nombres">Nombres: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="nombres" type="text" name="nombres" class="form-control" placeholder="Ingrese los Nombres" required="">
-                                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nombres">Nombres: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="nombres" type="text" name="nombres" class="form-control" placeholder="Ingrese los Nombres" required="">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="genero">Genero: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <select id="genero" class="form-control">
-                                                    <option value="1">Maculino</option>
-                                                    <option value="0">Femenino</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="nacimiento">Nacimiento: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="nacimiento" type="date" name="nacimiento" class="form-control" required="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="codigo">Codigo: </label>
-                                                <input id="codigo" type="text" name="codigo" class="form-control" placeholder="Ingrese el Codigo" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="email">Email: </label>
-                                                <input id="email" type="email" name="email" class="form-control" placeholder="Ingrese el correo" required="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="celular">Celular: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="celular" type="number" name="celular" class="form-control" placeholder="Ingrese el número de celular" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="direccion">Dirección: </label>
-                                                <input id="direccion" type="text" name="direccion" class="form-control" placeholder="Ingrese la dirección" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </form>
                                 </div>
-                                <div class="modal-footer">
-                                    <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
-                                    <button type="button" class="btn btn-success" id="btnGuardarModal">
-                                        <i class="fa fa-save"></i> Guardar</button>
-                                    <button type="button" class="btn btn-danger" id="btnCancelModal">
-                                        <i class="fa fa-remove"></i> Cancelar</button>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="genero">Genero: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <select id="genero" class="form-control">
+                                                <option value="1">Maculino</option>
+                                                <option value="0">Femenino</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nacimiento">Nacimiento: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="nacimiento" type="date" name="nacimiento" class="form-control" required="">
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="codigo">Codigo: </label>
+                                            <input id="codigo" type="text" name="codigo" class="form-control" placeholder="Ingrese el Codigo" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email: </label>
+                                            <input id="email" type="email" name="email" class="form-control" placeholder="Ingrese el correo" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="celular">Celular: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="celular" type="number" name="celular" class="form-control" placeholder="Ingrese el número de celular" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="direccion">Dirección: </label>
+                                            <input id="direccion" type="text" name="direccion" class="form-control" placeholder="Ingrese la dirección" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
+                                <button type="button" class="btn btn-success" id="btnGuardarModal">
+                                    <i class="fa fa-save"></i> Guardar</button>
+                                <button type="button" class="btn btn-danger" id="btnCancelModal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="tile mb-4">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p class="bs-component">
@@ -252,11 +238,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     } else if ($("#celular").val() == '' || $("#celular").val().length < 6) {
                         tools.AlertWarning("Advertencia", "Ingrese un número de celular valido")
                     } else {
-                        registrarCliente($("#dni").val(), $("#apellidos").val(), $("#nombres").val(), $(
-                                "#genero").val(),
-                            $("#nacimiento").val(), $("#codigo").val(), $("#email").val(), $("#celular")
-                            .val(),
-                            $("#direccion").val())
+                        tools.ModalDialog('Cliente', '¿Desea guardar los datos?', 'question', function(result) {
+                            if (result) {
+                                registrarCliente($("#dni").val(), $("#apellidos").val(), $("#nombres").val(), $(
+                                        "#genero").val(),
+                                    $("#nacimiento").val(), $("#codigo").val(), $("#email").val(), $("#celular")
+                                    .val(),
+                                    $("#direccion").val());
+                            }
+                        });
                     }
                 });
 
@@ -323,7 +313,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         tbLista.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
-                        totalPaginacion=0;
+                        totalPaginacion = 0;
                     },
                     success: function(result) {
                         let data = JSON.parse(result);
@@ -360,7 +350,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tbLista.append(
                                 '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                                 data.mensaje + '</p></td></tr>');
-                                $("#lblPaginaActual").html(0);
+                            $("#lblPaginaActual").html(0);
                             $("#lblPaginaSiguiente").html(0);
                             state = false;
                         }
@@ -370,8 +360,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         tbLista.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
-                            $("#lblPaginaActual").html(0);
-                            $("#lblPaginaSiguiente").html(0);
+                        $("#lblPaginaActual").html(0);
+                        $("#lblPaginaSiguiente").html(0);
                         state = false;
                     }
                 });
@@ -396,26 +386,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         "direccion": (direccion.toUpperCase()).trim()
                     }),
                     beforeSend: function() {
-                        $("#btnGuardarModal").empty();
-                        $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
+                        closeClearModal();
+                        tools.ModalAlertInfo('Disciplinas', 'Procesando petición...');
                     },
                     success: function(result) {
                         if (result.estado == 1) {
-                            tools.AlertSuccess("Mensaje", result.mensaje);
+                            tools.ModalAlertSuccess('Disciplinas', result.mensaje);
                             loadInitClientes();
-                            $("#btnGuardarModal").empty();
-                            $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar');
-                            closeClearModal();
                         } else {
-                            tools.AlertWarning("Mensaje", result.mensaje);
-                            $("#btnGuardarModal").empty();
-                            $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar');
+                            tools.ModalAlertWarning('Disciplinas', result.mensaje);
                         }
                     },
                     error: function(error) {
-                        tools.AlertError("Error", error.responseText);
-                        $("#btnGuardarModal").empty();
-                        $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
+                        tools.ModalAlertError("Disciplinas", error.responseText);
                     }
                 });
             }
@@ -423,7 +406,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
             function closeClearModal() {
                 $("#modalCliente").modal("hide")
                 $("#titulo-modal").empty()
-                $("#btnAccion").empty()
 
                 $("#dni").val("")
                 $("#apellidos").val("")

@@ -20,75 +20,76 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <main class="app-content">
             <div class="app-title">
                 <div>
-                    <h1><i class="fa fa-list"></i> Disciplinas</h1>
+                    <h1><i class="fa fa-indent"></i> Disciplinas</h1>
                 </div>
             </div>
-            <div class="tile mb-4">
-                <!-- modal nuevo/update Empleado  -->
-                <div class="row">
-                    <div class="modal fade" id="modalDisciplina" data-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="titulo-modal">
-                                    </h4>
-                                    <button type="button" class="close" id="btnCloseModal">
-                                        <i class="fa fa-close"></i>
-                                    </button>
+
+            <!-- modal nuevo/update Empleado  -->
+            <div class="row">
+                <div class="modal fade" id="modalDisciplina" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="nombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="nombre" type="text" name="nombre" class="form-control" placeholder="Ingrese el nombre" required="" minlength="8">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="nombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="nombre" type="text" name="nombre" class="form-control" placeholder="Ingrese el nombre" required="" minlength="8">
-                                            </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="color">Color: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="color" type="color" name="color" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="color">Color: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <input id="color" type="color" name="color" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="descripcion">Descripción: </label>
-                                                <input id="descripcion" type="text" name="descripcion" class="form-control" placeholder="Ingrese la descripción" required="" minlength="8">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="descripcion">Estado: </label>
-                                                <div class="toggle-flip">
-                                                    <label>
-                                                        <input type="checkbox" id="estado"><span class="flip-indecator" data-toggle-on="ACTIVO" data-toggle-off="INACTIVO"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="descripcion">Descripción: </label>
+                                            <input id="descripcion" type="text" name="descripcion" class="form-control" placeholder="Ingrese la descripción" required="" minlength="8">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="modal-footer">
-                                    <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
-                                    <button type="button" class="btn btn-success" id="btnGuardarModal">
-                                        <i class="fa fa-save"></i> Guardar</button>
-                                    <button type="button" class="btn btn-danger" id="btnCancelModal">
-                                        <i class="fa fa-remove"></i> Cancelar</button>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="descripcion">Estado: </label>
+                                            <div class="toggle-flip">
+                                                <label>
+                                                    <input type="checkbox" id="estado"><span class="flip-indecator" data-toggle-on="ACTIVO" data-toggle-off="INACTIVO"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
+                                <button type="button" class="btn btn-success" id="btnGuardarModal">
+                                    <i class="fa fa-save"></i> Guardar</button>
+                                <button type="button" class="btn btn-danger" id="btnCancelModal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="tile mb-4">
                 <div class="row">
                     <div class="col-lg-6">
                         <p class="bs-component">
@@ -134,13 +135,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr role="row">
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20px;">#</th>
-                                                <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 107px;">Nombre</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 75px;">Color
-                                                </th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Descripción</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Estado</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Opciones</th>
+                                                <th class="sorting" rowspan="1" colspan="1" style="width: 20px;">#</th>
+                                                <th class="sorting" rowspan="1" colspan="1" style="width: 110px;">Nombre</th>
+                                                <th class="sorting" rowspan="1" colspan="1" style="width: 75px;">Color</th>
+                                                <th class="sorting" rowspan="1" colspan="1" style="width: 250px;">Descripción</th>
+                                                <th class="sorting" rowspan="1" colspan="1" style="width: 100px;">Estado</th>
+                                                <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Opciones</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbLista">
@@ -171,7 +171,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 $("#btnAdd").click(function() {
                     $("#modalDisciplina").modal("show");
-                    $("#titulo-modal").empty();
                     $("#titulo-modal").append('<i class="fa fa-list"></i> Registrar Disciplinas');
                 })
 
@@ -302,13 +301,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
             }
 
-            function crudDisciplina() {                
+            function crudDisciplina() {
                 if ($("#nombre").val().trim() == '') {
                     tools.AlertWarning("Mensaje", "Ingrese el nombre de la disciplina.");
                     $("#nombre").focus();
                 } else {
                     $.ajax({
-                        url: "../app/disciplinas/Registrar_Disciplinas.php",
+                        url: "../app/disciplinas/Crud_Disciplinas.php",
                         method: "POST",
                         accepts: "application/json",
                         contentType: "application/json",
@@ -320,13 +319,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             "estado": $("#estado").is(":checked")
                         }),
                         beforeSend: function() {
-
+                            closeClearModal();
+                            tools.ModalAlertInfo('Disciplinas', 'Procesando petición...');
                         },
                         success: function(result) {
-                            console.log(result)
+                            if (result.estado == 1) {
+                                tools.ModalAlertSuccess('Disciplinas', result.mensaje);
+                                loadInitDisciplinas();
+                            } else {
+                                tools.ModalAlertWarning('Disciplinas', result.mensaje);
+                            }
                         },
                         error: function(error) {
-                            console.log(error)
+                            tools.ModalAlertError('Disciplinas', error.responseText);
                         }
                     });
                 }
@@ -334,15 +339,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function closeClearModal() {
                 $("#modalDisciplina").modal('hide');
+                $("#titulo-modal").empty();
                 $("#nombre").val("");
                 $("#descripcion").val("");
                 $("#estado").attr("checked", false);
-                idDisciplina="";
+                idDisciplina = "";
             }
 
             function updateDisciplina(id) {
-                $("#modalDisciplina").modal('show');
-                $("#titulo-modal").empty();
+                $("#modalDisciplina").modal('show');               
                 $("#titulo-modal").append('<i class="fa fa-list"></i> Actualizar Disciplinas');
                 $.ajax({
                     url: "../app/disciplinas/Obtener_Disciplinas_By_Id.php",
@@ -353,20 +358,21 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         "idDisciplina": id
                     }),
                     beforeSend: function() {
-
+                        tools.AlertInfo("Disciplina", "Cargando datos..");
                     },
                     success: function(result) {
                         if (result.estado == 1) {
+                            tools.AlertSuccess("Disciplina", "Se cargo correctamento los datos.");
                             idDisciplina = id;
                             $("#nombre").val(result.disciplina.nombre);
                             $("#descripcion").val(result.disciplina.descripcion);
-                            $("#estado").attr("checked", true);
+                            $("#estado").attr("checked", result.disciplina.estado == 1 ? true : false);
                         } else {
-
+                            tools.AlertWarning("Disciplina", result.mensaje);
                         }
                     },
                     error: function(error) {
-                        console.log(error)
+                        tools.AlertError("Disciplina", error.responseText);
                     }
                 });
             }

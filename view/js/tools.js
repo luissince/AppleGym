@@ -179,14 +179,26 @@ function Tools() {
             showCancelButton: true,
             confirmButtonText: "Si",
             cancelButtonText: "No",
-            closeOnConfirm: true,
-            closeOnCancel: true
-        }, function(isConfirm) {
-            if (isConfirm) {
+            allowOutsideClick: false
+        }).then((isConfirm) => {
+            if (isConfirm.value) {
                 callback(true)
             } else {
                 callback(false)
             }
         });
+    }
+
+    this.ModalAlertSuccess = function(title, message) {
+        swal({ title: title, text: message, type: "success", showConfirmButton: true, allowOutsideClick: false });
+    }
+    this.ModalAlertWarning = function(title, message) {
+        swal({ title: title, text: message, type: "warning", showConfirmButton: true, allowOutsideClick: false });
+    }
+    this.ModalAlertError = function(title, message) {
+        swal({ title: title, text: message, type: "error", showConfirmButton: true, allowOutsideClick: false });
+    }
+    this.ModalAlertInfo = function(title, message) {
+        swal({ title: title, text: message, type: "info", showConfirmButton: false, allowOutsideClick: false, allowEscapeKey: false, });
     }
 }

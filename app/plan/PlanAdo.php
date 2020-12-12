@@ -2,29 +2,31 @@
 
 require '../database/DataBaseConexion.php';
 
-class PlanAdo {
+class PlanAdo
+{
 
-    function __construct() {
-        
+    function __construct()
+    {
     }
 
-    public static function insertPlan($body) {
+    public static function insertPlan($body)
+    {
         // Sentencia INSERT
         $query = "SELECT Fc_Plan_Codigo_Almanumerico();";
 
         $plan = "INSERT INTO plantb ( " .
-                "idPlan," .
-                "nombre," .
-                "tipoDisciplina," .
-                "sesiones," .
-                "meses," .
-                "dias," .
-                "freeze," .
-                "precio," .
-                "descripcion," .
-                "estado," .
-                "prueba)" .
-                " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+            "idPlan," .
+            "nombre," .
+            "tipoDisciplina," .
+            "sesiones," .
+            "meses," .
+            "dias," .
+            "freeze," .
+            "precio," .
+            "descripcion," .
+            "estado," .
+            "prueba)" .
+            " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
         $plan_disciplina = "INSERT INTO plantb_disciplinatb (idPlan,idDisciplina,numero) VALUES(?,?,?)";
 
@@ -38,30 +40,30 @@ class PlanAdo {
 
             $executePlan = Database::getInstance()->getDb()->prepare($plan);
             $executePlan->execute(
-                    array(
-                        $idPlan,
-                        $body['nombre'],
-                        $body['tipoDisciplina'],
-                        $body['sesiones'],
-                        $body['meses'],
-                        $body['dias'],
-                        $body['freeze'],
-                        $body['precio'],
-                        $body['descripcion'],
-                        $body['estado'],
-                        $body['prueba']
-                    )
+                array(
+                    $idPlan,
+                    $body['nombre'],
+                    $body['tipoDisciplina'],
+                    $body['sesiones'],
+                    $body['meses'],
+                    $body['dias'],
+                    $body['freeze'],
+                    $body['precio'],
+                    $body['descripcion'],
+                    $body['estado'],
+                    $body['prueba']
+                )
             );
 
             if ($body['tipoDisciplina'] == 2) {
                 foreach ($body['arrdisciplinas'] as $result) {
                     $executePlanDisciplina = Database::getInstance()->getDb()->prepare($plan_disciplina);
                     $executePlanDisciplina->execute(
-                            array(
-                                $idPlan,
-                                $result['id'],
-                                $result['sesiones']
-                            )
+                        array(
+                            $idPlan,
+                            $result['id'],
+                            $result['sesiones']
+                        )
                     );
                 }
             }
@@ -74,20 +76,21 @@ class PlanAdo {
         }
     }
 
-    public static function editPlan($body) {
+    public static function editPlan($body)
+    {
 
         $comando = "UPDATE plantb " .
-                "SET nombre = ?," .
-                " tipoDisciplina = ?," .
-                " sesiones = ?," .
-                " meses = ?," .
-                " dias = ?," .
-                " freeze = ?," .
-                " precio = ?," .
-                " descripcion = ?," .
-                " estado = ?," .
-                " prueba = ?" .
-                " WHERE idPlan = ?";
+            "SET nombre = ?," .
+            " tipoDisciplina = ?," .
+            " sesiones = ?," .
+            " meses = ?," .
+            " dias = ?," .
+            " freeze = ?," .
+            " precio = ?," .
+            " descripcion = ?," .
+            " estado = ?," .
+            " prueba = ?" .
+            " WHERE idPlan = ?";
 
         $plan_disciplina = "INSERT INTO plantb_disciplinatb (idPlan,idDisciplina,numero) VALUES(?,?,?)";
 
@@ -99,19 +102,19 @@ class PlanAdo {
 
             $executePlan = Database::getInstance()->getDb()->prepare($comando);
             $executePlan->execute(
-                    array(
-                        $body['nombre'],
-                        $body['tipoDisciplina'],
-                        $body['sesiones'],
-                        $body['meses'],
-                        $body['dias'],
-                        $body['freeze'],
-                        $body['precio'],
-                        $body['descripcion'],
-                        $body['estado'],
-                        $body['prueba'],
-                        $body['idPlan']
-                    )
+                array(
+                    $body['nombre'],
+                    $body['tipoDisciplina'],
+                    $body['sesiones'],
+                    $body['meses'],
+                    $body['dias'],
+                    $body['freeze'],
+                    $body['precio'],
+                    $body['descripcion'],
+                    $body['estado'],
+                    $body['prueba'],
+                    $body['idPlan']
+                )
             );
 
             $execute_plan_disciplina_remove = Database::getInstance()->getDb()->prepare($plan_disciplina_remove);
@@ -121,11 +124,11 @@ class PlanAdo {
                 foreach ($body['arrdisciplinas'] as $result) {
                     $executePlanDisciplina = Database::getInstance()->getDb()->prepare($plan_disciplina);
                     $executePlanDisciplina->execute(
-                            array(
-                                $body['idPlan'],
-                                $result['id'],
-                                $result['sesiones']
-                            )
+                        array(
+                            $body['idPlan'],
+                            $result['id'],
+                            $result['sesiones']
+                        )
                     );
                 }
             }
@@ -138,7 +141,8 @@ class PlanAdo {
         }
     }
 
-    public static function deletePlan($body) {
+    public static function deletePlan($body)
+    {
         try {
             Database::getInstance()->getDb()->beginTransaction();
 
@@ -160,33 +164,65 @@ class PlanAdo {
         }
     }
 
-    public static function getAllPlanes($x, $y) {
-        $consulta = "SELECT * FROM plantb LIMIT $x,$y";
+    public static function getAllPlanes($search, $x, $y)
+    {
         try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
+            $array = array();
+            $comando = Database::getInstance()->getDb()->prepare("SELECT 
+            idPlan,
+            nombre,
+            tipoDisciplina,
+            sesiones,
+            meses,
+            dias,
+            freeze,
+            precio,
+            descripcion,
+            estado,
+            prueba
+            FROM plantb 
+            WHERE nombre LIKE ?
+            LIMIT ?,?");
+            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
+            $comando->bindValue(2, $x, PDO::PARAM_INT);
+            $comando->bindValue(3, $y, PDO::PARAM_INT);
             $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            $arrayPlanes = array();
+            $count = 0;
+            while ($row = $comando->fetch()) {
+                $count++;
+                array_push($arrayPlanes, array(
+                    "id" => $count + $x,
+                    "idPlan" => $row["idPlan"],
+                    "nombre" => $row["nombre"],
+                    "tipoDisciplina" => $row["tipoDisciplina"],
+                    "sesiones" => $row["sesiones"],
+                    "meses" => $row["meses"],
+                    "dias" => $row["dias"],
+                    "freeze" => $row["freeze"],
+                    "precio" => $row["precio"],
+                    "descripcion" => $row["descripcion"],
+                    "estado" => $row["estado"],
+                    "prueba" => $row["prueba"]
+                ));
+            }
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) 
+            FROM plantb
+            WHERE  nombre LIKE ?");
+            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
+            $comando->execute();
+            $totalPlanes = $comando->fetchColumn();
+
+            array_push($array, $arrayPlanes, $totalPlanes);
+            return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
         }
     }
 
-    public static function getAllCountPlanes() {
-        $consulta = "SELECT COUNT(*) FROM plantb";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
-        }
-    }
-
-    public static function getPlanById($idPlan) {
+    public static function getPlanById($idPlan)
+    {
         try {
             // Preparar sentencia
             $queryplan = Database::getInstance()->getDb()->prepare("SELECT * FROM plantb WHERE idPlan = ?");
@@ -194,8 +230,8 @@ class PlanAdo {
             // Ejecutar sentencia preparada
             $queryplan->bindValue(1, $idPlan['idPlan'], PDO::PARAM_STR);
             $queryplan->execute();
-            $array = array();
-            while ($rowp = $queryplan->fetch()) {
+            $object = null;
+            if ($rowp = $queryplan->fetch()) {
                 $queryplandisciplina->bindValue(1, $idPlan['idPlan'], PDO::PARAM_STR);
                 $queryplandisciplina->execute();
                 $arr_tarnos = array();
@@ -206,7 +242,7 @@ class PlanAdo {
                         "sesiones" => $rowpd['numero']
                     ));
                 }
-                array_push($array, array(
+                $object=(object) array(
                     "idPlan" => $rowp['idPlan'],
                     "nombre" => $rowp['nombre'],
                     "tipoDisciplina" => $rowp['tipoDisciplina'],
@@ -218,16 +254,17 @@ class PlanAdo {
                     "descripcion" => $rowp['descripcion'],
                     "disciplinas" => $arr_tarnos,
                     "estado" => $rowp['estado'],
-                    "prueba" => $rowp['prueba'])
+                    "prueba" => $rowp['prueba']
                 );
             }
-            return $array;
+            return $object;
         } catch (PDOException $e) {
-            return false;
+            return $e->getMessage();
         }
     }
 
-    public static function getAllDatosSearchPlan($datos, $x, $y) {
+    public static function getAllDatosSearchPlan($datos, $x, $y)
+    {
         $consulta = "SELECT * FROM plantb WHERE nombre LIKE ?  LIMIT ?,?";
         try {
             // Preparar sentencia
@@ -243,7 +280,8 @@ class PlanAdo {
         }
     }
 
-    public static function getAllDatosForSelect() {
+    public static function getAllDatosForSelect()
+    {
         $queryplan = "SELECT idPlan,nombre,tipoDisciplina,meses,dias,freeze,sesiones,precio,descripcion FROM plantb WHERE estado = 1 AND prueba = 0";
         $queryplandisciplina = "SELECT d.nombre,p.numero FROM plantb_disciplinatb AS p INNER JOIN disciplinatb AS d ON p.idDisciplina = d.idDisciplina WHERE p.idPlan = ?";
         try {
@@ -273,8 +311,8 @@ class PlanAdo {
                     "sesiones" => $rowp['sesiones'],
                     "precio" => $rowp['precio'],
                     "descripcion" => $rowp['descripcion'],
-                    "disciplinas" => $arr_disciplinas)
-                );
+                    "disciplinas" => $arr_disciplinas
+                ));
             }
             return $array;
         } catch (Exception $ex) {
@@ -282,7 +320,8 @@ class PlanAdo {
         }
     }
 
-    public static function validatePlanId($idPlan) {
+    public static function validatePlanId($idPlan)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idPlan FROM plantb WHERE idPlan = ?");
         $validate->bindParam(1, $idPlan);
         $validate->execute();
@@ -293,7 +332,8 @@ class PlanAdo {
         }
     }
 
-    public static function validatePlanNameById($idPlan, $nombre) {
+    public static function validatePlanNameById($idPlan, $nombre)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idPlan FROM plantb WHERE idPlan <> ? AND nombre = ?");
         $validate->bindParam(1, $idPlan);
         $validate->bindParam(2, $nombre);
@@ -305,7 +345,8 @@ class PlanAdo {
         }
     }
 
-    public static function validatePlanName($nombre) {
+    public static function validatePlanName($nombre)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idPlan FROM plantb WHERE nombre = ?");
         $validate->bindParam(1, $nombre);
         $validate->execute();
@@ -315,5 +356,4 @@ class PlanAdo {
             return false;
         }
     }
-
 }

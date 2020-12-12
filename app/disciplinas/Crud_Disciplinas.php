@@ -8,9 +8,12 @@ require './DisciplinaAdo.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Decodificando formato Json
     $body = json_decode(file_get_contents("php://input"), true);
-    $retorno = DisciplinaAdo::insert($body);
-    if ($retorno == "true") {
-        $json_string = json_encode(array("estado" => 1, "mensaje" => "Creacion correcta"));
+    $retorno = DisciplinaAdo::crudDisciplina($body);
+    if ($retorno == "inserted") {
+        $json_string = json_encode(array("estado" => 1, "mensaje" => "Datos guardados correctamente."));
+        echo $json_string;
+    }else if ($retorno == "updated") {
+        $json_string = json_encode(array("estado" => 1, "mensaje" => "Datos actualizos correctamente."));
         echo $json_string;
     } else {
         $json_string = json_encode(array("estado" => 2, "mensaje" => $retorno));
