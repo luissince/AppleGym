@@ -261,29 +261,27 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="tile">
-                            <div class="tile-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered">
-                                        <thead>
-                                            <tr role="row">
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 20px;">#</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 150px;">Nombre</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 75px;">Precio</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Tiempo</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Freeze</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 200px;">Descripción</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Estado</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Prueba</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Editar</th>
-                                                <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tbLista">
+                        <div class="tile-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 20px;">#</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 150px;">Nombre</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 75px;">Precio</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Tiempo</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Freeze</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 200px;">Descripción</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Estado</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Prueba</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Editar</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbLista">
 
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -545,7 +543,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function deleteplan(id) {
-                
+
                 tools.ModalDialog('Empresa', '¿Desea guardar los datos?', 'question', function(value) {
                     if (value) {
                         $.ajax({

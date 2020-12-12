@@ -50,7 +50,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="row ">
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <ul class="nav nav-pills" id="pills-tab" role="tablist">
@@ -132,40 +132,28 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 </div>
                                             </div>
                                             <div class="tab-pane fade" id="pills-profile" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Monto</th>
+                                                                    <th>Fecha</th>
+                                                                    <th>Monto Inicial</th>
+                                                                    <th>Quitar</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
 
-                                                <div class="tile">
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>First Name</th>
-                                                                <th>Last Name</th>
-                                                                <th>Username</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>Mark</td>
-                                                                <td>Otto</td>
-                                                                <td>@mdo</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>Jacob</td>
-                                                                <td>Thornton</td>
-                                                                <td>@fat</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>Larry</td>
-                                                                <td>the Bird</td>
-                                                                <td>@twitter</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <button class="btn btn-link" type="button">Agregar cuota +</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +172,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             <div class="tile">
                 <div class="row">
-                    <div class="col-xl-8 col-lg-9 col-md-12 col-sm-12 col-12">
+                    <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group text-left">
@@ -229,7 +217,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-3 col-md-12 col-sm-12 col-12">
+                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
                         <div class="row">
                             <div class="col-md-12 mb-2">
                                 <div class="form-group">
@@ -239,7 +227,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <button id="btnCobrar" class="btn btn-success btn-block">
-                                        <div class="row">
+                                        <div class="row justify-content-center">
                                             <div class="col-md-6 text-left">
                                                 <h5>COBRAR</h5>
                                             </div>
