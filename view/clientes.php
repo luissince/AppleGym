@@ -153,7 +153,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <div class="form-group">
                                         <input type="search" class="form-control"
                                             placeholder="Buscar por apellidos, nombres o dni"
-                                            aria-controls="sampleTable" id="txtSearch">
+                                            aria-controls="sampleTable" id="txtSearchLista">
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
@@ -175,47 +175,148 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         </div>
                                     </div>
                                 </div>
-                            </div><div class="row">
-                                    <div class="col-md-12 ">
-                                        <div class="tile">
-                                            <div class="tile-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="sorting" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 59px;">#</th>
-                                                                <th class="sorting_asc" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 107px;">Dni
-                                                                </th>
-                                                                <th class="sorting" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 250px;">
-                                                                    Apellidos y Nombres</th>
-                                                                <th class="sorting" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 72px;">Celular
-                                                                </th>
-                                                                <th class="sorting" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 59px;">Estado
-                                                                </th>
-                                                                <th class="sorting" aria-controls="sampleTable"
-                                                                    rowspan="1" colspan="1" style="width: 69px;">Membresia
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="tbListaCliente">
-                                                            <!-- tbLista -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <div class="tile">
+                                        <div class="tile-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 59px;">#</th>
+                                                            <th class="sorting_asc" aria-controls="sampleTable"
+                                                                rowspan="1" colspan="1" style="width: 107px;">Dni
+                                                            </th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 250px;">
+                                                                Apellidos y Nombres</th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 72px;">Celular
+                                                            </th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 59px;">Estado
+                                                            </th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 69px;">Membresia
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbListaCliente">
+                                                        <!-- tbLista -->
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
                         </div>
-                        <div class="modal-footer">
-                            <br>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- modal lista cliente -->
+        <div class="row">
+            <div class="modal fade" id="modalPlan" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="titulo-modal">
+                                <i class="fa fa-bandcamp"></i> Planes
+                            </h4>
+                            <button type="button" class="close" id="btnCloseModal">
+                                <i class="fa fa-close"></i>
+                            </button>
                         </div>
+                        <div class="modal-body">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Seleccione el Plan: <i
+                                                class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <select id="plan" class="form-control">
+                                        <option value="">Selecciona un plan</option>
+                                        <option value="1">Plan 1</option>
+                                        <option value="2">Plan 2</option>
+                                        <option value="3">Plan 3</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="h6">Nombre: </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="h6">Precio: </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="h6">Sesiones: </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="h6">Tiempo: </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="h6">Disciplinas: </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="h6">Descripcion: </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Membresia">Tipo de Membresia: <i
+                                                class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                        <select id="Membresia" class="form-control">
+                                            <option value="">Selecciona la Membresia</option>
+                                            <option value="1">Membresia 1</option>
+                                            <option value="2">Membresia 2</option>
+                                            <option value="3">Membresia 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="descuento">Descuento: </label>
+                                        <input id="descuento" type="number" name="descuento" class="form-control"
+                                            placeholder="Ingrese el monto del descuento" required="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="monto">Monto a pagar: </label>
+                                        <input id="monto" type="number" name="monto" class="form-control"
+                                            placeholder="00.00" required="" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">Todos los campos marcados con <i
+                                        class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
+                                <button type="button" class="btn btn-info" id="btnGuardarModal">
+                                    <i class="fa fa-check"></i> Aceptar</button>
+                                <!-- <button type="button" class="btn btn-danger" id="btnCancelModal">
+                                    <i class="fa fa-remove"></i> Cancelar</button> -->
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -231,6 +332,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             Recargar</button>
                         <button class="btn btn-info" type="button" id="btnListaCliente"><i class="fa fa-list"></i>
                             Lista</button>
+                        <button class="btn btn-info" type="button" id="btnPlan"><i class="fa fa-bandcamp"></i>
+                            Plan</button>
                     </p>
                 </div>
             </div>
@@ -263,37 +366,35 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="tile">
-                        <div class="tile-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">#</th>
-                                            <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 107px;">Dni</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 250px;">Apellidos y Nombres</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 72px;">Celular</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 72px;">Email</th>
-                                            <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 29px;">Dirección</th> -->
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 69px;">Membresia</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">Estado</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">Perfil</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">Opciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbLista">
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="tile-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 59px;">#</th>
+                                        <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 107px;">Dni</th>
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 250px;">Apellidos y Nombres</th>
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 72px;">Celular</th>
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 72px;">Email</th>
+                                        <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 29px;">Dirección</th> -->
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 69px;">Membresia</th>
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 59px;">Estado</th>
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 59px;">Perfil</th>
+                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
+                                            style="width: 59px;">Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbLista">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -342,11 +443,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
         })
 
         $("#modalLista").on('shown.bs.modal', function() {
-
+            listaClientes($("#txtSearchLista").val())
         })
 
         $("#btnListaCliente").click(function() {
             $("#modalLista").modal("show")
+        })
+
+        $("#btnPlan").click(function() {
+            $("#modalPlan").modal("show")
+            // modalPlan
         })
 
         $("#btnGuardarModal").click(function() {
@@ -385,6 +491,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 }
             }
         });
+
         $("#btnSiguiente").click(function() {
             if (!state) {
                 if (paginacion < totalPaginacion) {
@@ -425,13 +532,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
         }
     }
 
-    function listaClientes(text){
+    function listaClientes(text) {
         $.ajax({
             url: "../app/cliente/Obtener_Clientes.php",
             method: "",
             data: {
                 opcion: 2,
-                page: paginacion,
+                page: 1,
                 datos: text
             },
             beforeSend: function() {
@@ -440,10 +547,11 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 tbListaCliente.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                 );
-                totalPaginacion = 0;
             },
             success: function(result) {
                 let data = JSON.parse(result);
+                console.log(data)
+
                 if (data.estado == 1) {
                     tbListaCliente.empty();
                     for (let cliente of data.clientes) {
@@ -459,30 +567,30 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         //     '<i class="fa fa-user-circle"></i> Perfil' +
                         //     '</button>';
 
-                        tbLista.append('<tr role="row" class="odd">' +
+                        tbListaCliente.append('<tr role="row" class="odd">' +
                             '<td class="sorting_1">' + cliente.id + '</td>' +
                             '<td>' + cliente.dni + '</td>' +
                             '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                             '<td>' + cliente.celular + '</td>' +
-                            '<td>' + estado.celular + '</td>' +
+                            '<td>' + cliente.estado + '</td>' +
                             '<td>' + (cliente.membresia == 1 ? cliente.membresia + " MEMBRESIA(S)" :
                                 "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
                                 " deuda(s)" : "0 deudas") + '</td>' +
                             '</tr>');
                     }
-                    totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
-                        10))));
-                    $("#lblPaginaActual").html(paginacion);
-                    $("#lblPaginaSiguiente").html(totalPaginacion);
-                    state = false;
+                    // totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
+                    //     10))));
+                    // $("#lblPaginaActual").html(paginacion);
+                    // $("#lblPaginaSiguiente").html(totalPaginacion);
+                    // state = false;
                 } else {
                     tbLista.empty();
                     tbLista.append(
                         '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                         data.mensaje + '</p></td></tr>');
-                    $("#lblPaginaActual").html(0);
-                    $("#lblPaginaSiguiente").html(0);
-                    state = false;
+                    // $("#lblPaginaActual").html(0);
+                    // $("#lblPaginaSiguiente").html(0);
+                    // state = false;
                 }
             },
             error: function(error) {
@@ -490,9 +598,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 tbLista.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                     error.responseText + '</p></td></tr>');
-                $("#lblPaginaActual").html(0);
-                $("#lblPaginaSiguiente").html(0);
-                state = false;
+                // $("#lblPaginaActual").html(0);
+                // $("#lblPaginaSiguiente").html(0);
+                // state = false;
             }
         });
     }
@@ -528,7 +636,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         let btnPerfil =
                             '<button class="btn btn-info btn-sm" onclick="loadDataPerfil(\'' +
                             cliente.idCliente + '\')">' +
-                            '<i class="fa fa-user-circle"></i> Perfil' +
+                            '<i class="fa fa-user-circle"></i> Ver' +
                             '</button>';
 
                         tbLista.append('<tr role="row" class="odd">' +
