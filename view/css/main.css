@@ -316,6 +316,9 @@ input[type="checkbox"] {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 0;
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
 }
 
 input[type="date"],
@@ -2269,7 +2272,7 @@ textarea.form-control {
 
 .form-text {
     display: block;
-    margin-top: 0.25rem;
+    margin-top: 0.55rem;
 }
 
 .form-row {
@@ -5436,7 +5439,6 @@ input[type="button"].btn-block {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    padding-left: 0;
     list-style: none;
     border-radius: 0.25rem;
 }
@@ -16255,7 +16257,7 @@ be a descendant of the grid when it is being dragged.
 
 .toggle-flip input[type="checkbox"]+.flip-indecator {
     position: relative;
-    width: 60px;
+    width: 100px;
     height: 30px;
     display: block;
     cursor: pointer;

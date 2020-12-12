@@ -14,14 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if ($opcion == 1) {
         $clientes = ClienteAdo::getAll(($body - 1) * 10, 10);
-        $total = ClienteAdo::getAllCount();
         if (is_array($clientes)) {
-            $datos["estado"] = 1;
-            $datos["page"] = $body;
-            $datos["page_rows"] = 10;
-            $datos["total"] = $total;
-            $datos["total_page"] = ceil($total / 10);
-            $datos["clientes"] = $clientes;
+            $datos["estado"] = 1;+
+            $datos["total"] = $clientes[1];
+            $datos["clientes"] = $clientes[0];
             print json_encode($datos);
         } else {
             print json_encode(array(
@@ -31,19 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         }
     } else if ($opcion == 2) {
         $clientes = ClienteAdo::getAllDatos($search, ($body - 1) * 10, 10);
-        $total = ClienteAdo::getAllDatosCount($search);
-        if ($clientes) {
+        if (is_array($clientes)) {
             $datos["estado"] = 1;
-            $datos["page"] = $body;
-            $datos["page_rows"] = 10;
-            $datos["total"] = $total;
-            $datos["total_page"] = ceil($total / 10);
-            $datos["clientes"] = $clientes;
+            $datos["total"] = $clientes[1];
+            $datos["clientes"] = $clientes[0];
             print json_encode($datos);
         } else {
             print json_encode(array(
                 "estado" => 2,
-                "mensaje" => "No hay datos para mostrar."
+                "mensaje" => $clientes
             ));
         }
     }

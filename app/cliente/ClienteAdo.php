@@ -6,10 +6,11 @@
  */
 require '../database/DataBaseConexion.php';
 
-class ClienteAdo {
+class ClienteAdo
+{
 
-    function __construct() {
-        
+    function __construct()
+    {
     }
 
     /**
@@ -18,15 +19,18 @@ class ClienteAdo {
      * @param $idCliente Identificador del registro
      * @return array Datos del registro
      */
-    public static function getAll($x, $y) {
-        $array = array();
+    public static function getAll($x, $y)
+    {
+       
         try {
+            $array = array();
             // Preparar sentencia
             $clientes = Database::getInstance()->getDb()->prepare("SELECT * FROM clientetb LIMIT $x,$y");
             $membresias = Database::getInstance()->getDb()->prepare("SELECT idVenta,estado FROM  membresiatb WHERE idCliente = ? AND estado = 1");
             $venta = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta = ? AND estado = 0");
             // Ejecutar sentencia preparada
             $clientes->execute();
+            $arrayClientes = array();
             while ($row = $clientes->fetch()) {
 
                 $membresias->execute(array($row["idCliente"]));
@@ -40,7 +44,7 @@ class ClienteAdo {
                     }
                 }
 
-                array_push($array, array(
+                array_push($arrayClientes, array(
                     "idCliente" => $row["idCliente"],
                     "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
@@ -53,31 +57,27 @@ class ClienteAdo {
                     "venta" => $total_deudas
                 ));
             }
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM clientetb");
+            $comando->execute();
+            $totalClientes = $comando->fetchColumn();
+            
+            array_push($array,$arrayClientes,$totalClientes);
             return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
         }
-        
     }
 
-    public static function getAllCount() {
-        $consulta = "SELECT COUNT(*) FROM clientetb";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
-        }
-    }
+    public static function getAllDatos($datos, $x, $y)
+    {
 
-    public static function getAllDatos($datos, $x, $y) {
-        $array = array();
         try {
+            $array = array();
             // Preparar sentencia
-            $clientes = Database::getInstance()->getDb()->prepare("SELECT * FROM clientetb WHERE (apellidos LIKE ?) OR (nombres LIKE ?) OR (dni LIKE ?) LIMIT ?,?");
+            $clientes = Database::getInstance()->getDb()->prepare("SELECT * 
+            FROM clientetb 
+            WHERE (apellidos LIKE ?) OR (nombres LIKE ?) OR (dni LIKE ?) LIMIT ?,?");
             $clientes->bindValue(1, "$datos%", PDO::PARAM_STR);
             $clientes->bindValue(2, "$datos%", PDO::PARAM_STR);
             $clientes->bindValue(3, "$datos%", PDO::PARAM_STR);
@@ -86,8 +86,8 @@ class ClienteAdo {
 
             $membresias = Database::getInstance()->getDb()->prepare("SELECT idVenta FROM  membresiatb WHERE idCliente = ? AND estado = 1");
             $venta = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta = ? AND estado = 0");
-            // Ejecutar sentencia preparada
             $clientes->execute();
+            $arrayClientes = array();
             $count = 0;
             while ($row = $clientes->fetch()) {
 
@@ -103,8 +103,8 @@ class ClienteAdo {
                     }
                 }
                 $count++;
-                array_push($array, array(
-                    "id"=>$count+$x,
+                array_push($arrayClientes, array(
+                    "id" => $count + $x,
                     "idCliente" => $row["idCliente"],
                     "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
@@ -117,25 +117,20 @@ class ClienteAdo {
                     "venta" => $total_deudas
                 ));
             }
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-        return $array;
-    }
 
-    public static function getAllDatosCount($datos) {
-        $consulta = "SELECT COUNT(*) FROM clientetb WHERE (apellidos LIKE ?) OR (nombres LIKE ?) OR (dni LIKE ?)";
-        try {
-            // Preparar sentencia
-            $clientes = Database::getInstance()->getDb()->prepare($consulta);
+            $clientes = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) 
+            FROM clientetb 
+            WHERE (apellidos LIKE ?) OR (nombres LIKE ?) OR (dni LIKE ?)");
             $clientes->bindValue(1, "$datos%", PDO::PARAM_STR);
             $clientes->bindValue(2, "$datos%", PDO::PARAM_STR);
             $clientes->bindValue(3, "$datos%", PDO::PARAM_STR);
-            // Ejecutar sentencia preparada
             $clientes->execute();
-            return $clientes->fetchColumn();
+            $totalClientes =  $clientes->fetchColumn();
+
+            array_push($array, $arrayClientes, $totalClientes);
+            return $array;
         } catch (PDOException $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -145,7 +140,8 @@ class ClienteAdo {
      * @param $idCliente Identificador del registro
      * @return array Datos del registro
      */
-    public static function getClientById($idCliente) {
+    public static function getClientById($idCliente)
+    {
         $consulta = "SELECT * FROM clientetb WHERE idCliente = ?";
         try {
             $comando = Database::getInstance()->getDb()->prepare($consulta);
@@ -156,7 +152,8 @@ class ClienteAdo {
         }
     }
 
-    public static function getMembresiaClienteById($idCliente) {
+    public static function getMembresiaClienteById($idCliente)
+    {
         $array = array();
         try {
             // Preparar sentencia
@@ -233,7 +230,6 @@ class ClienteAdo {
                 ));
             }
         } catch (PDOException $e) {
-            
         }
         return $array;
     }
@@ -244,28 +240,29 @@ class ClienteAdo {
      * @param $body Array que contiene la información del cliente
      * @return string
      */
-    public static function insert($body) {
+    public static function insert($body)
+    {
 
         // Sentencia INSERT
         $quey = "SELECT Fc_Cliente_Codigo_Almanumerico();";
 
-//        $queyMovimiento = "SELECT Fc_Movimiento_Codigo_Numerico();";
+        //        $queyMovimiento = "SELECT Fc_Movimiento_Codigo_Numerico();";
 
         $cliente = "INSERT INTO clientetb ( " .
-                "idCliente," .
-                "dni," .
-                "apellidos," .
-                "nombres," .
-                "sexo," .
-                "fechaNacimiento," .
-                "codigo," .
-                "email," .
-                "celular," .
-                "direccion," .
-                "predeterminado)" .
-                " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+            "idCliente," .
+            "dni," .
+            "apellidos," .
+            "nombres," .
+            "sexo," .
+            "fechaNacimiento," .
+            "codigo," .
+            "email," .
+            "celular," .
+            "direccion," .
+            "predeterminado)" .
+            " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
-//        $movimiento = "INSERT INTO movimientostb(idMovimiento,idTabla,descripcion,fechaRegistro,horaRegistro,usuario)VALUES(?,?,?,?,?,?)";
+        //        $movimiento = "INSERT INTO movimientostb(idMovimiento,idTabla,descripcion,fechaRegistro,horaRegistro,usuario)VALUES(?,?,?,?,?,?)";
 
         try {
             // Preparar la sentencia
@@ -275,38 +272,38 @@ class ClienteAdo {
             $codigoCliente->execute();
             $idCliente = $codigoCliente->fetchColumn();
 
-//            $codigoMovimiento = Database::getInstance()->getDb()->prepare($queyMovimiento);
-//            $codigoMovimiento->execute();
-//            $idMovimiento = $codigoMovimiento->fetchColumn();
+            //            $codigoMovimiento = Database::getInstance()->getDb()->prepare($queyMovimiento);
+            //            $codigoMovimiento->execute();
+            //            $idMovimiento = $codigoMovimiento->fetchColumn();
 
             $executeCliente = Database::getInstance()->getDb()->prepare($cliente);
             $executeCliente->execute(
-                    array(
-                        $idCliente,
-                        $body['dni'],
-                        $body['apellidos'],
-                        $body['nombres'],
-                        $body['sexo'],
-                        $body['fechaNacimiento'],
-                        $body['codigo'],
-                        $body['email'],
-                        $body['celular'],
-                        $body['direccion'],
-                        false
-                    )
+                array(
+                    $idCliente,
+                    $body['dni'],
+                    $body['apellidos'],
+                    $body['nombres'],
+                    $body['sexo'],
+                    $body['fechaNacimiento'],
+                    $body['codigo'],
+                    $body['email'],
+                    $body['celular'],
+                    $body['direccion'],
+                    false
+                )
             );
 
-//            $executeMovimiento = Database::getInstance()->getDb()->prepare($movimiento);
-//            $executeMovimiento->execute(
-//                    array(
-//                        $idMovimiento,
-//                        $idCliente,
-//                        "creación del cliente",
-//                        $body['fechaRegistro'],
-//                        $body['horaRegistro'],
-//                        $body['usuario']
-//                    )
-//            );
+            //            $executeMovimiento = Database::getInstance()->getDb()->prepare($movimiento);
+            //            $executeMovimiento->execute(
+            //                    array(
+            //                        $idMovimiento,
+            //                        $idCliente,
+            //                        "creación del cliente",
+            //                        $body['fechaRegistro'],
+            //                        $body['horaRegistro'],
+            //                        $body['usuario']
+            //                    )
+            //            );
 
             Database::getInstance()->getDb()->commit();
             return "inserted";
@@ -320,60 +317,61 @@ class ClienteAdo {
      * Editar un nuevo cliente
      *   
      */
-    public static function edit($body) {
+    public static function edit($body)
+    {
 
         // Sentencia UPDATE
 
         $comando = "UPDATE clientetb " .
-                "SET dni = ?," .
-                " apellidos = ?," .
-                " nombres = ?," .
-                " sexo = ?," .
-                " fechaNacimiento = ?," .
-                " codigo = ?," .
-                " email = ?," .
-                " celular = ?," .
-                " direccion = ?" .
-                "WHERE idCliente = ?";
+            "SET dni = ?," .
+            " apellidos = ?," .
+            " nombres = ?," .
+            " sexo = ?," .
+            " fechaNacimiento = ?," .
+            " codigo = ?," .
+            " email = ?," .
+            " celular = ?," .
+            " direccion = ?" .
+            "WHERE idCliente = ?";
 
-//        $queyMovimiento = "SELECT Fc_Movimiento_Codigo_Numerico();";
-//        $movimiento = "INSERT INTO movimientostb(idMovimiento,idTabla,descripcion,fechaRegistro,horaRegistro,usuario)VALUES(?,?,?,?,?,?)";
+        //        $queyMovimiento = "SELECT Fc_Movimiento_Codigo_Numerico();";
+        //        $movimiento = "INSERT INTO movimientostb(idMovimiento,idTabla,descripcion,fechaRegistro,horaRegistro,usuario)VALUES(?,?,?,?,?,?)";
 
         try {
             // Preparar la sentencia         
             Database::getInstance()->getDb()->beginTransaction();
 
-//            $codigoMovimiento = Database::getInstance()->getDb()->prepare($queyMovimiento);
-//            $codigoMovimiento->execute();
-//            $idMovimiento = $codigoMovimiento->fetchColumn();
+            //            $codigoMovimiento = Database::getInstance()->getDb()->prepare($queyMovimiento);
+            //            $codigoMovimiento->execute();
+            //            $idMovimiento = $codigoMovimiento->fetchColumn();
 
             $sentencia = Database::getInstance()->getDb()->prepare($comando);
             $sentencia->execute(
-                    array(
-                        $body['dni'],
-                        $body['apellidos'],
-                        $body['nombres'],
-                        $body['sexo'],
-                        $body['fechaNacimiento'],
-                        $body['codigo'],
-                        $body['email'],
-                        $body['celular'],
-                        $body['direccion'],
-                        $body['idCliente']
-                    )
+                array(
+                    $body['dni'],
+                    $body['apellidos'],
+                    $body['nombres'],
+                    $body['sexo'],
+                    $body['fechaNacimiento'],
+                    $body['codigo'],
+                    $body['email'],
+                    $body['celular'],
+                    $body['direccion'],
+                    $body['idCliente']
+                )
             );
 
-//            $executeMovimiento = Database::getInstance()->getDb()->prepare($movimiento);
-//            $executeMovimiento->execute(
-//                    array(
-//                        $idMovimiento,
-//                        $body['idCliente'],
-//                        "se editó dicha información:" . " " . $body['dni'] . ", " . $body['apellidos'] . ", " . $body['nombres'] . ", " . $body['sexo'] . ", " . $body['fechaNacimiento'] . ", " . $body['codigo'] . ", " . $body['email'] . ", " . $body['celular'] . ", " . $body['direccion'],
-//                        $body['fechaRegistro'],
-//                        $body['horaRegistro'],
-//                        $body['usuario']
-//                    )
-//            );
+            //            $executeMovimiento = Database::getInstance()->getDb()->prepare($movimiento);
+            //            $executeMovimiento->execute(
+            //                    array(
+            //                        $idMovimiento,
+            //                        $body['idCliente'],
+            //                        "se editó dicha información:" . " " . $body['dni'] . ", " . $body['apellidos'] . ", " . $body['nombres'] . ", " . $body['sexo'] . ", " . $body['fechaNacimiento'] . ", " . $body['codigo'] . ", " . $body['email'] . ", " . $body['celular'] . ", " . $body['direccion'],
+            //                        $body['fechaRegistro'],
+            //                        $body['horaRegistro'],
+            //                        $body['usuario']
+            //                    )
+            //            );
 
             Database::getInstance()->getDb()->commit();
             return "updated";
@@ -383,7 +381,8 @@ class ClienteAdo {
         }
     }
 
-    public static function deleteCliente($body) {
+    public static function deleteCliente($body)
+    {
         try {
             Database::getInstance()->getDb()->beginTransaction();
 
@@ -414,23 +413,24 @@ class ClienteAdo {
         }
     }
 
-    public static function getClientByNumeroDocumento($value) {
+    public static function getClientByNumeroDocumento($value)
+    {
         $query_cliente = "SELECT * FROM clientetb WHERE dni = ? or codigo = ?";
-        
+
         $query_membresia = "SELECT m.fechaInicio,m.fechaFin,m.estado,p.nombre,p.tipoDisciplina,p.meses,p.dias,p.freeze,p.precio FROM 
                 membresiatb as m INNER JOIN plantb as p on m.idPlan = p.idPlan  
                 WHERE m.idCliente = ?";
-        
+
         $query_venta = "SELECT * FROM ";
-        
+
         $array = array();
         try {
             $execute_cliente = Database::getInstance()->getDb()->prepare($query_cliente);
             $execute_cliente->execute(array($value, $value));
-            
+
             $cliente = $execute_cliente->fetchObject();
-            
-            array_push($array, $cliente);            
+
+            array_push($array, $cliente);
 
             $execute_membresia = Database::getInstance()->getDb()->prepare($query_membresia);
             $execute_membresia->bindParam(1, $cliente->idCliente);
@@ -442,7 +442,8 @@ class ClienteAdo {
         }
     }
 
-    public static function validateClienteDni($dni) {
+    public static function validateClienteDni($dni)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT * FROM clientetb WHERE dni = ?");
         $validate->bindParam(1, $dni);
         $validate->execute();
@@ -453,7 +454,8 @@ class ClienteAdo {
         }
     }
 
-    public static function validateClienteId($idCliente) {
+    public static function validateClienteId($idCliente)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idCliente FROM clientetb WHERE idCliente = ?");
         $validate->bindParam(1, $idCliente);
         $validate->execute();
@@ -464,7 +466,8 @@ class ClienteAdo {
         }
     }
 
-    public static function validateClienteDniById($idCliente, $dni) {
+    public static function validateClienteDniById($idCliente, $dni)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idCliente FROM clientetb WHERE idCliente <> ? AND dni = ?");
         $validate->bindParam(1, $idCliente);
         $validate->bindParam(2, $dni);
@@ -476,7 +479,8 @@ class ClienteAdo {
         }
     }
 
-    public static function actualizarClientePredeterminado($idCliente) {
+    public static function actualizarClientePredeterminado($idCliente)
+    {
         try {
             Database::getInstance()->getDb()->beginTransaction();
             $comando = Database::getInstance()->getDb()->prepare("UPDATE clientetb SET predeterminado = 0");
@@ -492,5 +496,4 @@ class ClienteAdo {
             return $ex->getMessage();
         }
     }
-
 }

@@ -12,21 +12,18 @@ require './DisciplinaAdo.php';
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Manejar petición GET
     $body = $_GET['page'];
+    $search = $_GET['datos'];
 
-    $disciplinas = DisciplinaAdo::getAllDisciplina(($body - 1) * 10, 10);
-    $total = DisciplinaAdo::getAllCountDisciplina();
-    if ($disciplinas) {
+    $disciplinas = DisciplinaAdo::getAllDisciplina($search,($body - 1) * 10, 10);
+    if (is_array($disciplinas)) {
         $datos["estado"] = 1;
-        $datos["page"] = $body;
-        $datos["page_rows"] = 10;
-        $datos["total"] = $total;
-        $datos["total_page"] = ceil($total / 10);
-        $datos["disciplinas"] = $disciplinas;
+        $datos["total"] = $disciplinas[1];
+        $datos["disciplinas"] = $disciplinas[0];
         print json_encode($datos);
     } else {
         print json_encode(array(
             "estado" => 2,
-            "mensaje" => "Ha ocurrido un error"
+            "mensaje" => $disciplinas
         ));
     }
     exit();

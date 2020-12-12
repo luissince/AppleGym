@@ -112,42 +112,50 @@ class DisciplinaAdo {
         }
     }
 
-    public static function getAllDisciplina($x, $y) {
-        $consulta = "SELECT * FROM disciplinatb LIMIT $x,$y";
+    public static function getAllDisciplina($search,$x, $y) {       
         try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
+            $array = array();
+            $comando = Database::getInstance()->getDb()->prepare("SELECT 
+            idDisciplina ,nombre,color,descripcion,estado 
+            FROM disciplinatb 
+            WHERE nombre LIKE ?
+            LIMIT ?,?");
+            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
+            $comando->bindValue(2, $x, PDO::PARAM_INT);
+            $comando->bindValue(3, $y, PDO::PARAM_INT);
             $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            $arrayDisciplina = array();
+            $count = 0;
+            while($row = $comando->fetch()){
+                $count++;
+                array_push($arrayDisciplina,array(
+                    "id"=>$count+$x,
+                    "idDisciplina"=>$row["idDisciplina"],
+                    "nombre"=>$row["nombre"],
+                    "color"=>$row["color"],
+                    "descripcion"=>$row["descripcion"],
+                    "idDisestadociplina"=>$row["estado"]
+                ));
+            }
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM disciplinatb WHERE nombre LIKE ?");
+            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
+            $comando->execute();
+            $totalDisciplinas = $comando->fetchColumn();
+            array_push($array,$arrayDisciplina,$totalDisciplinas);
+            return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
         }
     }
 
-    public static function getAllCountDisciplina() {
-        $consulta = "SELECT COUNT(*) FROM disciplinatb";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
-        }
-    }
-
     public static function getDisciplinaById($idDisciplina) {
-        $consulta = "SELECT * FROM disciplinatb WHERE idDisciplina = ?";
+        $consulta = "SELECT idDisciplina ,nombre,color,descripcion,estado FROM disciplinatb WHERE idDisciplina = ?";
         try {
-            // Preparar sentencia
             $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
             $comando->execute(array($idDisciplina['idDisciplina']));
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            return $comando->fetchObject();
         } catch (PDOException $e) {
-            return false;
+            return $e->getMessage();
         }
     }
 
