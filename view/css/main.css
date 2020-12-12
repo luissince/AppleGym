@@ -5188,7 +5188,7 @@ input[type="button"].btn-block {
     -webkit-box-flex: 1;
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
-    padding: 1.25rem;
+    padding: 0.5rem;
 }
 
 .card-title {
@@ -5213,7 +5213,7 @@ input[type="button"].btn-block {
 }
 
 .card-header {
-    padding: 0.75rem 1.25rem;
+    padding: 0.4rem 1.25rem;
     margin-bottom: 0;
     background-color: rgba(0, 0, 0, 0.03);
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
@@ -15339,7 +15339,7 @@ be a descendant of the grid when it is being dragged.
 .app-content {
     min-height: calc(100vh - 50px);
     margin-top: 50px;
-    padding: 30px;
+    padding: 20px;
     background-color: #E5E5E5;
     -webkit-transition: margin-left 0.3s ease;
     -o-transition: margin-left 0.3s ease;

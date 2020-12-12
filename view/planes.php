@@ -233,12 +233,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 </div>
 
                 <div class="row">
-                    <div class="col-md-8 col-sm-12 col-xs-12">
+                    <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
                         <div class="form-group">
                             <input type="search" class="form-control" placeholder="Buscar por nombre" id="txtSearch">
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12 col-xs-12">
+                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
                         <div class="form-group">
                             <div class="text-right">
                                 <button class="btn btn-primary" id="btnAnterior">
@@ -545,30 +545,35 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function deleteplan(id) {
-                $("#modalPlan").modal('show');
-                $("#titulo-modal").append('<i class="fa fa-align-left"></i> Actualizar Plan')
-                $.ajax({
-                    url: "../app/plan/Eliminar_Planes.php",
-                    method: 'POST',
-                    accepts: "application/json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        "idPlan": id
-                    }),
-                    beforeSend: function() {
-                        tools.ModalAlertInfo('Planes', 'Procesando petición...');
-                    },
-                    success: function(result) {
-                        if (result.estado == 1) {
-                            tools.AlertSuccess("Planes", result.mensaje);
-                        } else {
-                            tools.AlertWarning("Planes", result.mensaje);
-                        }
-                    },
-                    error: function(error) {
-                        tools.AlertError("Planes", error.responseText);
+                
+                tools.ModalDialog('Empresa', '¿Desea guardar los datos?', 'question', function(value) {
+                    if (value) {
+                        $.ajax({
+                            url: "../app/plan/Eliminar_Planes.php",
+                            method: 'POST',
+                            accepts: "application/json",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                "idPlan": id
+                            }),
+                            beforeSend: function() {
+                                tools.ModalAlertInfo('Planes', 'Procesando petición...');
+                            },
+                            success: function(result) {
+                                if (result.estado == 1) {
+                                    tools.ModalAlertSuccess('Planes', result.mensaje);
+                                    loadInitPlanes();
+                                } else {
+                                    tools.ModalAlertWarning('Planes', result.mensaje);
+                                }
+                            },
+                            error: function(error) {
+                                tools.ModalAlertError('Planes', error.responseText);
+                            }
+                        });
                     }
                 });
+
             }
         </script>
     </body>

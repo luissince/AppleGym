@@ -28,8 +28,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <div class="row user">
             <div class="col-md-12">
                 <div class="profile">
-                    <div class="info"><img class="user-img"
-                            src="./images/sport.jpg">
+                    <div class="info"><img class="user-img" src="./images/sport.jpg">
                         <h4>John Doe</h4>
                         <p>FrontEnd Developer</p>
                     </div>
@@ -42,7 +41,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <div class="col-md-9">
                                     <label class="form-text">88888888</label>
                                 </div>
-                            </div><div class="row">
+                            </div>
+                            <div class="row">
                                 <div class="col-md-3">
                                     <label class="form-text">Celular:</label>
                                 </div>
@@ -73,7 +73,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <div class="col-md-9">
                                     <label class="form-text">Av. Portales #123</label>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -81,103 +81,111 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <div class="col-md-3">
                 <div class="tile p-0">
                     <ul class="nav flex-column nav-tabs user-tabs">
-                        <li class="nav-item"><a class="nav-link active" href="#user-timeline"
-                                data-toggle="tab">Timeline</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#user-settings" data-toggle="tab">Settings</a>
+                        <li class="nav-item"><a class="nav-link active" href="#menbresia"
+                                data-toggle="tab">Membresias</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#asistencias" data-toggle="tab">Asistencias</a>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="col-md-9">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="user-timeline">
+
+                    <div class="tab-pane active" id="menbresia">
                         <div class="timeline-post">
-                            <div class="post-media"><a href="#"><img
-                                        src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg"></a>
-                                <div class="content">
-                                    <h5><a href="#">John Doe</a></h5>
-                                    <p class="text-muted"><small>2 January at 9:30</small></p>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group text-right">
+                                        <button class="btn btn-success" type="button" id="btnReporte"><i
+                                                class="fa fa-file"></i>
+                                            Reporte</button>
+                                        <button class="btn btn-success" type="button" id="btnRenovar"><i
+                                                class="fa fa-plus"></i>
+                                            Renovar</button>
+                                        <button class="btn btn-success" type="button" id="btnTraspaso"><i
+                                                class="fa fa-external-link-square"></i>
+                                            Traspaso</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="post-content">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis tion
-                                    ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                                    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                                    mollit anim id est laborum.</p>
-                            </div>
-                            <ul class="post-utility">
-                                <li class="likes"><a href="#"><i class="fa fa-fw fa-lg fa-thumbs-o-up"></i>Like</a></li>
-                                <li class="shares"><a href="#"><i class="fa fa-fw fa-lg fa-share"></i>Share</a></li>
-                                <li class="comments"><i class="fa fa-fw fa-lg fa-comment-o"></i> 5 Comments</li>
-                            </ul>
-                        </div>
-                        <div class="timeline-post">
-                            <div class="post-media"><a href="#"><img
-                                        src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg"></a>
-                                <div class="content">
-                                    <h5><a href="#">John Doe</a></h5>
-                                    <p class="text-muted"><small>2 January at 9:30</small></p>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-text">Precio:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-text">S/ 10.00</label>
                                 </div>
                             </div>
-                            <div class="post-content">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis tion
-                                    ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                                    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                                    mollit anim id est laborum.</p>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-text">Desde - Hasta:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-text">11/11/2020 - 12/12/2020</label>
+                                </div>
                             </div>
-                            <ul class="post-utility">
-                                <li class="likes"><a href="#"><i class="fa fa-fw fa-lg fa-thumbs-o-up"></i>Like</a></li>
-                                <li class="shares"><a href="#"><i class="fa fa-fw fa-lg fa-share"></i>Share</a></li>
-                                <li class="comments"><i class="fa fa-fw fa-lg fa-comment-o"></i> 5 Comments</li>
-                            </ul>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-text">Tiempo:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-text">Meses, Días, Freeze</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-text">Desciplinas:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-text">...</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-text">Descripción:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-text">...</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-text">Estado:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-text">Inhabilitado</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="user-settings">
-                        <div class="tile user-settings">
-                            <h4 class="line-head">Settings</h4>
-                            <form>
-                                <div class="row mb-4">
-                                    <div class="col-md-4">
-                                        <label>First Name</label>
-                                        <input class="form-control" type="text">
+
+                    <div class="tab-pane fade" id="asistencias">
+                        <div class="user-settings">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tile row">
+                                    <div class="col-md-3">
+                                        <div id="external-events">
+                                            <h4 class="mb-4">Draggable Events</h4>
+                                            <div class="fc-event">My Event 1</div>
+                                            <div class="fc-event">My Event 2</div>
+                                            <div class="fc-event">My Event 3</div>
+                                            <div class="fc-event">My Event 4</div>
+                                            <div class="fc-event">My Event 5</div>
+                                            <p class="animated-checkbox mt-20">
+                                                <label>
+                                                    <input id="drop-remove" type="checkbox"><span
+                                                        class="label-text">Remove after drop</span>
+                                                </label>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label>Last Name</label>
-                                        <input class="form-control" type="text">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-8 mb-4">
-                                        <label>Email</label>
-                                        <input class="form-control" type="text">
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="col-md-8 mb-4">
-                                        <label>Mobile No</label>
-                                        <input class="form-control" type="text">
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="col-md-8 mb-4">
-                                        <label>Office Phone</label>
-                                        <input class="form-control" type="text">
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <div class="col-md-8 mb-4">
-                                        <label>Home Phone</label>
-                                        <input class="form-control" type="text">
+                                    <div class="col-md-9">
+                                        <div id="calendar"></div>
                                     </div>
                                 </div>
-                                <div class="row mb-10">
-                                    <div class="col-md-12">
-                                        <button class="btn btn-primary" type="button"><i
-                                                class="fa fa-fw fa-lg fa-check-circle"></i> Save</button>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -199,6 +207,40 @@ if (!isset($_SESSION["IdEmpleado"])) {
     let idClienteUpdate = "";
 
     $(document).ready(function() {
+
+        $('#external-events .fc-event').each(function() {
+
+            // store data so the calendar knows to render an event upon drop
+            $(this).data('event', {
+                title: $.trim($(this).text()), // use the element's text as the event title
+                stick: true // maintain when user navigates (see docs on the renderEvent method)
+            });
+
+            // make the event draggable using jQuery UI
+            $(this).draggable({
+                zIndex: 999,
+                revert: true, // will cause the event to go back to its
+                revertDuration: 0 //  original position after the drag
+            });
+
+        });
+
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            editable: true,
+            droppable: true, // this allows things to be dropped onto the calendar
+            drop: function() {
+                // is the "remove after drop" checkbox checked?
+                if ($('#drop-remove').is(':checked')) {
+                    // if so, remove the element from the "Draggable Events" list
+                    $(this).remove();
+                }
+            }
+        });
 
         //loadInitClientes();
 
