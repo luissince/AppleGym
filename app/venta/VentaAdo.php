@@ -13,37 +13,15 @@ class VentaAdo {
         // Sentencia INSERT
         $quey_codigo_venta = "SELECT Fc_Venta_Codigo_Almanumerico();";
         $quey_codigo_membresia = "SELECT Fc_Membresia_Codigo_Almanumerico();";
-        $quey_codigo_ingreso_numerico = "SELECT Fc_Ingreso_Codigo_Numeracion_Alfanumerico()";
 
-        $venta = "INSERT INTO ventatb ( " .
-                "idVenta," .
-                "cliente," .
-                "vendedor," .
-                "documento," .
-                "serie," .
-                "numeracion," .
-                "fecha," .
-                "hora," .
-                "subTotal," .
-                "descuento," .
-                "total," .
-                "tipo," .
-                "forma," .
-                "numero," .
-                "estado," .
-                "procedencia)" .
-                " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-        $detalle_venta = "INSERT INTO detalleventatb ( " .
-                "idVenta," .
-                "idOrigen," .
-                "cantidad," .
-                "precio," .
-                "subTotal," .
-                "descuento," .
-                "total," .
-                "procedencia)" .
-                " VALUES(?,?,?,?,?,?,?,?)";
+        $detalle_venta = "INSERT INTO detalleventatb ( 
+                idVenta,
+                idOrigen,
+                cantidad,
+                precio,
+                descuento,
+                procedencia)
+                VALUES(?,?,?,?,?,?)";
 
         $venta_credito = "INSERT INTO ventacreditotb(" .
                 "idVenta," .
@@ -62,115 +40,138 @@ class VentaAdo {
                 . "horaInicio,"
                 . "fechaFin,"
                 . "horaFin,"
-                . "reserva,"
-                . "tipo,"
+                . "tipoMembresia,"
                 . "estado)"
-                . "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-
-        $ingreso = "INSERT INTO ingresotb(
-                idVenta,
-                fecha,
-                hora,
-                forma,
-                monto,
-                serie,
-                numeracion,
-                procedencia)
-                VALUES(?,?,?,?,?,?,?,?)";
+                . "VALUES(?,?,?,?,?,?,?,?,?,?)";
 
         try {
+
+            
             // Preparar la sentencia
             Database::getInstance()->getDb()->beginTransaction();
+
+            $cmdValidando = Database::getInstance()->getDb()->prepare('SELECT serie FROM tipocomprobantetb WHERE idTipoComprobante  = ?');
+            $cmdValidando->bindValue(1,$body["tipoDocumento"],PDO::PARAM_STR);
+            $cmdValidando->execute();
+            $serie = $cmdValidando->fetchColumn();
+
+            $cmdValidando = Database::getInstance()->getDb()->prepare('SELECT * FROM ventatb WHERE serie = ?');
+            $cmdValidando->bindValue(1,$serie,PDO::PARAM_STR);
+            $cmdValidando->execute();
+            if($cmdValidando->fetch()){
+                $AuxNumeracion = Database::getInstance()->getDb()->prepare('SELECT max(numeracion)  FROM ventatb WHERE serie = ?');
+                $AuxNumeracion->bindValue(1,$serie,PDO::PARAM_STR);
+                $AuxNumeracion->execute();
+                $Aumentado = $AuxNumeracion->fetchColumn() + 1;
+				$ResultNumeracion =  $Aumentado;
+            }else{
+                $Numeracion = Database::getInstance()->getDb()->prepare('SELECT numeracion FROM tipocomprobantetb WHERE idTipoComprobante = ?');
+                $Numeracion->bindValue(1,$body["tipoDocumento"],PDO::PARAM_STR);
+                $Numeracion->execute();
+				$ResultNumeracion = $Numeracion->fetchColumn();
+            }
 
             $codigoVenta = Database::getInstance()->getDb()->prepare($quey_codigo_venta);
             $codigoVenta->execute();
             $idVenta = $codigoVenta->fetchColumn();
 
-            $executeVenta = Database::getInstance()->getDb()->prepare($venta);
+            $executeVenta = Database::getInstance()->getDb()->prepare("INSERT INTO ventatb ( 
+                idVenta, 
+                cliente,
+                vendedor,
+                documento,
+                serie,
+                numeracion,
+                fecha,
+                hora,
+                tipo,
+                forma,
+                numero,
+                pago,
+                vuelto,
+                estado)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             $executeVenta->execute(
                     array(
                         $idVenta,
                         $body['cliente'],
                         $body['vendedor'],
-                        $body['documento'],
-                        $body['serie'],
-                        $body['numeracion'],
+                        $body["tipoDocumento"],
+                        $serie,
+                        $ResultNumeracion,
                         $body['fecha'],
                         $body['hora'],
-                        $body['subTotal'],
-                        $body['descuento'],
-                        $body['total'],
                         $body['tipo'],
                         $body['forma'],
                         $body['numero'],
-                        $body['estado'],
-                        $body['procedencia']
+                        $body['pago'],
+                        $body['vuelto'],                        
+                        $body['estado']
                     )
             );
-            if ($body['tipo'] == 1) {
-                $codigoIngresoNumerico = Database::getInstance()->getDb()->prepare($quey_codigo_ingreso_numerico);
-                $codigoIngresoNumerico->execute();
-                $numeracion = $codigoIngresoNumerico->fetchColumn();
 
-                $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
-                $executeIngreso->execute(array(
-                    $idVenta,
-                    $body['fecha'],
-                    $body['hora'],
-                    $body['forma'],
-                    $body['total'],
-                    "P0001",
-                    $numeracion,
-                    $body['procedencia']
-                ));
-            } else if ($body['tipo'] == 2) {
-                $executeVentaCredito = Database::getInstance()->getDb()->prepare($venta_credito);
-                $total_credito_inicial = 0;
-                foreach ($body['credito'] as $credito) {
-                    if ($credito['inicial'] == true) {
-                        $total_credito_inicial += $credito['monto'];
-                    }
-                    $executeVentaCredito->execute(
-                            array(
-                                $idVenta,
-                                $credito['monto'],
-                                $credito['fecha'],
-                                $credito['hora'],
-                                $credito['inicial']
-                            )
-                    );
-                }
+            // if ($body['tipo'] == 1) {
+            //     $codigoIngresoNumerico = Database::getInstance()->getDb()->prepare($quey_codigo_ingreso_numerico);
+            //     $codigoIngresoNumerico->execute();
+            //     $numeracion = $codigoIngresoNumerico->fetchColumn();
 
-                if ($total_credito_inicial > 0) {
-                    $codigoIngresoNumerico = Database::getInstance()->getDb()->prepare($quey_codigo_ingreso_numerico);
-                    $codigoIngresoNumerico->execute();
-                    $numeracion = $codigoIngresoNumerico->fetchColumn();
+            //     $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
+            //     $executeIngreso->execute(array(
+            //         $idVenta,
+            //         $body['fecha'],
+            //         $body['hora'],
+            //         $body['forma'],
+            //         $body['total'],
+            //         "P0001",
+            //         $numeracion,
+            //         $body['procedencia']
+            //     ));
+            // } else if ($body['tipo'] == 2) {
+            //     $executeVentaCredito = Database::getInstance()->getDb()->prepare($venta_credito);
+            //     $total_credito_inicial = 0;
+            //     foreach ($body['credito'] as $credito) {
+            //         if ($credito['inicial'] == true) {
+            //             $total_credito_inicial += $credito['monto'];
+            //         }
+            //         $executeVentaCredito->execute(
+            //                 array(
+            //                     $idVenta,
+            //                     $credito['monto'],
+            //                     $credito['fecha'],
+            //                     $credito['hora'],
+            //                     $credito['inicial']
+            //                 )
+            //         );
+            //     }
 
-                    $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
-                    $executeIngreso->execute(array(
-                        $idVenta,
-                        $body['fecha'],
-                        $body['hora'],
-                        $body['forma'],
-                        $total_credito_inicial,
-                        "P0001",
-                        $numeracion,
-                        $body['procedencia']
-                    ));
-                }
-            }
+            //     if ($total_credito_inicial > 0) {
+            //         $codigoIngresoNumerico = Database::getInstance()->getDb()->prepare($quey_codigo_ingreso_numerico);
+            //         $codigoIngresoNumerico->execute();
+            //         $numeracion = $codigoIngresoNumerico->fetchColumn();
+
+            //         $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
+            //         $executeIngreso->execute(array(
+            //             $idVenta,
+            //             $body['fecha'],
+            //             $body['hora'],
+            //             $body['forma'],
+            //             $total_credito_inicial,
+            //             "P0001",
+            //             $numeracion,
+            //             $body['procedencia']
+            //         ));
+            //     }
+            // }
 
             $executeDetalleVenta = Database::getInstance()->getDb()->prepare($detalle_venta);
             foreach ($body['lista'] as $result) {
                 $executeDetalleVenta->execute(
                         array(
                             $idVenta,
-                            $result['idProducto'],
+                            $result['idPlan'],
                             $result['cantidad'],
                             $result['precio'],
-                            $result['subTotal'],
                             $result['descuento'],
-                            $result['total'],
                             $result['procedencia']
                         )
                 );
@@ -184,15 +185,14 @@ class VentaAdo {
                     $executeMembresia->execute(
                             array(
                                 $idMembresia,
-                                $result['idProducto'],
+                                $result['idPlan'],
                                 $body['cliente'],
                                 $idVenta,
                                 $result['fechaInico'],
                                 $result['horaInicio'],
                                 $result['fechaFin'],
                                 $result['horaFin'],
-                                $result['tipoReserva'],
-                                $body['tipo'],
+                                $result['membresia'],
                                 1
                             )
                     );
@@ -200,9 +200,9 @@ class VentaAdo {
             }
 
             Database::getInstance()->getDb()->commit();
-            return "true";
+           return "true";
         } catch (Exception $e) {
-            Database::getInstance()->getDb()->rollback();
+            //Database::getInstance()->getDb()->rollback();
             return $e->getMessage();
         }
     }
@@ -497,20 +497,24 @@ class VentaAdo {
         return $array;
     }
 
-    public static function getTimeFormat($value) {
-        $ar = split(":", $value);
-        $hr = $ar[0];
-        $min = intval($ar[1]);
-
-        if ($min < 10) {
-            $min = "0" . $min;
+    public static function getAllComprobante()
+    {
+        try {
+            $array = array();
+            // Preparar sentencia
+            $executecomprobante = Database::getInstance()->getDb()->prepare("SELECT idTipoComprobante,nombre FROM tipocomprobantetb");
+            $executecomprobante->execute();
+        
+            while ($rowp = $executecomprobante->fetch()) {
+                array_push($array, array(
+                    "idTipoComprobante" => $rowp['idTipoComprobante'],
+                    "nombre" => $rowp['nombre']
+                ));
+            }
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
-        $ampm = "am";
-        if ($hr > 12) {
-            $hr -= 12;
-            $ampm = "pm";
-        }
-        return $hr . ":" . $min . " " . $ampm;
     }
 
 }

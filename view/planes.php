@@ -158,11 +158,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                     <div class="col-md-9">
                                                         <div class="form-group">
                                                             <select id="estado" class="form-control">
-                                                                <option value="">Selecciona una disciplina</option>
-                                                                <option value="Maquinas">Maquinas</option>
-                                                                <option value="Baile">Baile</option>
-                                                                <option value="Sauna">Sauna</option>
-                                                                <option value="Otro">Otro...</option>
+                                                                <option value="">- Selecciona -</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -266,16 +262,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <table class="table table-hover table-bordered">
                                     <thead>
                                         <tr role="row">
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 20px;">#</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 150px;">Nombre</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 75px;">Precio</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Tiempo</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Freeze</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 200px;">Descripción</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Estado</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Prueba</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Editar</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 5%;">#</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 18%;">Nombre</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Precio</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 15%;">Tiempo</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Freeze</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 25%;">Descripción</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Estado</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Prueba</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Editar</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Eliminar</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbLista">
@@ -407,7 +403,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '               <td>' + freeze + '</td>' +
                                     '               <td>' + plan.descripcion + '</td>' +
                                     '               <td>' + estado + '</td>' +
-                                    '               <td>' + (plan.prueba == 1 ? "No" : "Si") + '</td>' +
+                                    '               <td>' + (plan.prueba == 1 ? "Si" : "No") + '</td>' +
                                     '               <td>' +
                                     '                   <button class="btn btn-warning btn-sm" onclick="updateplan(\'' + plan.idPlan + '\')"><i class="fa fa-wrench"></i> Editar</button>' +
                                     '               </td>' +
@@ -529,8 +525,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             $("#freeze").val(result.planes.freeze);
                             $("#precio").val(result.planes.precio);
                             $("#descripcion").val(result.planes.descripcion);
-                            $("#activo").attr("checked", result.planes.estado == 1 ? true : false);
-                            $("#prueba").attr("checked", result.planes.prueba == 1 ? false : true);
+                            $("#activo").prop("checked", result.planes.estado == 1 ? true : false);
+                            $("#prueba").prop("checked", result.planes.prueba == 1 ? true : false);
                             $("#basico").attr("checked", true);
                         } else {
                             tools.AlertWarning("Planes", result.mensaje);
@@ -543,8 +539,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function deleteplan(id) {
-
-                tools.ModalDialog('Empresa', '¿Desea guardar los datos?', 'question', function(value) {
+                tools.ModalDialog('Planes', '¿Desea eliminar el plan?', 'question', function(value) {
                     if (value) {
                         $.ajax({
                             url: "../app/plan/Eliminar_Planes.php",

@@ -1,21 +1,20 @@
 <?php
-
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Content-Type: application/json; charset=UTF-8');
-require './PlanAdo.php';
+require './VentaAdo.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $planes = PlanAdo::getAllDatosForSelect();
-    if (is_array($planes)) {
+    $comprobantes = VentaAdo::getAllComprobante();
+    if (is_array($comprobantes)) {
         $datos["estado"] = 1;
-        $datos["planes"] = $planes;
+        $datos["comprobantes"] = $comprobantes;
         print json_encode($datos);
     } else {
         print json_encode(array(
             "estado" => 2,
-            "mensaje" => "Ha ocurrido un problema en listar los planes."
+            "mensaje" => "Ha ocurrido un problema interno en cargar los comprobantes."
         ));
     }
     exit();

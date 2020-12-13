@@ -425,8 +425,10 @@ h6,
 .h4,
 .h5,
 .h6 {
+    font-family: 'Roboto Bold';
     margin-bottom: 0.5rem;
-    font-weight: bold;
+    font-weight: normal;
+    font-style: normal;
     line-height: 1.2;
 }
 
