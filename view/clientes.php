@@ -220,7 +220,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
         </div>
 
-        <!-- modal lista cliente -->
+        <!-- modal Plan -->
         <div class="row">
             <div class="modal fade" id="modalPlan" data-backdrop="static">
                 <div class="modal-dialog">
@@ -322,6 +322,93 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
         </div>
 
+        <!-- modal lista Productos -->
+        <div class="row">
+            <div class="modal fade" id="modalProductos" data-backdrop="static">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="titulo-modal">
+                                <i class="fa fa-cube"></i> Lista de Productos
+                            </h4>
+                            <button type="button" class="close" id="btnCloseModal">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <input type="search" class="form-control"
+                                            placeholder="Buscar por nombre o codigo de producto"
+                                            aria-controls="sampleTable" id="txtSearProducto">
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <div class="text-right">
+                                            <button class="btn btn-primary" id="btnAnterior">
+                                                <i class="fa fa-arrow-circle-left"></i>
+                                            </button>
+                                            <span class="m-2" id="lblPaginaActual">0
+                                            </span>
+                                            <span class="m-2">
+                                                de
+                                            </span>
+                                            <span class="m-2" id="lblPaginaSiguiente">0
+                                            </span>
+                                            <button class="btn btn-primary" id="btnSiguiente">
+                                                <i class="fa fa-arrow-circle-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <div class="tile">
+                                        <div class="tile-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 59px;">#</th>
+                                                            <th class="sorting_asc" aria-controls="sampleTable"
+                                                                rowspan="1" colspan="1" style="width: 250px;">Codigo / Nombre
+                                                            </th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 72px;">
+                                                                Categoria</th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 72px;">Cantidad
+                                                            </th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 59px;">Precio
+                                                            </th>
+                                                            <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1"
+                                                                colspan="1" style="width: 69px;">Membresia
+                                                            </th> -->
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbListaProductos">
+                                                        <!-- tbLista -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="tile mb-4">
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -334,6 +421,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             Lista</button>
                         <button class="btn btn-info" type="button" id="btnPlan"><i class="fa fa-bandcamp"></i>
                             Plan</button>
+                        <button class="btn btn-info" type="button" id="btnProductos"><i class="fa fa-cubes"></i>
+                            Productos</button>
                     </p>
                 </div>
             </div>
@@ -415,6 +504,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
     let idClienteUpdate = "";
 
     let tbListaCliente = $("#tbListaCliente")
+    let tbListaProductos = $("#tbListaProductos")
 
     $(document).ready(function() {
 
@@ -452,7 +542,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
         $("#btnPlan").click(function() {
             $("#modalPlan").modal("show")
-            // modalPlan
+
+        })
+
+        $("#modalProductos").on('shown.bs.modal', function() {
+            listaProductos($("#txtSearProducto").val())
+        })
+
+        $("#btnProductos").click(function() {
+            $("#modalProductos").modal("show")
         })
 
         $("#btnGuardarModal").click(function() {
@@ -550,7 +648,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             },
             success: function(result) {
                 let data = JSON.parse(result);
-                console.log(data)
+                // console.log(data)
 
                 if (data.estado == 1) {
                     tbListaCliente.empty();
@@ -584,8 +682,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     // $("#lblPaginaSiguiente").html(totalPaginacion);
                     // state = false;
                 } else {
-                    tbLista.empty();
-                    tbLista.append(
+                    tbListaCliente.empty();
+                    tbListaCliente.append(
                         '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                         data.mensaje + '</p></td></tr>');
                     // $("#lblPaginaActual").html(0);
@@ -594,9 +692,82 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 }
             },
             error: function(error) {
-                tbLista.empty();
-                tbLista.append(
+                tbListaCliente.empty();
+                tbListaCliente.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                    error.responseText + '</p></td></tr>');
+                // $("#lblPaginaActual").html(0);
+                // $("#lblPaginaSiguiente").html(0);
+                // state = false;
+            }
+        });
+    }
+
+    // LISTA DE PRODUCTOS
+
+    function listaProductos(text) {
+        $.ajax({
+            url: "../app/productos/Obtener_Productos_By_Search.php",
+            method: "",
+            data: {
+                opcion: 2,
+                page: 1,
+                datos: text
+            },
+            beforeSend: function() {
+                // state = true;
+                tbListaProductos.empty();
+                tbListaProductos.append(
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                );
+            },
+            success: function(result) {
+                let data = JSON.parse(result);
+                console.log(data)
+
+                if (data.estado == 1) {
+                    tbListaProductos.empty();
+                    
+                    for (let producto of data.productos) {
+
+                        // let btnUpdate =
+                        //     '<button class="btn btn-warning btn-sm" onclick="loadUpdateCliente(\'' +
+                        //     cliente.idCliente + '\')">' +
+                        //     '<i class="fa fa-wrench"></i> Editar' +
+                        //     '</button>';
+                        // let btnPerfil =
+                        //     '<button class="btn btn-info btn-sm" onclick="loadDataPerfil(\'' +
+                        //     cliente.idCliente + '\')">' +
+                        //     '<i class="fa fa-user-circle"></i> Perfil' +
+                        //     '</button>';
+
+                        tbListaProductos.append('<tr role="row" class="odd">' +
+                            '<td class="sorting_1">' + producto.idProducto + '</td>' +
+                            '<td>' + producto.clave + ' - '+ producto.nombre +'</td>' +
+                            '<td>' + producto.categoria + '</td>' +
+                            '<td>' + producto.cantidad + '</td>' +
+                            '<td>' + producto.precio + '</td>' +
+                            '</tr>');
+                    }
+                    // totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
+                    //     10))));
+                    // $("#lblPaginaActual").html(paginacion);
+                    // $("#lblPaginaSiguiente").html(totalPaginacion);
+                    // state = false;
+                } else {
+                    tbListaProductos.empty();
+                    tbListaProductos.append(
+                        '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' +
+                        data.mensaje + '</p></td></tr>');
+                    // $("#lblPaginaActual").html(0);
+                    // $("#lblPaginaSiguiente").html(0);
+                    // state = false;
+                }
+            },
+            error: function(error) {
+                tbListaProductos.empty();
+                tbListaProductos.append(
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' +
                     error.responseText + '</p></td></tr>');
                 // $("#lblPaginaActual").html(0);
                 // $("#lblPaginaSiguiente").html(0);
@@ -678,6 +849,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 state = false;
             }
         });
+    }
+
+    function loadDataPerfil(idCliente){
+        location.href = "clientePerfil.php?idCliente=" + idCliente
     }
 
     function registrarCliente(dni, apellidos, nombres, genero, nacimiento, codigo, email, celular, direccion) {
