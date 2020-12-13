@@ -171,29 +171,25 @@ class ProductoAdo {
         }
     }
 
-    public static function getAllProducto($x, $y) {
-        $consulta = "SELECT * FROM productotb LIMIT $x,$y";
+    public static function getAllProducto($x, $y) {      
         try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
+            $array = array();
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb LIMIT $x,$y");
             $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            $arrayProductos = array();
+            while($row = $comando->fetch()){
+                array_push($arrayProductos,$row);
+            }
+
+            $comando = Database::getInstance()->getDb()->prepare( "SELECT COUNT(*) FROM productotb");
+            $comando->execute();
+            $totalProducto = $comando->fetchColumn();
+
+            array_push($array,$arrayProductos,$totalProducto);
+            return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
-        }
-    }
-
-    public static function getAllCountProducto() {
-        $consulta = "SELECT COUNT(*) FROM productotb";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
         }
     }
 

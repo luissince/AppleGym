@@ -11,14 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $body = $_GET['page'];
     
     $productos = ProductoAdo::getAllProducto(($body-1)*10,10);
-    $total = ProductoAdo::getAllCountProducto();
-    if ($productos) {
+    if (is_array($productos)){
         $datos["estado"] = 1;
-        $datos["page"] = $body;
-        $datos["page_rows"] = 10;
-        $datos["total"] = $total;
-        $datos["total_page"] = ceil($total / 10);
-        $datos["productos"] = $productos;
+        $datos["total"] = $productos[1];
+        $datos["productos"] = $productos[0];
         print json_encode($datos);
     } else {
         print json_encode(array(
