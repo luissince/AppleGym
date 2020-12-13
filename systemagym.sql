@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-12-2020 a las 17:13:34
+-- Tiempo de generación: 13-12-2020 a las 16:27:14
 -- Versión del servidor: 10.4.13-MariaDB
 -- Versión de PHP: 7.4.7
 
@@ -25,27 +25,6 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Sp_Listar_Ingresos_Options` (IN `transacion` TINYINT, IN `fechaInicio` VARCHAR(20), IN `fechaFin` VARCHAR(20), IN `x` INT, IN `y` INT)  NO SQL
-SELECT i.idIngreso,i.fecha,i.hora,i.forma,i.monto,i.serie,i.numeracion,i.procedencia,
-       v.serie as ventaSerie,v.numeracion as ventaNumeracion
-       FROM ingresotb AS i INNER JOIN ventatb AS v ON i.idVenta = v.idVenta  
-       WHERE 
-       (transacion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFin)
-       OR
-       ( v.procedencia = transacion AND v.fecha BETWEEN fechaInicio AND fechaFin)
-       ORDER BY i.fecha DESC,i.hora DESC LIMIT x,y$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Sp_Listar_Ingresos_Options_Count` (IN `transacion` TINYINT, IN `fechaInicio` VARCHAR(20), IN `fechaFin` VARCHAR(20))  NO SQL
-SELECT COUNT(i.idIngreso)
-FROM ingresotb AS i INNER JOIN ventatb AS v ON i.idVenta = v.idVenta  
-WHERE 
-(transacion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFin)
-OR
-(v.procedencia = transacion AND v.fecha BETWEEN fechaInicio AND fechaFin)$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Sp_Listar_Ingresos_Options_Reporte` (IN `transacion` TINYINT, IN `fechaInicio` VARCHAR(20), IN `fechaFin` VARCHAR(20))  NO SQL
-SELECT i.idIngreso,i.fecha,i.hora,i.forma,i.monto,i.serie,i.numeracion,i.procedencia, v.serie as ventaSerie,v.numeracion as ventaNumeracion FROM ingresotb AS i INNER JOIN ventatb AS v ON i.idVenta = v.idVenta WHERE (transacion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFin) OR ( v.procedencia = transacion AND v.fecha BETWEEN fechaInicio AND fechaFin) ORDER BY i.fecha DESC,i.hora DESC$$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Sp_Listar_Ventas_Reporte_Options` (IN `transaccion` INT, IN `fechaInicio` VARCHAR(20), IN `fechaFinal` VARCHAR(20), IN `tipo` TINYINT, IN `forma` TINYINT, IN `estado` TINYINT)  NO SQL
 SELECT v.idVenta,e.apellidos AS apellidosEmpleado,e.nombres AS nombresEmpleado,c.apellidos AS apellidosCliente,c.nombres AS nombresCliente,v.serie,v.numeracion,v.fecha,v.hora,v.total,v.tipo,v.forma,v.numero,v.estado,v.procedencia FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado INNER JOIN clientetb AS c ON v.cliente = c.idCliente
 WHERE 
@@ -294,37 +273,6 @@ BEGIN
  RETURN CodGenerado;
 END$$
 
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Ingreso_Codigo_Numeracion_Alfanumerico` () RETURNS VARCHAR(10) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(10);
-    DECLARE ValorActual varchar(10);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM ingresotb) THEN
-    	SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(numeracion,'',''),'','') AS UNSIGNED INTEGER)) FROM ingresotb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental <=9 THEN
-        	 SET CodGenerado = CONCAT('0000000',Incremental);
-        ELSEIF Incremental >= 10 AND Incremental <= 99 THEN
-        	 SET CodGenerado = CONCAT('000000',Incremental);
-        ELSEIF Incremental >= 100 AND Incremental <= 999 THEN
-        	 SET CodGenerado = CONCAT('00000',Incremental);
-        ELSEIF Incremental >= 1000 AND Incremental <= 9999 THEN
-        	 SET CodGenerado = CONCAT('0000',Incremental);
-        ELSEIF Incremental >= 10000 AND Incremental <= 99999 THEN
-        	 SET CodGenerado = CONCAT('000',Incremental);
-        ELSEIF Incremental >= 100000 AND Incremental <= 999999 THEN
-        	 SET CodGenerado = CONCAT('00',Incremental);
-        ELSEIF Incremental >= 1000000 AND Incremental <= 9999999 THEN
-        	 SET CodGenerado = CONCAT('0',Incremental);
-        ELSE
-        	 SET CodGenerado = CONCAT('',Incremental);
-        END IF;
-    ELSE
-    	SET CodGenerado = "00000001";
-    END IF;
-	RETURN CodGenerado;
-END$$
-
 CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Membresia_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
 BEGIN
 	DECLARE CodGenerado varchar(12);
@@ -542,9 +490,7 @@ CREATE TABLE `detalleventatb` (
   `idOrigen` varchar(12) NOT NULL,
   `cantidad` decimal(18,4) NOT NULL,
   `precio` decimal(18,4) NOT NULL,
-  `subTotal` decimal(18,4) NOT NULL,
   `descuento` decimal(18,4) NOT NULL,
-  `total` decimal(18,4) NOT NULL,
   `procedencia` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -552,16 +498,41 @@ CREATE TABLE `detalleventatb` (
 -- Volcado de datos para la tabla `detalleventatb`
 --
 
-INSERT INTO `detalleventatb` (`idVenta`, `idOrigen`, `cantidad`, `precio`, `subTotal`, `descuento`, `total`, `procedencia`) VALUES
-('VT0001', 'PL0002', '1.0000', '100.0000', '100.0000', '0.0000', '100.0000', 1),
-('VT0002', 'PL0002', '1.0000', '100.0000', '100.0000', '0.0000', '100.0000', 1),
-('VT0003', 'PL0002', '1.0000', '100.0000', '100.0000', '0.0000', '100.0000', 1),
-('VT0004', 'PL0002', '1.0000', '100.0000', '100.0000', '0.0000', '100.0000', 1),
-('VT0005', 'PD0004', '1.0000', '6.5000', '6.5000', '0.0000', '6.5000', 0),
-('VT0005', 'PD0006', '2.0000', '1.0000', '2.0000', '0.0000', '2.0000', 0),
-('VT0006', 'PD0003', '1.0000', '3.5000', '3.5000', '0.0000', '3.5000', 0),
-('VT0006', 'PD0005', '1.0000', '0.7000', '0.7000', '0.0000', '0.7000', 0),
-('VT0007', 'PL0005', '1.0000', '40.0000', '40.0000', '0.0000', '40.0000', 1);
+INSERT INTO `detalleventatb` (`idVenta`, `idOrigen`, `cantidad`, `precio`, `descuento`, `procedencia`) VALUES
+('VT0001', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0002', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0003', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0004', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0005', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0006', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0007', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0008', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0009', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0010', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0011', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0012', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0013', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0014', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0015', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0016', 'PL0005', '2.0000', '40.0000', '0.0000', 1),
+('VT0017', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0018', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0019', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0020', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0021', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0022', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0023', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0024', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0025', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0026', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0027', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0028', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0029', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0030', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0031', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0032', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0033', 'PL0005', '4.0000', '40.0000', '0.0000', 1),
+('VT0034', 'PL0005', '4.0000', '40.0000', '0.0000', 1);
 
 -- --------------------------------------------------------
 
@@ -659,24 +630,6 @@ INSERT INTO `horariotb` (`idHorario`, `descripcion`, `dias`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `ingresotb`
---
-
-CREATE TABLE `ingresotb` (
-  `idIngreso` int(11) NOT NULL,
-  `idVenta` varchar(12) NOT NULL,
-  `fecha` date NOT NULL,
-  `hora` time NOT NULL,
-  `forma` tinyint(4) NOT NULL,
-  `monto` decimal(18,4) NOT NULL,
-  `serie` varchar(5) NOT NULL,
-  `numeracion` varchar(10) NOT NULL,
-  `procedencia` tinyint(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `membresiatb`
 --
 
@@ -689,10 +642,49 @@ CREATE TABLE `membresiatb` (
   `horaInicio` time NOT NULL,
   `fechaFin` date NOT NULL,
   `horaFin` time NOT NULL,
-  `reserva` tinyint(4) NOT NULL,
-  `tipo` tinyint(4) NOT NULL,
+  `tipoMembresia` char(1) NOT NULL,
   `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `membresiatb`
+--
+
+INSERT INTO `membresiatb` (`idMembresia`, `idPlan`, `idCliente`, `idVenta`, `fechaInicio`, `horaInicio`, `fechaFin`, `horaFin`, `tipoMembresia`, `estado`) VALUES
+('ME0001', 'PL0005', 'CL0001', 'VT0001', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0002', 'PL0005', 'CL0001', 'VT0002', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0003', 'PL0005', 'CL0001', 'VT0003', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0004', 'PL0005', 'CL0001', 'VT0004', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0005', 'PL0005', 'CL0001', 'VT0005', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0006', 'PL0005', 'CL0001', 'VT0006', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0007', 'PL0005', 'CL0001', 'VT0007', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0008', 'PL0005', 'CL0001', 'VT0008', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0009', 'PL0005', 'CL0001', 'VT0009', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0010', 'PL0005', 'CL0001', 'VT0010', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0011', 'PL0005', 'CL0001', 'VT0011', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0012', 'PL0005', 'CL0001', 'VT0012', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0013', 'PL0005', 'CL0001', 'VT0013', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0014', 'PL0005', 'CL0001', 'VT0014', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0015', 'PL0005', 'CL0001', 'VT0015', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0016', 'PL0005', 'CL0001', 'VT0016', '2020-12-13', '07:08:15', '2021-02-14', '07:08:15', '1', 1),
+('ME0017', 'PL0006', 'CL0002', 'VT0017', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0018', 'PL0006', 'CL0002', 'VT0018', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0019', 'PL0006', 'CL0002', 'VT0019', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0020', 'PL0006', 'CL0002', 'VT0020', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0021', 'PL0006', 'CL0002', 'VT0021', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0022', 'PL0006', 'CL0002', 'VT0022', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0023', 'PL0006', 'CL0002', 'VT0023', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0024', 'PL0006', 'CL0002', 'VT0024', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0025', 'PL0006', 'CL0002', 'VT0025', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0026', 'PL0006', 'CL0002', 'VT0026', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0027', 'PL0006', 'CL0002', 'VT0027', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0028', 'PL0006', 'CL0002', 'VT0028', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0029', 'PL0006', 'CL0002', 'VT0029', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0030', 'PL0006', 'CL0002', 'VT0030', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0031', 'PL0006', 'CL0002', 'VT0031', '2020-12-13', '08:40:06', '2021-01-14', '08:40:06', '1', 1),
+('ME0032', 'PL0006', 'CL0004', 'VT0032', '2020-12-13', '09:02:16', '2021-01-14', '09:02:16', '2', 1),
+('ME0033', 'PL0005', 'CL0005', 'VT0033', '2020-12-13', '09:11:07', '2021-04-15', '09:11:07', '2', 1),
+('ME0034', 'PL0005', 'CL0006', 'VT0034', '2020-12-13', '09:12:49', '2021-04-15', '09:12:49', '2', 1);
 
 -- --------------------------------------------------------
 
@@ -718,7 +710,7 @@ CREATE TABLE `mi_empresatb` (
 --
 
 INSERT INTO `mi_empresatb` (`idMiEmpresa`, `representante`, `nombreEmpresa`, `ruc`, `telefono`, `celular`, `email`, `paginaWeb`, `direccion`, `terminos`) VALUES
-(1, 'Ramos del Solar Juan', 'Apple Gym Perú', '45678912312', '064 7894566', '963225002', 'applegymperu@hotmal.com', 'www.applegymperu.com', 'Av. las Calles del Mar nro 100', 'No hay ningún tipo de reembolso por políticas de la empresa.');
+(1, 'RAMOS DEL SOLAR JUAN', 'APPLE GYM PERÚ', '45678912312', '064 7894566', '963225002', 'applegymperu@hotmal.com', '', 'AV. LAS CALLES DEL MAR NRO 100', 'NO HAY NINGÚN TIPO DE REEMBOLSO POR POLÍTICAS DE LA EMPRESA.');
 
 -- --------------------------------------------------------
 
@@ -760,12 +752,9 @@ CREATE TABLE `plantb` (
 --
 
 INSERT INTO `plantb` (`idPlan`, `nombre`, `tipoDisciplina`, `sesiones`, `meses`, `dias`, `freeze`, `precio`, `descripcion`, `estado`, `prueba`) VALUES
-('PL0001', 'plan x', 1, 1, 2, 0, 0, 200.0000, 'puede ingresar todos los días  a cualquier horario', 1, 1),
-('PL0002', 'plan normal', 1, 1, 1, 0, 0, 100.0000, 'Todos los días a cualquier hora', 1, 0),
-('PL0003', 'plan mañana', 1, 1, 1, 0, 0, 60.0000, 'solo puede ingresar en las mañanas', 1, 1),
-('PL0004', 'plan verano', 1, 1, 4, 0, 7, 250.0000, 'valido hasta fines de diciembre con un solo pago', 1, 1),
-('PL0005', 'plan especial', 2, 1, 1, 4, 0, 40.0000, '', 1, 0),
-('PL0006', 'LIBRE', 1, 1, 0, 1, 0, 15.0000, '', 1, 0);
+('PL0004', 'plan verano', 1, 0, 4, 0, 7, 250.0000, 'valido hasta fines de diciembre con un solo pago', 1, 0),
+('PL0005', 'plan especial', 1, 0, 1, 4, 0, 40.0000, '', 1, 0),
+('PL0006', 'plan normal', 1, 0, 1, 0, 3, 150.0000, '', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -778,14 +767,6 @@ CREATE TABLE `plantb_disciplinatb` (
   `idDisciplina` varchar(12) NOT NULL,
   `numero` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `plantb_disciplinatb`
---
-
-INSERT INTO `plantb_disciplinatb` (`idPlan`, `idDisciplina`, `numero`) VALUES
-('PL0005', 'DI0001', 31),
-('PL0005', 'DI0002', 10);
 
 -- --------------------------------------------------------
 
@@ -912,6 +893,29 @@ INSERT INTO `tabla_rol` (`id`, `nombre`, `descripcion`, `claveAlterna`, `estado`
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tipocomprobantetb`
+--
+
+CREATE TABLE `tipocomprobantetb` (
+  `idTipoComprobante` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `serie` varchar(16) NOT NULL,
+  `numeracion` int(11) NOT NULL,
+  `predeterminado` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tipocomprobantetb`
+--
+
+INSERT INTO `tipocomprobantetb` (`idTipoComprobante`, `nombre`, `serie`, `numeracion`, `predeterminado`) VALUES
+(1, 'Nota de Venta', 'NT001', 1, 0),
+(2, 'Boleta', 'B001', 1, 0),
+(3, 'Factura', 'F001', 1, 0);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `turnotb`
 --
 
@@ -961,20 +965,58 @@ CREATE TABLE `ventatb` (
   `idVenta` varchar(12) NOT NULL,
   `cliente` varchar(12) NOT NULL,
   `vendedor` varchar(12) NOT NULL,
-  `documento` tinyint(4) NOT NULL,
-  `serie` varchar(15) NOT NULL,
-  `numeracion` varchar(30) NOT NULL,
+  `documento` int(11) NOT NULL,
+  `serie` varchar(16) NOT NULL,
+  `numeracion` int(11) NOT NULL,
   `fecha` date NOT NULL,
   `hora` time NOT NULL,
-  `subTotal` decimal(18,4) NOT NULL,
-  `descuento` decimal(18,4) NOT NULL,
-  `total` decimal(18,4) NOT NULL,
   `tipo` tinyint(4) NOT NULL,
   `forma` tinyint(4) NOT NULL,
   `numero` varchar(30) NOT NULL,
-  `estado` tinyint(4) NOT NULL,
-  `procedencia` tinyint(4) NOT NULL
+  `pago` decimal(18,4) NOT NULL,
+  `vuelto` decimal(18,4) NOT NULL,
+  `estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `ventatb`
+--
+
+INSERT INTO `ventatb` (`idVenta`, `cliente`, `vendedor`, `documento`, `serie`, `numeracion`, `fecha`, `hora`, `tipo`, `forma`, `numero`, `pago`, `vuelto`, `estado`) VALUES
+('VT0001', 'CL0001', '0', 1, 'NT001', 1, '2020-12-13', '07:10:25', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0002', 'CL0001', '0', 1, 'NT001', 2, '2020-12-13', '07:10:46', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0003', 'CL0001', '0', 2, 'B001', 1, '2020-12-13', '07:11:51', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0004', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:11:52', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0005', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:11:54', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0006', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:11:56', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0007', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:11:57', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0008', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:11:58', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0009', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:11:59', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0010', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:12:01', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0011', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:12:02', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0012', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:12:03', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0013', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:12:04', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0014', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:12:06', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0015', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:12:08', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0016', 'CL0001', '0', 2, 'B001', 2, '2020-12-13', '07:12:09', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0017', 'CL0002', '0', 1, 'NT001', 2, '2020-12-13', '08:46:56', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0018', 'CL0002', '0', 1, 'NT001', 3, '2020-12-13', '08:49:20', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0019', 'CL0002', '0', 1, 'NT001', 4, '2020-12-13', '08:53:35', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0020', 'CL0002', '0', 2, 'B001', 3, '2020-12-13', '08:53:55', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0021', 'CL0002', '0', 2, 'B001', 4, '2020-12-13', '08:54:26', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0022', 'CL0002', '0', 2, 'B001', 5, '2020-12-13', '08:54:27', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0023', 'CL0002', '0', 2, 'B001', 6, '2020-12-13', '08:54:29', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0024', 'CL0002', '0', 2, 'B001', 7, '2020-12-13', '08:54:30', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0025', 'CL0002', '0', 2, 'B001', 8, '2020-12-13', '08:54:31', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0026', 'CL0002', '0', 2, 'B001', 9, '2020-12-13', '08:54:33', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0027', 'CL0002', '0', 2, 'B001', 10, '2020-12-13', '08:54:34', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0028', 'CL0002', '0', 2, 'B001', 11, '2020-12-13', '08:54:35', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0029', 'CL0002', '0', 2, 'B001', 12, '2020-12-13', '08:54:37', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0030', 'CL0002', '0', 2, 'B001', 13, '2020-12-13', '08:54:38', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0031', 'CL0002', '0', 2, 'B001', 14, '2020-12-13', '08:54:39', 1, 2, '42232', '0.0000', '0.0000', 1),
+('VT0032', 'CL0004', '0', 1, 'NT001', 5, '2020-12-13', '09:03:10', 1, 1, '', '0.0000', '0.0000', 1),
+('VT0033', 'CL0005', '0', 1, 'NT001', 6, '2020-12-13', '09:11:24', 1, 1, '', '200.0000', '40.0000', 1),
+('VT0034', 'CL0006', '0', 1, 'NT001', 7, '2020-12-13', '09:13:05', 1, 2, '34222', '160.0000', '0.0000', 1);
 
 --
 -- Índices para tablas volcadas
@@ -1021,12 +1063,6 @@ ALTER TABLE `empleadotb`
 --
 ALTER TABLE `horariotb`
   ADD PRIMARY KEY (`idHorario`);
-
---
--- Indices de la tabla `ingresotb`
---
-ALTER TABLE `ingresotb`
-  ADD PRIMARY KEY (`idIngreso`);
 
 --
 -- Indices de la tabla `membresiatb`
@@ -1089,6 +1125,12 @@ ALTER TABLE `tabla_rol`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `tipocomprobantetb`
+--
+ALTER TABLE `tipocomprobantetb`
+  ADD PRIMARY KEY (`idTipoComprobante`);
+
+--
 -- Indices de la tabla `turnotb`
 --
 ALTER TABLE `turnotb`
@@ -1109,12 +1151,6 @@ ALTER TABLE `ventatb`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
-
---
--- AUTO_INCREMENT de la tabla `ingresotb`
---
-ALTER TABLE `ingresotb`
-  MODIFY `idIngreso` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `mi_empresatb`
@@ -1145,6 +1181,12 @@ ALTER TABLE `tabla_puesto`
 --
 ALTER TABLE `tabla_rol`
   MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `tipocomprobantetb`
+--
+ALTER TABLE `tipocomprobantetb`
+  MODIFY `idTipoComprobante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `ventacreditotb`
