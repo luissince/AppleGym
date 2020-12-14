@@ -88,7 +88,7 @@ function Tools() {
         return formatted_date;
     }
 
-     this.getCurrentTime = function() {
+    this.getCurrentTime = function() {
         let today = new Date();
         let formatted_time = (today.getHours() > 9 ? today.getHours() : '0' + today.getHours()) + ":" + (today.getMinutes() > 9 ? today.getMinutes() : '0' + today.getMinutes()) + ":" + (today.getSeconds() > 9 ? today.getSeconds() : '0' + today.getSeconds());
         return formatted_time;

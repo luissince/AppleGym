@@ -11,6 +11,9 @@
         <li class="dropdown"><a class="app-nav__item" href="#">
             <i class="fa fa-hand-pointer-o fa-lg"></i> Marcar Entrada</a>            
         </li>
+        <li class="dropdown"><a class="app-nav__item" href="#">
+            <i class="fa fa-plus fa-lg"></i> Cliente</a>            
+        </li>
         <!-- User Menu-->
         <li class="dropdown"><a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
