@@ -3,30 +3,19 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-//
+header('content-type: application/json; charset=utf-8');
 require './VentaAdo.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Manejar petición GET
     $opcion = $_GET['opcion'];
-    $body = $_GET['page'];
-    $search = $_GET['search'];
-    $transaccion = $_GET['transaccion'];
-    $fechaInicio = $_GET['fechaInicio'];
-    $fechaFin = $_GET['fechaFin'];
-    $tipo = $_GET['tipo'];
-    $forma = $_GET['forma'];
-    $estado = $_GET['estado'];    
+    $body = $_GET['page'];  
     if ($opcion == 1) {
-        $ventas = VentaAdo::getAll(($body - 1) * 5, 5);
-        $total = VentaAdo::getAllCount();
-        if ($ventas) {
+        $ventas = VentaAdo::getAll(($body - 1) * 10, 10);
+        if (is_array($ventas)) {
             $datos["estado"] = 1;
-            $datos["page"] = $body;
-            $datos["page_rows"] = 5;
-            $datos["total"] = $total;
-            $datos["total_page"] = ceil($total / 5);
-            $datos["ventas"] = $ventas;
+            $datos["total"] = $ventas[0];
+            $datos["ventas"] = $ventas[1];
             print json_encode($datos);
         } else {
             print json_encode(array(

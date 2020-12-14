@@ -41,8 +41,11 @@ class VentaAdo {
                 . "fechaFin,"
                 . "horaFin,"
                 . "tipoMembresia,"
-                . "estado)"
-                . "VALUES(?,?,?,?,?,?,?,?,?,?)";
+                . "estado,"
+                . "cantidad,"
+                . "precio,"
+                . "descuento)"
+                . "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
 
@@ -193,7 +196,10 @@ class VentaAdo {
                                 $result['fechaFin'],
                                 $result['horaFin'],
                                 $result['membresia'],
-                                1
+                                1,
+                                $result['cantidad'],
+                                $result['precio'],
+                                $result['descuento'],
                             )
                     );
                 }
@@ -208,33 +214,57 @@ class VentaAdo {
     }
 
     public static function getAll($x, $y) {
-        $consulta = "SELECT v.idVenta,e.apellidos AS apellidosEmpleado,e.nombres AS nombresEmpleado,c.apellidos AS apellidosCliente,c.nombres AS nombresCliente,v.serie,v.numeracion,v.fecha,v.hora,v.total,v.tipo,v.forma,v.numero,v.estado,v.procedencia FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado
-        INNER JOIN clientetb AS c ON v.cliente = c.idCliente ORDER BY v.fecha DESC,v.hora DESC LIMIT $x,$y";
+        $consulta = "SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,v.tipo,v.forma,v.numero,v.estado,
+        c.apellidos,c.nombres,sum(d.cantidad*d.precio) as 'total'
+        from ventatb as v 
+        INNER JOIN clientetb as c on c.idCliente = c.idCliente
+        INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
+        INNER JOIN detalleventatb as d ON d.idVenta = v.idVenta
+        GROUP BY v.idVenta ORDER BY v.fecha DESC,v.hora DESC LIMIT $x,$y";
         try {
-            // Preparar sentencia
+
+            $array = array();
+
             $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
+            $comando->execute();            
+            $count = 0;
+            $arrayVentas = array();
+            while($row = $comando->fetch()){
+                array_push($arrayVentas,array(
+                    "id"=>$count,
+                    "idVenta"=>$row["idVenta"],
+                    "fecha"=>$row["fecha"],
+                    "hora"=>$row["hora"],
+                    "nombre"=>$row["nombre"],
+                    "serie"=>$row["serie"],
+                    "numeracion"=>$row["numeracion"],
+                    "tipo"=>$row["tipo"],
+                    "forma"=>$row["forma"],
+                    "numero"=>$row["numero"],
+                    "estado"=>$row["estado"],
+                    "apellidos"=>$row["apellidos"],
+                    "nombres"=>$row["nombres"],
+                    "total"=>$row["total"]
+                ));
+            }
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT count(*) as 'total'
+            from ventatb as v 
+            INNER JOIN clientetb as c on c.idCliente = c.idCliente
+            INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
+            INNER JOIN detalleventatb as d ON d.idVenta = v.idVenta
+            GROUP BY v.idVenta");
             $comando->execute();
-            
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            $totalVentas =  $comando->fetchColumn();
+
+            array_push($array,$arrayVentas,$totalVentas);
+
+            return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
         }
     }
 
-    public static function getAllCount() {
-        $consulta = "SELECT COUNT(v.idVenta) FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado
-        INNER JOIN clientetb AS c ON v.cliente = c.idCliente";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
-        }
-    }
 
     public static function getVentaSearchPrincipal($search, $x, $y) {
         $consulta = "SELECT v.idVenta,e.apellidos AS apellidosEmpleado,e.nombres AS nombresEmpleado,c.apellidos AS apellidosCliente,c.nombres AS nombresCliente,v.serie,v.numeracion,v.fecha,v.hora,v.total,v.tipo,v.forma,v.numero,v.estado,v.procedencia FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado

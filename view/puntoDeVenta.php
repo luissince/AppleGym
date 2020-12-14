@@ -175,7 +175,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="titulo-modal">
+                                <h4 class="modal-title">
                                     <i class="fa fa-users"></i> Lista de Clientes
                                 </h4>
                                 <button type="button" class="close" id="btnCloseModalClientes">
@@ -186,8 +186,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                 <div class="row">
                                     <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearchLista">
+                                        <div class="form-group d-flex">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearchLista">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-warning" type="button" id="btnOpenModalCliente"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
@@ -244,6 +249,102 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- modal nuevo/editar cliente -->
+            <div class="row">
+                <div class="modal fade" id="modalCliente" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModalNewCliente">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="dni">DNI: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="dni" type="number" name="dni" class="form-control" placeholder="Ingrese el número DNI" required="" minlength="8">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="apellidos">Apellidos: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="apellidos" type="text" name="apellidos" class="form-control" placeholder="Ingrese los Apellidos" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nombres">Nombres: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="nombres" type="text" name="nombres" class="form-control" placeholder="Ingrese los Nombres" required="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="genero">Genero: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <select id="genero" class="form-control">
+                                                <option value="1">Maculino</option>
+                                                <option value="0">Femenino</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nacimiento">Nacimiento: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="nacimiento" type="date" name="nacimiento" class="form-control" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="codigo">Codigo: </label>
+                                            <input id="codigo" type="text" name="codigo" class="form-control" placeholder="Ingrese el Codigo" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email: </label>
+                                            <input id="email" type="email" name="email" class="form-control" placeholder="Ingrese el correo" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="celular">Celular: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <input id="celular" type="number" name="celular" class="form-control" placeholder="Ingrese el número de celular" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="direccion">Dirección: </label>
+                                            <input id="direccion" type="text" name="direccion" class="form-control" placeholder="Ingrese la dirección" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
+                                <button type="button" class="btn btn-success" id="btnGuardarModalNewCliente">
+                                    <i class="fa fa-save"></i> Guardar</button>
+                                <button type="button" class="btn btn-danger" id="btnCancelModalNewCliente">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -557,6 +658,24 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#modalLista").modal("hide");
                 });
 
+                $("#btnOpenModalCliente").click(function() {
+                    $("#modalCliente").modal("show");                    
+                    $("#titulo-modal").append('<i class="fa fa-user-plus"></i> Registrar Cliente')
+                });
+
+                $("#btnCloseModalNewCliente").click(function() {
+                    $("#modalCliente").modal("hide");
+                    $("#titulo-modal").empty();
+                });
+
+                $("#btnCancelModalNewCliente").click(function() {
+                    $("#modalCliente").modal("hide");
+                    $("#titulo-modal").empty();
+                });
+
+                // btnCloseModalNewCliente
+                // btnGuardarModalNewCliente
+                // btnCancelModalNewCliente
                 //-----------------------------------
 
                 $("#btnPlan").click(function() {
@@ -650,7 +769,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#modalProductos").modal("show")
                 })
 
-                $("#btnCloseModalProductos").click(function(){
+                $("#btnCloseModalProductos").click(function() {
                     $("#modalProductos").modal("hide")
                 });
 
@@ -830,20 +949,24 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function listarDetalleVenta() {
                 $("#tbLista").empty();
-                total = 0;
+                total = 0; 
+                let suma = 0;
                 for (let detalle of listaVenta) {
-                    total = detalle.precio * detalle.cantidad;
+                    suma = detalle.precio * detalle.cantidad;
                     $("#tbLista").append('<tr>' +
                         '                   <td>' + detalle.nombre + '</td>' +
                         '                   <td>' + detalle.cantidad + '</td>' +
                         '                   <td>S/ ' + tools.formatMoney(detalle.precio) + '</td>' +
                         '                   <td>0</td>' +
-                        '                   <td>S/ ' + tools.formatMoney(total) + '</td>' +
+                        '                   <td>S/ ' + tools.formatMoney(suma) + '</td>' +
                         '                   <td>' +
                         '                       <button onclick="removeDetalleVenta(\'' + detalle.idPlan + '\')" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i> Quitar</button>' +
                         '                   </td>' +
                         '</tr>');
+                        total+=suma;
                 }
+
+                
 
                 $("#lblSumaTotal").html("S/ " + tools.formatMoney(total));
                 $("#lblTotalPagar").html("S/ " + tools.formatMoney(total));
