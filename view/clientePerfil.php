@@ -145,7 +145,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                     <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Plan</th>
                                                     <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Comprobante</th>
                                                     <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20%;">Duración</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Estado</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Pago</th>
                                                     <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Total</th>
                                                 </tr>
                                             </thead>
@@ -282,7 +282,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tbListaMembresia.empty();
                             for (let membresia of result.membresias) {
                                 let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
-                                let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">pagado</span>' : '<span class="badge badge-pill badge-danger">Pendiente</span>';
+                                let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">PAGADO</span>' : '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
                                 count++;
                                 tbListaMembresia.append('<tr role="row" class="odd">' +
                                     '<td class="sorting_1">' + count + '</td>' +
@@ -291,7 +291,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + membresia.serie + "-" + membresia.numeracion + '</td>' +
                                     '<td>Del ' + tools.getDateForma(membresia.fechaInicio) + ' al ' + tools.getDateForma(membresia.fechaFin) + '</td>' +
                                     '<td>' + estado + '</td>' +
-                                    '<td>' + tools.formatMoney(membresia.total, 2) + '</td>' +
+                                    '<td>S/ ' + tools.formatMoney(membresia.total, 2) + '</td>' +                               
                                     '</tr>');
                             }
                         } else {
@@ -332,11 +332,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (result.estado == 1) {
                             tbListaVenta.empty();
                             for(let venta of result.ventas){
+                                let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR PAGAR</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
                                 tbListaVenta.append('<tr>'+
                                 '<td>'+venta.id+'</td>'+
                                 '<td>'+tools.getDateForma(venta.fecha)+'<br>'+tools.getTimeForma(venta.hora)+'</td>'+
                                 '<td>'+venta.nombre+'<br>'+venta.serie+'-'+venta.numeracion+'</td>'+
                                 '<td>'+(venta.tipo==1?'CONTADO':'CRÉDITO')+'</td>'+
+                                '<td>'+estado+'</td>'+
+                                '<td>S/ '+tools.formatMoney(venta.total)+'</td>'+
+                                '<td><button class="btn btn-info"><i class="fa fa-eye"></i></button></td>'+
+                                '<td><button class="btn btn-primary"><i class="fa fa-briefcase"></i></button></td>'+
                                 '</tr>');
                             }
                             console.log(result)
@@ -355,6 +360,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
             }
+
+             
 
         </script>
     </body>

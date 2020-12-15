@@ -210,11 +210,14 @@ class VentaAdo
     public static function getAll($search, $x, $y)
     {
         $consulta = "SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,v.tipo,v.forma,v.numero,v.estado,
-        c.apellidos,c.nombres,sum(d.cantidad*d.precio) as total
+        c.apellidos,c.nombres,sum(d.cantidad*d.precio) as total,
+        CASE WHEN e.apellidos IS NULL or e.apellidos = '' THEN 'SIN DATOS' ELSE e.apellidos END AS 	empleadoApellidos,
+        CASE WHEN e.nombres IS NULL OR e.nombres = '' THEN 'SIN DATOS' ELSE e.nombres END AS empleadoNombres
         from ventatb as v 
         INNER JOIN clientetb as c on c.idCliente = v.cliente
         INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
         INNER JOIN detalleventatb as d on d.idVenta = v.idVenta
+        LEFT JOIN empleadotb as e on e.idEmpleado = v.vendedor
         WHERE c.apellidos LIKE ? OR c.nombres LIKE ?
         GROUP BY v.idVenta
         ORDER BY v.fecha DESC,v.hora DESC LIMIT ?,?";
@@ -246,7 +249,9 @@ class VentaAdo
                     "estado" => $row["estado"],
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
-                    "total" => $row["total"]
+                    "total" => $row["total"],
+                    "empleadoApellidos" => $row["empleadoApellidos"],
+                    "empleadoNombres" => $row["empleadoNombres"]
                 ));
             }
 
@@ -254,6 +259,7 @@ class VentaAdo
             from ventatb as v 
             INNER JOIN clientetb as c on c.idCliente = v.cliente
             INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
+            LEFT JOIN empleadotb as e on e.idEmpleado = v.vendedor
             WHERE c.apellidos LIKE ? OR c.nombres LIKE ?");
             $comando->bindValue(1, "$search%", PDO::PARAM_STR);
             $comando->bindValue(2, "$search%", PDO::PARAM_STR);

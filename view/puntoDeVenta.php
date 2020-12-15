@@ -668,6 +668,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
             let total = 0;
             let montoCambio = 0;
 
+            let idEmpleado = "<?php echo $_SESSION["IdEmpleado"]?>";
+
             $(document).ready(function() {
 
                 $("#monto").keypress(function() {
@@ -943,7 +945,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         data: JSON.stringify({
                                             "tipoDocumento": $("#comprobante").val(),
                                             "cliente": idCliente,
-                                            "vendedor": 0,
+                                            "vendedor": idEmpleado,
                                             "fecha": tools.getCurrentDate(),
                                             "hora": tools.getCurrentTime(),
                                             "tipo": 1,
@@ -992,7 +994,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         data: JSON.stringify({
                                             "tipoDocumento": $("#comprobante").val(),
                                             "cliente": idCliente,
-                                            "vendedor": 0,
+                                            "vendedor": idEmpleado,
                                             "fecha": tools.getCurrentDate(),
                                             "hora": tools.getCurrentTime(),
                                             "tipo": 1,
