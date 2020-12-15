@@ -426,18 +426,18 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }),
             beforeSend: function() {
                 closeClearModal();
-                tools.ModalAlertInfo('Disciplinas', 'Procesando petición...');
+                tools.ModalAlertInfo('Cliente', 'Procesando petición...');
             },
             success: function(result) {
                 if (result.estado == 1) {
-                    tools.ModalAlertSuccess('Disciplinas', result.mensaje);
+                    tools.ModalAlertSuccess('Cliente', result.mensaje);
                     loadInitClientes();
                 } else {
-                    tools.ModalAlertWarning('Disciplinas', result.mensaje);
+                    tools.ModalAlertWarning('Cliente', result.mensaje);
                 }
             },
             error: function(error) {
-                tools.ModalAlertError("Disciplinas", error.responseText);
+                tools.ModalAlertError("Cliente", error.responseText);
             }
         });
     }

@@ -91,8 +91,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Estado</th>
                                             <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Metodo</th>
                                             <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Total</th>
-                                            <!-- <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Editar</th>
-                                        <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th> -->
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Detelle</th>
+                                        <!-- <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th>  -->
 
                                         </tr>
                                     </thead>
@@ -134,6 +134,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
             let state = false;
 
             $(document).ready(function() {
+
+                $("#btnReporte").click(function(){
+                    window.open("../app/reportes/resumeningresos.php" , "_blank");
+                });
 
                 $("#btnReload").click(function() {
                     loadInitIngresos();
@@ -226,6 +230,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + estado + '</td>' +
                                     '<td>' + metodo + '<br>' + venta.numero + '</td>' +
                                     '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
+                                    '<td><button class="btn btn-info" onclick="detalleVenta(\''+venta.idVenta+'\')"><i class="fa fa-eye"></i></button></td>'+
                                     '</tr>');
                             }
                             totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
@@ -250,6 +255,17 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
             }
+
+            function detalleVenta(idVenta){
+//                 SELECT 
+// case v.tipo when 1 then 'Contado' else 'Crédito' END as 'TipoVenta',
+// case v.forma when 1 then 'Efectivo' else 'Tarjeta' end as 'FormaPago',
+// sum(d.cantidad*d.precio) as 'Total' from detalleventatb as d 
+// INNER JOIN ventatb as v on v.idVenta = d.idVenta
+// where v.fecha = '2020-12-15' 
+// GROUP by v.hora
+            }
+
         </script>
     </body>
 

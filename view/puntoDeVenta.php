@@ -84,7 +84,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                                     <div class="col-md-6">
                                                                         <label>Monto: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
                                                                         <div class="form-group">
-                                                                            <input id="monto" type="number" class="form-control form-control-sm">
+                                                                            <input id="monto" type="text" class="form-control form-control-sm">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -147,9 +147,36 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                             </tbody>
                                                         </table>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <button class="btn btn-link" id="btnPlazos" type="button">Agregar cuota +</button>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+                                                        <label>Crédito:</label>
+                                                        <div class="form-group">
+                                                            <button class="btn btn-outline-primary btn-sm" id="btnPlazos" type="button">Agregar cuota +</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <label>Forma de Pago:</label>
+                                                                <div class="form-group">
+                                                                    <select id="tipopagocredito" class="form-control form-control-sm">
+                                                                        <option value="">- Selecciona -</option>
+                                                                        <option value="1">EFECTIVO</option>
+                                                                        <option value="2">TARJETA</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <label>N° Operación: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                                        <div class="form-group">
+                                                                            <input id="numerocreditotarjeta" type="text" class="form-control form-control-sm">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -249,7 +276,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 </div>
             </div>
 
-            <!-- modal nuevo/editar cliente -->
+            <!-- modal nuevo cliente -->
             <div class="row">
                 <div class="modal fade" id="modalCliente" data-backdrop="static">
                     <div class="modal-dialog">
@@ -398,10 +425,26 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="h6" id="lblDescripcionPlan">Descripcion: </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" id="inicio" type="checkbox">Fecha de Inicio:
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="fechainicio" type="date" class="form-control" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -627,13 +670,24 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             $(document).ready(function() {
 
-                $("#montotarjeta").keypress(function() {
+                $("#monto").keypress(function() {
                     var key = window.Event ? event.which : event.keyCode;
                     var c = String.fromCharCode(key);
                     if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
                         event.preventDefault();
                     }
-                    if (c == '.' && $("#montotarjeta").val().includes(".")) {
+                    if (c == '.' && $("#monto").val().includes(".")) {
+                        event.preventDefault();
+                    }
+                });
+
+                $("#montocreditotarjeta").keypress(function() {
+                    var key = window.Event ? event.which : event.keyCode;
+                    var c = String.fromCharCode(key);
+                    if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                        event.preventDefault();
+                    }
+                    if (c == '.' && $("#montocreditotarjeta").val().includes(".")) {
                         event.preventDefault();
                     }
                 });
@@ -664,17 +718,51 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#btnCloseModalNewCliente").click(function() {
                     $("#modalCliente").modal("hide");
                     $("#titulo-modal").empty();
+                    closeClearModal();
                 });
 
                 $("#btnCancelModalNewCliente").click(function() {
                     $("#modalCliente").modal("hide");
                     $("#titulo-modal").empty();
+                    closeClearModal();
                 });
 
                 // btnCloseModalNewCliente
                 // btnGuardarModalNewCliente
                 // btnCancelModalNewCliente
+
+                $("#btnGuardarModalNewCliente").click(function() {
+                    if ($("#dni").val() == '' || $("#dni").val().length < 8) {
+                        tools.AlertWarning("Advertencia", "Ingrese un número de dni valido")
+                    } else if ($("#apellidos").val() == '' || $("#apellidos").val().length < 1) {
+                        tools.AlertWarning("Advertencia", "Ingrese un apellido de 2 o mas letras.")
+                    } else if ($("#nombres").val() == '' || $("#nombres").val().length < 1) {
+                        tools.AlertWarning("Advertencia", "Ingrese un nombre de 2 o mas letras.")
+                    } else if ($("#genero").val() == '') {
+                        tools.AlertWarning("Advertencia", "Seleccione su sexo.")
+                    } else if ($("#nacimiento").val() == '') {
+                        tools.AlertWarning("Advertencia", "Ingrese un fecha de nacimiento.")
+                    } else if ($("#celular").val() == '' || $("#celular").val().length < 6) {
+                        tools.AlertWarning("Advertencia", "Ingrese un número de celular valido")
+                    } else {
+                        tools.ModalDialog('Cliente', '¿Desea guardar los datos?', 'question', function(result) {
+                            if (result) {
+                                registrarCliente($("#dni").val(), $("#apellidos").val(), $("#nombres")
+                                    .val(), $(
+                                        "#genero").val(),
+                                    $("#nacimiento").val(), $("#codigo").val(), $("#email").val(),
+                                    $("#celular")
+                                    .val(),
+                                    $("#direccion").val());
+                            }
+                        });
+                    }
+                });
                 //-----------------------------------
+
+                $("#inicio").change(function(){
+                    $("#fechainicio").prop('disabled', !$("#inicio").is(':checked'));
+                });
 
                 $("#btnPlan").click(function() {
                     $("#modalPlan").modal("show");
@@ -707,13 +795,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#btnGuardarModalPlanes").click(function() {
+                $("#btnGuardarModalPlanes").click(function() {                    
                     if (idPlan == '') {
                         tools.AlertWarning("Ventas: ", "Seleccione un plan.")
                         $("#plan").focus();
                     } else if ($("#Membresia").val() == '') {
                         tools.AlertWarning("Ventas: ", "Seleccione una membresia.")
                         $("#Membresia").focus();
+                    }else if($("#inicio").is(':checked') && !tools.validateDate($("#fechainicio").val())){
+                        tools.AlertWarning("Ventas: ", "Ingre la fecha de inicio.")
+                        $("#fechainicio").focus()
                     } else if (!tools.isNumeric($("#cantidad").val())) {
                         tools.AlertWarning("Ventas: ", "Ingrese una cantidad.")
                         $("#cantidad").focus();
@@ -725,8 +816,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                             let cantidad = parseInt($("#cantidad").val());
 
-                            let fechaFin = tools.getCurrentDate();
-                            let fecha = new Date(tools.getCurrentDate());
+                            let fechaInicio = $("#inicio").is(':checked') ? $("#fechainicio").val() : tools.getCurrentDate();
+                            let fechaFin = fechaInicio;
+                            let fecha = new Date(fechaFin);
                             let dias = (parseInt(mesesPlan * cantidad) * 30) + parseInt(diasPlan) + parseInt(freezePlan);
                             fecha.setDate(fecha.getDate() + dias);
 
@@ -735,6 +827,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             let currentDays = fecha.getDate() > 9 ? fecha.getDate() : "0" + fecha.getDate();
 
                             fechaFin = currentYear + '-' + currentMonth + '-' + currentDays;
+                            console.log(fechaInicio)
+                            console.log(fechaFin)
 
                             listaVenta.push({
                                 "idPlan": idPlan,
@@ -743,7 +837,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 "cantidad": cantidad,
                                 "precio": precioPlan,
                                 "descuento": 0,
-                                "fechaInico": tools.getCurrentDate(),
+                                "fechaInico": fechaInicio,
                                 "horaInicio": tools.getCurrentTime(),
                                 "fechaFin": fechaFin,
                                 "horaFin": tools.getCurrentTime(),
@@ -798,8 +892,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#btnPlazos").click(function() {
                     let currentDate = Date.now();
                     $("#tvPlazos").append('<tr id="' + currentDate + '">' +
-                        '<td><input class="form-control" type="number" /></td>' +
-                        '<td><input class="form-control" type="date" /></td>' +
+                        '<td><input class="form-control form-control-sm" type="number" /></td>' +
+                        '<td><input class="form-control form-control-sm" type="date" /></td>' +
                         '<td><div class="text-center"><input type="checkbox" /></div></td>' +
                         '<td><button class="btn btn-danger" onclick="removePlazos(\'' + currentDate + '\')"><i class="fa fa-trash"></i></button></td>' +
                         '</tr>');
@@ -937,23 +1031,23 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         let listaCredito = [];
                         let valueMonto = 0;
                         let valueFecha = 0;
+                        let valueInicial = 0;
                         let sumMonto = 0;
                         $("#tvPlazos tr").each(function(row, tr) {
                             let montoet = $(tr).find("td:eq(0)").find("input").val();
                             let fechet = $(tr).find("td:eq(1)").find("input").val();
+                            let initet = $(tr).find("td:eq(2)").find('input[type="checkbox"]').is(':checked');
                             let monto = tools.isNumeric(montoet) ? parseFloat(montoet) : 0;
-                            valueMonto = tools.isNumeric(montoet) ? 0 : 1;
+                            valueMonto += tools.isNumeric(montoet) ? 0 : 1;
                             valueFecha += tools.validateDate(fechet) ? 0 : 1;
+                            valueInicial += initet ? 1 : 0;
                             sumMonto += monto;
                             listaCredito.push({
-                                "monto":parseFloat(montoet),
-                                "fecha":fechet,
-                                "hora":tools.getCurrentTime(),
-                                "inicial":$(tr).find("td:eq(2)").find('input[type="checkbox"]').is(':checked')
+                                "monto": parseFloat(montoet),
+                                "fecha": fechet,
+                                "hora": tools.getCurrentTime(),
+                                "inicial": initet
                             });
-                            //$(tr).find("td:eq(2)").find("input").val();                            
-                            //console.log($(tr).find("td:eq(2)").find('input[type="checkbox"]').is(':checked'));
-                            // console.log($(tr).find("td:eq(2)").find("input").val());
                         });
                         if (valueMonto > 0) {
                             tools.AlertWarning("Ventas: ", "Hay campos en la tabla con valores 0 o no númericos.");
@@ -961,52 +1055,54 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tools.AlertWarning("Ventas: ", "Hay campos de tipo fecha en la tablas sin ingresar.");
                         } else if (sumMonto != total) {
                             tools.AlertWarning("Ventas: ", "La suma total no es igual al monto de la tabla.");
+                        } else if ($("#tipopagocredito").val() == '' && valueInicial > 0) {
+                            tools.AlertWarning("Ventas: ", "Selecciona la forma de pago.");
+                            $("#tipopagocredito").focus();
+                        } else if ($("#numerocreditotarjeta").val() == '' && $("#tipopagocredito").val() == '2') {
+                            tools.AlertWarning("Ventas: ", "Ingrese el número de la operación");
+                            $("#numerocreditotarjeta").focus();
                         } else {
-                            
-                            for(let credito of listaCredito){
-                                console.log(credito)
-                            }
-                            // tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
-                            //     if (value) {
-                            //         $.ajax({
-                            //             url: "../app/venta/Registrar_Venta.php",
-                            //             method: 'POST',
-                            //             accepts: "application/json",
-                            //             contentType: "application/json",
-                            //             data: JSON.stringify({
-                            //                 "tipoDocumento": $("#comprobante").val(),
-                            //                 "cliente": idCliente,
-                            //                 "vendedor": 0,
-                            //                 "fecha": tools.getCurrentDate(),
-                            //                 "hora": tools.getCurrentTime(),
-                            //                 "tipo": 2,
-                            //                 "forma": 1,
-                            //                 "numero": "",
-                            //                 "pago": "",
-                            //                 "vuelto": "",
-                            //                 "estado": 2,
-                            //                 "lista": listaVenta,
-                            //                 "credito":[]
-                            //             }),
-                            //             beforeSend: function() {
-                            //                 $("#modalCobro").modal("hide");
-                            //                 clearComponents();
-                            //                 clearPlanes();
-                            //                 tools.ModalAlertInfo('Venta', 'Procesando petición...');
-                            //             },
-                            //             success: function(result) {
-                            //                 if (result.estado == 1) {
-                            //                     tools.ModalAlertSuccess('Venta', result.mensaje);
-                            //                 } else {
-                            //                     tools.ModalAlertWarning('Venta', result.mensaje);
-                            //                 }
-                            //             },
-                            //             error: function(error) {
-                            //                 tools.ModalAlertError('Venta', error.responseText);
-                            //             }
-                            //         });
-                            //     }
-                            // });
+                            tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
+                                if (value) {
+                                    $.ajax({
+                                        url: "../app/venta/Registrar_Venta.php",
+                                        method: 'POST',
+                                        accepts: "application/json",
+                                        contentType: "application/json",
+                                        data: JSON.stringify({
+                                            "tipoDocumento": $("#comprobante").val(),
+                                            "cliente": idCliente,
+                                            "vendedor": 0,
+                                            "fecha": tools.getCurrentDate(),
+                                            "hora": tools.getCurrentTime(),
+                                            "tipo": 2,
+                                            "forma": $("#tipopagocredito").val(),
+                                            "numero": $("#numerocreditotarjeta").val(),
+                                            "pago": "0",
+                                            "vuelto": "0",
+                                            "estado": 2,
+                                            "lista": listaVenta,
+                                            "credito": listaCredito
+                                        }),
+                                        beforeSend: function() {
+                                            $("#modalCobro").modal("hide");
+                                            clearComponents();
+                                            clearPlanes();
+                                            tools.ModalAlertInfo('Venta', 'Procesando petición...');
+                                        },
+                                        success: function(result) {
+                                            if (result.estado == 1) {
+                                                tools.ModalAlertSuccess('Venta', result.mensaje);
+                                            } else {
+                                                tools.ModalAlertWarning('Venta', result.mensaje);
+                                            }
+                                        },
+                                        error: function(error) {
+                                            tools.ModalAlertError('Venta', error.responseText);
+                                        }
+                                    });
+                                }
+                            });
                         }
                     }
                 }
@@ -1090,7 +1186,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                                     '<td>' + cliente.celular + '</td>' +
                                     '<td>Activo</td>' +
-                                    '<td>' + (cliente.membresia == 1 ? cliente.membresia + " MEMBRESIA(S)" :
+                                    '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" :
                                         "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
                                         " deuda(s)" : "0 deudas") + '</td>' +
                                     '</tr>');
@@ -1234,6 +1330,54 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
             }
 
+            function registrarCliente(dni, apellidos, nombres, genero, nacimiento, codigo, email, celular, direccion) {
+                $.ajax({
+                    url: "../app/cliente/Crud_Clientes.php",
+                    method: "POST",
+                    accepts: "application/json",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        "idCliente": '',
+                        "dni": dni,
+                        "apellidos": (apellidos.toUpperCase()).trim(),
+                        "nombres": (nombres.toUpperCase()).trim(),
+                        "sexo": genero,
+                        "fechaNacimiento": nacimiento,
+                        "codigo": (codigo.toUpperCase()).trim(),
+                        "email": email.trim(),
+                        "celular": celular,
+                        "direccion": (direccion.toUpperCase()).trim()
+                    }),
+                    beforeSend: function() {
+                        closeClearModal();
+                        tools.ModalAlertInfo('Cliente', 'Procesando petición...');
+                    },
+                    success: function(result) {
+                        if (result.estado == 1) {
+                            tools.ModalAlertSuccess('Cliente', result.mensaje);
+                        } else {
+                            tools.ModalAlertWarning('Cliente', result.mensaje);
+                        }
+                    },
+                    error: function(error) {
+                        tools.ModalAlertError("Cliente", error.responseText);
+                    }
+                });
+            }
+
+            function closeClearModal() {
+                $("#modalCliente").modal("hide")
+                $("#dni").val("")
+                $("#apellidos").val("")
+                $("#nombres").val("")
+                $("#genero").val("1")
+                $("#nacimiento").val("")
+                $("#codigo").val("")
+                $("#email").val("")
+                $("#celular").val("")
+                $("#direccion").val("")
+            }
+
 
             function clearComponents() {
                 idCliente = "";
@@ -1245,6 +1389,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#vuelto").val("");
                 $("#montotarjeta").val("");
                 $("#numerotarjeta").val("");
+                $("#tipopagocredito").val("");
+                $("#numerocreditotarjeta").val("");
+                $("#tvPlazos").empty();
             }
 
             function clearPlanes() {
@@ -1263,6 +1410,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#lblDescripcionPlan").html("Descripcion:");
                 $("#lblTiempoPlan").html("Tiempo: ");
                 $("#lblDisciplinasPlan").html("Disciplinas: ");
+                $("#inicio").prop('checked',false)
+                $("#fechainicio").val("");
+                $("#fechainicio").prop('disabled', true);
             }
         </script>
     </body>
