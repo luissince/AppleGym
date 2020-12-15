@@ -367,7 +367,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                             '<td>' + cliente.celular + '</td>' +
                             '<td>' + cliente.email + '</td>' +
-                            '<td>' + (cliente.membresia == 1 ? cliente.membresia + " MEMBRESIA(S)" :
+                            '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" :
                                 "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
                                 " deuda(s)" : "0 deudas") + '</td>' +
                             '<td>Estado</td>' +

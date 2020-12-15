@@ -39,23 +39,23 @@ if (!isset($_SESSION["IdEmpleado"])) {
           <div class="widget-small info coloured-icon"><i class="icon fa fa-money fa-3x"></i>
             <div class="info">
               <h4>Ingresos</h4>
-              <p><b>25</b></p>
+              <p><b>0</b></p>
             </div>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
           <div class="widget-small warning coloured-icon"><i class="icon fa fa-files-o fa-3x"></i>
             <div class="info">
-              <h4>Uploades</h4>
-              <p><b>10</b></p>
+              <h4>Membresias por Caducar</h4>
+              <p><b>0</b></p>
             </div>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
           <div class="widget-small danger coloured-icon"><i class="icon fa fa-star fa-3x"></i>
             <div class="info">
-              <h4>Stars</h4>
-              <p><b>500</b></p>
+              <h4>Cuentas por Cobrar</h4>
+              <p><b>0</b></p>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
       <div class="row">
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Monthly Sales</h3>
+            <h3 class="tile-title">Progreso de Ingresos</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
             </div>
@@ -71,7 +71,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
         </div>
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Support Requests</h3>
+            <h3 class="tile-title">Clientes Matriculados</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="pieChartDemo"></canvas>
             </div>
