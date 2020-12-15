@@ -39,7 +39,9 @@ class MembresiaAdo {
         try{
             $array = array();
             // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare("SELECT v.idVenta, v.cliente, m.idMembresia, p.nombre, v.documento, v.serie, v.numeracion, m.fechaInicio, m.fechaFin, v.estado, m.cantidad, m.precio, SUM(m.cantidad*m.precio) as 'total' 
+            $comando = Database::getInstance()->getDb()->prepare("SELECT 
+            v.idVenta, v.cliente, m.idMembresia, p.nombre, v.documento, v.serie, v.numeracion, v.estado as 'estadoventa',
+            m.tipoMembresia,m.fechaInicio, m.fechaFin, m.estado as 'membresia', m.cantidad, m.precio, SUM(m.cantidad*m.precio) as 'total' 
             FROM membresiatb as m
             INNER JOIN ventatb as v ON v.idVenta = m.idVenta
             INNER JOIN plantb as p ON p.idPlan = m.idPlan

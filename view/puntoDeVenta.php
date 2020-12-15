@@ -186,13 +186,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                 <div class="row">
                                     <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group d-flex">
-                                            <div class="input-group">
-                                                <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearchLista">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-warning" type="button" id="btnOpenModalCliente"><i class="fa fa-plus"></i></button>
-                                                </div>
-                                            </div>
+                                        <div class="form-group">
+                                            <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearchLista">
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
@@ -539,6 +534,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <div class="input-group">
                                         <input type="search" class="form-control" placeholder="Cliente..." id="txtCliente" disabled>
                                         <div class="input-group-append">
+                                            <button class="btn btn-warning" type="button" id="btnOpenModalCliente"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                        <div class="input-group-append">
                                             <button class="btn btn-info" type="button" id="btnListaCliente"><i class="fa fa-search"></i></button>
                                         </div>
                                     </div>
@@ -659,7 +657,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
 
                 $("#btnOpenModalCliente").click(function() {
-                    $("#modalCliente").modal("show");                    
+                    $("#modalCliente").modal("show");
                     $("#titulo-modal").append('<i class="fa fa-user-plus"></i> Registrar Cliente')
                 });
 
@@ -806,12 +804,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         '<td><button class="btn btn-danger" onclick="removePlazos(\'' + currentDate + '\')"><i class="fa fa-trash"></i></button></td>' +
                         '</tr>');
 
-                    $("#tvPlazos tr").each(function(row, tr) {
-                        console.log(row)
-                        //$(tr).find("td:eq(2)").find("input").val();                            
-                        //console.log($(tr).find("td:eq(2)").find('input[type="checkbox"]').is(':checked'));
-                        // console.log($(tr).find("td:eq(2)").find("input").val());
-                    });
                 });
 
                 $("#btnGuardarModal").click(function() {
@@ -939,7 +931,84 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         }
                     }
                 } else {
-
+                    if ($("#tvPlazos tr").length == 0) {
+                        tools.AlertWarning("Ventas: ", "No hay registro registro de plazos para continuar.");
+                    } else {
+                        let listaCredito = [];
+                        let valueMonto = 0;
+                        let valueFecha = 0;
+                        let sumMonto = 0;
+                        $("#tvPlazos tr").each(function(row, tr) {
+                            let montoet = $(tr).find("td:eq(0)").find("input").val();
+                            let fechet = $(tr).find("td:eq(1)").find("input").val();
+                            let monto = tools.isNumeric(montoet) ? parseFloat(montoet) : 0;
+                            valueMonto = tools.isNumeric(montoet) ? 0 : 1;
+                            valueFecha += tools.validateDate(fechet) ? 0 : 1;
+                            sumMonto += monto;
+                            listaCredito.push({
+                                "monto":parseFloat(montoet),
+                                "fecha":fechet,
+                                "hora":tools.getCurrentTime(),
+                                "inicial":$(tr).find("td:eq(2)").find('input[type="checkbox"]').is(':checked')
+                            });
+                            //$(tr).find("td:eq(2)").find("input").val();                            
+                            //console.log($(tr).find("td:eq(2)").find('input[type="checkbox"]').is(':checked'));
+                            // console.log($(tr).find("td:eq(2)").find("input").val());
+                        });
+                        if (valueMonto > 0) {
+                            tools.AlertWarning("Ventas: ", "Hay campos en la tabla con valores 0 o no númericos.");
+                        } else if (valueFecha > 0) {
+                            tools.AlertWarning("Ventas: ", "Hay campos de tipo fecha en la tablas sin ingresar.");
+                        } else if (sumMonto != total) {
+                            tools.AlertWarning("Ventas: ", "La suma total no es igual al monto de la tabla.");
+                        } else {
+                            
+                            for(let credito of listaCredito){
+                                console.log(credito)
+                            }
+                            // tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
+                            //     if (value) {
+                            //         $.ajax({
+                            //             url: "../app/venta/Registrar_Venta.php",
+                            //             method: 'POST',
+                            //             accepts: "application/json",
+                            //             contentType: "application/json",
+                            //             data: JSON.stringify({
+                            //                 "tipoDocumento": $("#comprobante").val(),
+                            //                 "cliente": idCliente,
+                            //                 "vendedor": 0,
+                            //                 "fecha": tools.getCurrentDate(),
+                            //                 "hora": tools.getCurrentTime(),
+                            //                 "tipo": 2,
+                            //                 "forma": 1,
+                            //                 "numero": "",
+                            //                 "pago": "",
+                            //                 "vuelto": "",
+                            //                 "estado": 2,
+                            //                 "lista": listaVenta,
+                            //                 "credito":[]
+                            //             }),
+                            //             beforeSend: function() {
+                            //                 $("#modalCobro").modal("hide");
+                            //                 clearComponents();
+                            //                 clearPlanes();
+                            //                 tools.ModalAlertInfo('Venta', 'Procesando petición...');
+                            //             },
+                            //             success: function(result) {
+                            //                 if (result.estado == 1) {
+                            //                     tools.ModalAlertSuccess('Venta', result.mensaje);
+                            //                 } else {
+                            //                     tools.ModalAlertWarning('Venta', result.mensaje);
+                            //                 }
+                            //             },
+                            //             error: function(error) {
+                            //                 tools.ModalAlertError('Venta', error.responseText);
+                            //             }
+                            //         });
+                            //     }
+                            // });
+                        }
+                    }
                 }
             }
 
@@ -949,7 +1018,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function listarDetalleVenta() {
                 $("#tbLista").empty();
-                total = 0; 
+                total = 0;
                 let suma = 0;
                 for (let detalle of listaVenta) {
                     suma = detalle.precio * detalle.cantidad;
@@ -963,10 +1032,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         '                       <button onclick="removeDetalleVenta(\'' + detalle.idPlan + '\')" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i> Quitar</button>' +
                         '                   </td>' +
                         '</tr>');
-                        total+=suma;
+                    total += suma;
                 }
 
-                
+
 
                 $("#lblSumaTotal").html("S/ " + tools.formatMoney(total));
                 $("#lblTotalPagar").html("S/ " + tools.formatMoney(total));

@@ -113,39 +113,24 @@ class VentaAdo {
                     )
             );
 
-            // if ($body['tipo'] == 1) {
-            //     $codigoIngresoNumerico = Database::getInstance()->getDb()->prepare($quey_codigo_ingreso_numerico);
-            //     $codigoIngresoNumerico->execute();
-            //     $numeracion = $codigoIngresoNumerico->fetchColumn();
-
-            //     $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
-            //     $executeIngreso->execute(array(
-            //         $idVenta,
-            //         $body['fecha'],
-            //         $body['hora'],
-            //         $body['forma'],
-            //         $body['total'],
-            //         "P0001",
-            //         $numeracion,
-            //         $body['procedencia']
-            //     ));
-            // } else if ($body['tipo'] == 2) {
-            //     $executeVentaCredito = Database::getInstance()->getDb()->prepare($venta_credito);
-            //     $total_credito_inicial = 0;
-            //     foreach ($body['credito'] as $credito) {
-            //         if ($credito['inicial'] == true) {
-            //             $total_credito_inicial += $credito['monto'];
-            //         }
-            //         $executeVentaCredito->execute(
-            //                 array(
-            //                     $idVenta,
-            //                     $credito['monto'],
-            //                     $credito['fecha'],
-            //                     $credito['hora'],
-            //                     $credito['inicial']
-            //                 )
-            //         );
-            //     }
+            if ($body['tipo'] == 2) {
+                $executeVentaCredito = Database::getInstance()->getDb()->prepare($venta_credito);
+                $total_credito_inicial = 0;
+                foreach ($body['credito'] as $credito) {
+                    if ($credito['inicial'] == true) {
+                        $total_credito_inicial += $credito['monto'];
+                    }
+                    $executeVentaCredito->execute(
+                            array(
+                                $idVenta,
+                                $credito['monto'],
+                                $credito['fecha'],
+                                $credito['hora'],
+                                $credito['inicial']
+                            )
+                    );
+                }
+            }
 
             //     if ($total_credito_inicial > 0) {
             //         $codigoIngresoNumerico = Database::getInstance()->getDb()->prepare($quey_codigo_ingreso_numerico);
@@ -213,23 +198,30 @@ class VentaAdo {
         }
     }
 
-    public static function getAll($x, $y) {
+    public static function getAll($search,$x, $y) {
         $consulta = "SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,v.tipo,v.forma,v.numero,v.estado,
-        c.apellidos,c.nombres,sum(d.cantidad*d.precio) as 'total'
+        c.apellidos,c.nombres,sum(d.cantidad*d.precio) as total
         from ventatb as v 
-        INNER JOIN clientetb as c on c.idCliente = c.idCliente
+        INNER JOIN clientetb as c on c.idCliente = v.cliente
         INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
-        INNER JOIN detalleventatb as d ON d.idVenta = v.idVenta
-        GROUP BY v.idVenta ORDER BY v.fecha DESC,v.hora DESC LIMIT $x,$y";
+        INNER JOIN detalleventatb as d on d.idVenta = v.idVenta
+        WHERE c.apellidos LIKE ? OR c.nombres LIKE ?
+        GROUP BY v.idVenta
+        ORDER BY v.fecha DESC,v.hora DESC LIMIT ?,?";
         try {
 
             $array = array();
 
             $comando = Database::getInstance()->getDb()->prepare($consulta);
+            $comando->bindValue(1,"$search%",PDO::PARAM_STR);
+            $comando->bindValue(2,"$search%",PDO::PARAM_STR);
+            $comando->bindValue(3,$x,PDO::PARAM_INT);
+            $comando->bindValue(4,$y,PDO::PARAM_INT);
             $comando->execute();            
             $count = 0;
             $arrayVentas = array();
             while($row = $comando->fetch()){
+                $count++;
                 array_push($arrayVentas,array(
                     "id"=>$count,
                     "idVenta"=>$row["idVenta"],
@@ -248,12 +240,13 @@ class VentaAdo {
                 ));
             }
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT count(*) as 'total'
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*)
             from ventatb as v 
-            INNER JOIN clientetb as c on c.idCliente = c.idCliente
+            INNER JOIN clientetb as c on c.idCliente = v.cliente
             INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
-            INNER JOIN detalleventatb as d ON d.idVenta = v.idVenta
-            GROUP BY v.idVenta");
+            WHERE c.apellidos LIKE ? OR c.nombres LIKE ?");
+             $comando->bindValue(1,"$search%",PDO::PARAM_STR);
+             $comando->bindValue(2,"$search%",PDO::PARAM_STR);
             $comando->execute();
             $totalVentas =  $comando->fetchColumn();
 
@@ -265,108 +258,6 @@ class VentaAdo {
         }
     }
 
-
-    public static function getVentaSearchPrincipal($search, $x, $y) {
-        $consulta = "SELECT v.idVenta,e.apellidos AS apellidosEmpleado,e.nombres AS nombresEmpleado,c.apellidos AS apellidosCliente,c.nombres AS nombresCliente,v.serie,v.numeracion,v.fecha,v.hora,v.total,v.tipo,v.forma,v.numero,v.estado,v.procedencia FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado
-        INNER JOIN clientetb AS c ON v.cliente = c.idCliente 
-        WHERE 
-        (c.apellidos LIKE ? OR c.nombres LIKE ?) 
-        OR 
-        (e.apellidos LIKE ? OR e.nombres LIKE ?)
-        OR
-        v.serie LIKE ?
-        OR
-        v.numeracion LIKE ?
-        OR
-        (CONCAT(v.serie,' ',v.numeracion) LIKE ? )
-        ORDER BY v.fecha DESC,v.hora DESC LIMIT $x,$y";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(2, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(3, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(4, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(5, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(6, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(7, "$search%", PDO::PARAM_STR);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public static function getVentaSearchPrincipalCount($search) {
-        $consulta = "SELECT COUNT(v.idVenta) FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado
-        INNER JOIN clientetb AS c ON v.cliente = c.idCliente 
-        WHERE
-        (c.apellidos LIKE ? OR c.nombres LIKE ?) 
-        OR 
-        (e.apellidos LIKE ? OR e.nombres LIKE ?)
-        OR
-        v.numeracion LIKE ?
-        OR
-        (CONCAT(v.serie,' ',v.numeracion) LIKE ? )
-        ";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(2, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(3, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(4, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(5, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(6, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(7, "$search%", PDO::PARAM_STR);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
-        }
-    }
-
-    public static function getVentaSearchOptions($transaccion, $fechaInicial, $fechaFinal, $tipo, $forma, $estado, $x, $y) {
-        $consulta = "CALL Sp_Listar_Ventas_Search_Options(?,?,?,?,?,?,?,?)";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindParam(1, $transaccion);
-            $comando->bindParam(2, $fechaInicial);
-            $comando->bindParam(3, $fechaFinal);
-            $comando->bindParam(4, $tipo);
-            $comando->bindParam(5, $forma);
-            $comando->bindParam(6, $estado);
-            $comando->bindParam(7, $x);
-            $comando->bindParam(8, $y);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return array();
-        }
-    }
-
-    public static function getVentaSearchOptionsCount($transaccion, $fechaInicial, $fechaFinal, $tipo, $forma, $estado) {
-        $consulta = "CALL Sp_Listar_Ventas_Search_Options_Count(?,?,?,?,?,?)";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindParam(1, $transaccion);
-            $comando->bindParam(2, $fechaInicial);
-            $comando->bindParam(3, $fechaFinal);
-            $comando->bindParam(4, $tipo);
-            $comando->bindParam(5, $forma);
-            $comando->bindParam(6, $estado);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
-        }
-    }
 
     public static function getVentaReporteAll() {
         $consulta = "SELECT v.idVenta,e.apellidos AS apellidosEmpleado,e.nombres AS nombresEmpleado,c.apellidos AS apellidosCliente,c.nombres AS nombresCliente,v.serie,v.numeracion,v.fecha,v.hora,v.total,v.tipo,v.forma,v.numero,v.estado,v.procedencia FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado

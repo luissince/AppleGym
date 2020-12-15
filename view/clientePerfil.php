@@ -25,16 +25,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             <div class="row">
 
-                <div class="col-md-3 bg-secondary">
+                <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12 col-12 bg-secondary text-center">
                     <div class="p-2">
-                        <img class="img-fluid rounded-circle" src="./images/sport.jpg">
+                        <img class="img-fluid rounded-circle" src="./images/noimage.png" style="width:100%;max-width: 260px;">
                         <div class="text-center">
                             <h6 class="text-white pt-2" id="nombreCompleto"></h6>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-9">
+                <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12 col-12">
                     <div class="fondoImg p-3">
                         <div class="bg-white p-3 rounded font-weight-bold">
                             <h4><i class="fa fa-user"></i> Perfil del Cliente <span id="loading"></span></h4>
@@ -85,7 +85,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
 
             <div class="row user">
-                <div class="col-md-3">
+                <div class="col-xl-2 col-lg-12 col-md-12 col-sm-12 col-12">
                     <div class="tile p-0">
                         <ul class="nav flex-column nav-tabs user-tabs">
                             <li class="nav-item"><a class="nav-link active" href="#menbresia" data-toggle="tab">Membresias</a></li>
@@ -94,7 +94,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-9">
+                <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 col-12">
                     <div class="tab-content">
 
                         <div class="tab-pane active " id="menbresia">
@@ -111,15 +111,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <table class="table table-hover table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
-                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 120px;">Nombre</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 100px;">Serie/Numeración</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Inicio</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Fin</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Estado</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Cantidad</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Precio</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Importe</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 5%;">#</th>
+                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Membresia</th>
+                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Plan</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Comprobante</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20%;">Duración</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Estado</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Importe</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbListaMembresia">
@@ -144,15 +142,11 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <table class="table table-hover table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
-                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 107px;">Dni</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Apellidos y Nombres</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Celular</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Email</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 69px;">Membresia</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Estado</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Perfil</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Opciones</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 5%;">#</th>
+                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Plan</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Duración</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Fecha/Hora de Ingreso</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Fecha/Hora de Salida</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="">
@@ -244,7 +238,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function loadTableMembresias(id) {
-                
+
                 $.ajax({
                     url: "../app/membresias/Obtener_Membresia_Por_Cliente.php",
                     method: "GET",
@@ -261,26 +255,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                     },
                     success: function(result) {
-                        
-
                         if (result.estado == 1) {
                             let count = 0;
                             tbListaMembresia.empty();
                             for (let membresia of result.membresias) {
-
-                                let estado = membresia.estado == 1 ? '<span class="badge badge-pill badge-success">pagado</span>' : '<span class="badge badge-pill badge-danger">pendiente</span>';
+                                let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
+                                let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">pagado</span>' : '<span class="badge badge-pill badge-danger">Pendiente</span>';
 
                                 count++;
                                 tbListaMembresia.append('<tr role="row" class="odd">' +
                                     '<td class="sorting_1">' + count + '</td>' +
+                                    '<td>' + estadoMembresia + '</td>' +
                                     '<td>' + membresia.nombre + '</td>' +
                                     '<td>' + membresia.serie + "-" + membresia.numeracion + '</td>' +
-                                    '<td>' + membresia.fechaInicio + '</td>' +
-                                    '<td>' + membresia.fechaFin + '</td>' +
+                                    '<td>Del ' + tools.getDateForma(membresia.fechaInicio) + ' al ' + tools.getDateForma(membresia.fechaFin) + '</td>' +
                                     '<td>' + estado + '</td>' +
-                                    '<td>' + tools.formatMoney(membresia.cantidad,2)  + '</td>' +
-                                    '<td>' + tools.formatMoney(membresia.precio,2) + '</td>' +
-                                    '<td>' + tools.formatMoney(membresia.total,2) + '</td>' +
+                                    '<td>' + tools.formatMoney(membresia.total, 2) + '</td>' +
                                     '</tr>');
                             }
                             totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(

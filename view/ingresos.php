@@ -215,14 +215,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (result.estado == 1) {
                             tbLista.empty();
                             for (let venta of result.ventas) {
-                                let estado = venta.estado == 3 ? '<span class="text-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="text-warning">PROCESO</span>' : '<span class="text-success">PAGADO</span>';
+                                let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">PROCESO</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
                                 let metodo = venta.forma == 1 ? '<i class="fa fa-money"></i> EFECTIVO' : '<i class="fa fa-credit-card-alt"></i> TARJETA';
                                 tbLista.append('<tr>' +
                                     '<td>' + venta.id + '</td>' +
                                     '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora, true) + '</td>' +
-                                    '<td>' + venta.comprobante + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
-                                    '<td>' + venta.nombresCliente + '<br>' + venta.apellidosCliente + '</td>' +
-                                    '<td>' + venta.tipo + '</td>' +
+                                    '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
+                                    '<td>' + venta.nombres + '<br>' + venta.apellidos + '</td>' +
+                                    '<td>' + (venta.tipo == 1 ? "CONTADO":"CRÉDITO")+ '</td>' +
                                     '<td>' + estado + '</td>' +
                                     '<td>' + metodo + '<br>' + venta.numero + '</td>' +
                                     '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
