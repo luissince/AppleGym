@@ -390,4 +390,24 @@ class EmpleadoAdo {
         return $array;
     }
 
+    public static function getPrivilegioEmpleadoById($idEmpleado){
+
+        try {
+            // Preparar sentencia
+            $comando = Database::getInstance()->getDb()->prepare("SELECT p.idprivilegio, p.idEmpledo, p.idModulo, m.nombre, e.rol p.lectura, p.escritura, p.estado
+            FROM privilegiotb as p
+            INNER JOIN empleadotb as e ON p.idEmpledo=e.idEmpleado
+            INNER JOIN modulotb as m ON m.idModulo=p.idModulo
+            WHERE e.idEmpleado = ? ");
+
+            $comando->bindValue(1, $idEmpleado, PDO::PARAM_STR);
+
+            $comando->execute();
+            return $comando->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $e->getMessage();
+        }
+        
+    }
+
 }
