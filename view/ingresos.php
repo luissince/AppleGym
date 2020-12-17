@@ -213,7 +213,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         state = true;
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
                     },
                     success: function(result) {
@@ -243,7 +243,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         } else {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
                                 result.mensaje + '</p></td></tr>');
                             state = false;
                         }
@@ -251,7 +251,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     error: function(error) {
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
                         state = false;
                     }

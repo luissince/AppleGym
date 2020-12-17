@@ -340,7 +340,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 state = true;
                 tbLista.empty();
                 tbLista.append(
-                    '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                 );
                 totalPaginacion = 0;
             },
@@ -383,7 +383,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 } else {
                     tbLista.empty();
                     tbLista.append(
-                        '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                        '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
                         data.mensaje + '</p></td></tr>');
                     $("#lblPaginaActual").html(0);
                     $("#lblPaginaSiguiente").html(0);
@@ -393,7 +393,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             error: function(error) {
                 tbLista.empty();
                 tbLista.append(
-                    '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
                     error.responseText + '</p></td></tr>');
                 $("#lblPaginaActual").html(0);
                 $("#lblPaginaSiguiente").html(0);
