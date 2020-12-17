@@ -308,70 +308,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
         </div>
 
         <!-- modal privilegio -->
-        <div class="row">
-            <div class="modal fade" id="modalPrivilegio" data-backdrop="static">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">
-                                <i class="fa fa-universal-access"></i> Privilegio de empleado
-                            </h4>
-                            <button type="button" class="close" onclick="destroyModal(event)">
-                                <i class="fa fa-close"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered">
-                                    <thead>
-                                        <tr role="row">
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">#</th>
-                                            <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 180px;">Modulo</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">Acceso</th>
-                                            <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">Lectura</th>
-                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                                style="width: 59px;">Escritura</th> -->
-
-                                        </tr>
-                                    </thead>
-
-                                    <tbody id="">
-                                        
-                                        <tr role="row" class="odd">
-                                            <td>1</td>
-                                            <td>Empleado</td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="form-check text-center">
-                                                        <input class="form-check-input" id="activo" type="checkbox">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-
-                        <div class="modal-footer">
-
-                            <button type="button" class="btn btn-success btn-group-sm" id="btnSavePrivilegio">
-                                <i class="fa fa-save"></i> Guardar</button>
-                            <button type="button" class="btn btn-danger btn-group-sm" onclick="destroyModal(event)">
-                                <i class="fa fa-remove"></i> Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <div class="tile mb-4">
 
@@ -463,15 +399,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
     let idEmpleadoUpdate = "";
 
-
     $(document).ready(function() {
 
         loadInitEmpleados();
 
-
         $("#btnVer").on('mouseover', function() {
             // console.log( $("#pass").val())
-
         });
 
         $('#modalEmpleado').on('shown.bs.modal', function(event) {
@@ -482,7 +415,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
         $("#btnAdd").click(function() {
             $("#modalEmpleado").modal("show");
             $("#titulo-modal").append('<i class="fa fa-user-plus"></i> Registrar Empleado')
-
         })
 
         $("#btnCancelModal").click(function() {
@@ -497,10 +429,33 @@ if (!isset($_SESSION["IdEmpleado"])) {
             loadInitEmpleados()
         })
 
-        $("#modalPrivilegio").on('shown.bs.modal', function(event) {
-            // selectTab(event, 'basico')
-            // $('#numeroDocumento').trigger('focus')
-        })
+        $("#btnAnterior").click(function() {
+            if (!state) {
+                if (paginacion > 1) {
+                    paginacion--;
+                    onEventPaginacion();
+                }
+            }
+        });
+
+        $("#btnSiguiente").click(function() {
+            if (!state) {
+                if (paginacion < totalPaginacion) {
+                    paginacion++;
+                    onEventPaginacion();
+                }
+            }
+        });
+
+        $("#txtSearch").keypress(function() {
+            if ($("#txtSearch").val().trim() != '') {
+                if (!state) {
+                    paginacion = 1;
+                    loadTableEmpleados();
+                    opcion = 1;
+                }
+            }
+        });
 
         $("#btnGuardarModal").click(function() {
 
@@ -513,14 +468,20 @@ if (!isset($_SESSION["IdEmpleado"])) {
             } else if ($("#celular").val() == '' || $("#celular").val().length < 6) {
                 tools.AlertWarning("Advertencia", "Ingrese un número de celular valido.")
             } else {
-                registrarEmpleado($("#tipoDocumento").val(), $("#numeroDocumento").val(), $(
-                        "#apellidos").val(), $("#nombres").val(), $("#sexo").val(),
-                    $("#nacimiento").val(), $("#telefono").val(), $("#celular").val(), $("#email")
-                    .val(), $("#direccion").val(),
-                    $("#ocupacion").val(), $("#pago").val(), $("#banco").val(), $("#numeroCuenta")
-                    .val(),
-                    $("#codigo").val(), $("#rol").val(), $("#usuario").val(), $("#pass").val(), $(
-                        "#estado").val(), )
+
+                tools.ModalDialog('Empleado', '¿Desea guardar los datos?', 'question', function(result) {
+                    if (result) {
+                        registrarEmpleado($("#tipoDocumento").val(), $("#numeroDocumento").val(), $(
+                            "#apellidos").val(), $("#nombres").val(), $("#sexo").val(),
+                            $("#nacimiento").val(), $("#telefono").val(), $("#celular").val(), $("#email")
+                            .val(), $("#direccion").val(),
+                            $("#ocupacion").val(), $("#pago").val(), $("#banco").val(), $("#numeroCuenta")
+                            .val(),
+                            $("#codigo").val(), $("#rol").val(), $("#usuario").val(), $("#pass").val(), $(
+                                "#estado").val(), )
+                    }
+                });
+                
             }
 
         });
@@ -549,6 +510,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
         }
     }
 
+    function onEventPaginacion() {
+        switch (opcion) {
+            case 0:
+                loadTableEmpleados();
+                break;
+            case 1:
+                loadTableEmpleados();
+                break;
+        }
+    }
 
     function loadTableEmpleados() {
         $.ajax({
@@ -578,11 +549,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             empleado.idEmpleado + '\')">' +
                             '<i class="fa fa-pencil"></i> Editar' +
                             '</button>';
-                        let btnPrivilegio =
-                            '<button class="btn btn-info btn-sm" onclick="loadPrivilegioEmpleado(\'' +
-                            empleado.idEmpleado + '\')">' +
-                            '<i class="fa fa-low-vision "></i> Acceso' +
-                            '</button>';
 
                         tbLista.append('<tr role="row" class="odd">' +
                             '<td class="sorting_1">' + count + '</td>' +
@@ -590,7 +556,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             '<td>' + empleado.apellidos + " " + empleado.nombres + '</td>' +
                             '<td>' + empleado.celular + '</td>' +
                             '<td>' + empleado.ocupacion + '</td>' +
-                            '<td>' + btnUpdate + ' ' + btnPrivilegio + '</td>' +
+                            '<td>' + btnUpdate + '</td>' +
                             '</tr>');
                     }
 
@@ -654,31 +620,32 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             }),
             beforeSend: function() {
-                $("#btnGuardarModal").empty();
-                $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
+                closeClearModal();
+                tools.ModalAlertInfo('Empleados', 'Procesando petición...');
+                // $("#btnGuardarModal").empty();
+                // $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
 
             },
             success: function(result) {
-                console.log(result)
+                // console.log(result)
                 if (result.estado == 1) {
-                    tools.AlertSuccess("Mensaje", result.mensaje)
-                    setTimeout(function() {
-                        location.href = "./empleados.php"
-                    }, 1000);
-                    closeClearModal();
+                    tools.ModalAlertSuccess('Empleados', result.mensaje);
+                    // setTimeout(function() {
+                    //     location.href = "./empleados.php"
+                    // }, 1500);
+                    loadInitEmpleados()
+                    
                 } else {
-                    tools.AlertWarning("Mensaje", result.mensaje)
-                    setTimeout(function() {
-                        $("#btnGuardarModal").empty();
-                        $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
-                    }, 1000);
-
+                    tools.ModalAlertWarning('Empleados', result.mensaje);
+                    // $("#btnGuardarModal").empty();
+                    // $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
+                    
                 }
             },
             error: function(error) {
-                tools.AlertError("Error", error.responseText);
-                $("#btnGuardarModal").empty();
-                $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
+                tools.ModalAlertError("Empleados", error.responseText);
+                // $("#btnGuardarModal").empty();
+                // $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
 
             }
         });
@@ -778,14 +745,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
         });
     }
-
-    function loadPrivilegioEmpleado(idEmpleado) {
-        $("#modalPrivilegio").modal("show");
-    }
-
-    function destroyModal(e) {
-        $("#modalPrivilegio").modal("hide")
-    }
+    
     </script>
 </body>
 

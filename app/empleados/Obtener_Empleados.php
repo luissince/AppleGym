@@ -10,6 +10,7 @@ require './EmpleadoAdo.php';
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Manejar petición GET
     $body = $_GET['page'];
+    $text = $_GET['text'];
     
     $empleados = EmpleadoAdo::getAllEmpleado(($body-1)*10,10);
     $total = EmpleadoAdo::getAllCountEmpleado();
