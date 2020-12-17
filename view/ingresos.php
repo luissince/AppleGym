@@ -38,7 +38,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         </div>
                     </div>
                     <div class="col-lg-4">
-                    <label for="f-fin">Opciones: </label>
+                        <label for="f-fin">Opciones: </label>
                         <div class="form-group">
                             <button class="btn btn-info" type="button" id="btnReporte"><i class="fa fa-file"></i>
                                 Reporte</button>
@@ -91,8 +91,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Estado</th>
                                             <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Metodo</th>
                                             <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Total</th>
-                                            <!-- <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Editar</th>
-                                        <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th> -->
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 100px;">Vendedor</th>
+                                            <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Detelle</th>
+                                            <!-- <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th>  -->
 
                                         </tr>
                                     </thead>
@@ -135,6 +136,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             $(document).ready(function() {
 
+                $("#btnReporte").click(function() {
+                    window.open("../app/reportes/resumeningresos.php", "_blank");
+                });
+
                 $("#btnReload").click(function() {
                     loadInitIngresos();
                 });
@@ -166,7 +171,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#btnReload").click(function(){
+                $("#btnReload").click(function() {
                     loadInitIngresos();
                 });
 
@@ -215,17 +220,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (result.estado == 1) {
                             tbLista.empty();
                             for (let venta of result.ventas) {
-                                let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">PROCESO</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
+                                let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR PAGAR</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
                                 let metodo = venta.forma == 1 ? '<i class="fa fa-money"></i> EFECTIVO' : '<i class="fa fa-credit-card-alt"></i> TARJETA';
                                 tbLista.append('<tr>' +
                                     '<td>' + venta.id + '</td>' +
                                     '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora, true) + '</td>' +
                                     '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
                                     '<td>' + venta.nombres + '<br>' + venta.apellidos + '</td>' +
-                                    '<td>' + (venta.tipo == 1 ? "CONTADO":"CRÉDITO")+ '</td>' +
+                                    '<td>' + (venta.tipo == 1 ? "CONTADO" : "CRÉDITO") + '</td>' +
                                     '<td>' + estado + '</td>' +
                                     '<td>' + metodo + '<br>' + venta.numero + '</td>' +
                                     '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
+                                    '<td>' + venta.empleadoNombres + '<br>' + venta.empleadoApellidos + '</td>' +
+                                    '<td><button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button></td>' +
                                     '</tr>');
                             }
                             totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
@@ -249,6 +256,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         state = false;
                     }
                 });
+            }
+
+            function detalleVenta(idVenta) {
+                //                 SELECT 
+                // case v.tipo when 1 then 'Contado' else 'Crédito' END as 'TipoVenta',
+                // case v.forma when 1 then 'Efectivo' else 'Tarjeta' end as 'FormaPago',
+                // sum(d.cantidad*d.precio) as 'Total' from detalleventatb as d 
+                // INNER JOIN ventatb as v on v.idVenta = d.idVenta
+                // where v.fecha = '2020-12-15' 
+                // GROUP by v.hora
             }
         </script>
     </body>

@@ -2,10 +2,10 @@
 -- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 14-12-2020 a las 17:14:42
--- Versión del servidor: 10.4.13-MariaDB
--- Versión de PHP: 7.4.7
+-- Host: 127.0.0.1
+-- Generation Time: Dec 15, 2020 at 04:01 PM
+-- Server version: 10.4.13-MariaDB
+-- PHP Version: 7.4.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,388 +18,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `systemagym`
+-- Database: `systemagym`
 --
-
-DELIMITER $$
---
--- Procedimientos
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Sp_Listar_Ventas_Reporte_Options` (IN `transaccion` INT, IN `fechaInicio` VARCHAR(20), IN `fechaFinal` VARCHAR(20), IN `tipo` TINYINT, IN `forma` TINYINT, IN `estado` TINYINT)  NO SQL
-SELECT v.idVenta,e.apellidos AS apellidosEmpleado,e.nombres AS nombresEmpleado,c.apellidos AS apellidosCliente,c.nombres AS nombresCliente,v.serie,v.numeracion,v.fecha,v.hora,v.total,v.tipo,v.forma,v.numero,v.estado,v.procedencia FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado INNER JOIN clientetb AS c ON v.cliente = c.idCliente
-WHERE 
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND estado = 0)
-OR 
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND v.estado = estado)
-ORDER BY v.fecha DESC,v.hora DESC$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Sp_Listar_Ventas_Search_Options` (IN `transaccion` TINYINT, IN `fechaInicio` VARCHAR(20), IN `fechaFinal` VARCHAR(20), IN `tipo` TINYINT, IN `forma` TINYINT, IN `estado` TINYINT, IN `x` INT, IN `y` INT)  NO SQL
-SELECT v.idVenta,e.apellidos AS apellidosEmpleado,e.nombres AS nombresEmpleado,c.apellidos AS apellidosCliente,c.nombres AS nombresCliente,v.serie,v.numeracion,v.fecha,v.hora,v.total,v.tipo,v.forma,v.numero,v.estado,v.procedencia FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado INNER JOIN clientetb AS c ON v.cliente = c.idCliente
-WHERE 
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND estado = 0)
-OR 
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND v.estado = estado)
-ORDER BY v.fecha DESC,v.hora DESC LIMIT x,y$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Sp_Listar_Ventas_Search_Options_Count` (IN `transaccion` TINYINT, IN `fechaInicio` DATE, IN `fechaFinal` DATE, IN `tipo` TINYINT, IN `forma` TINYINT, IN `estado` TINYINT)  NO SQL
-SELECT COUNT(v.idVenta) FROM ventatb AS v INNER JOIN empleadotb AS e ON v.vendedor = e.idEmpleado INNER JOIN clientetb AS c ON v.cliente = c.idCliente
-WHERE 
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND estado = 0)
-OR 
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND estado = 0)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND v.estado = estado)
-OR
-(v.procedencia = transaccion AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND forma = 0 AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND estado = 0)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND tipo = 0 AND v.forma = forma AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = 0 AND forma = 0 AND v.estado = estado)
-OR
-(transaccion = 0 AND v.fecha BETWEEN fechaInicio AND fechaFinal AND v.tipo = tipo AND v.forma = forma AND v.estado = estado)$$
-
---
--- Funciones
---
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Asistencia_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM asistenciatb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idAsistencia,'RA',''),'','') AS UNSIGNED INTEGER)) from asistenciatb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('RA000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('RA00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('RA0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('RA',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'RA0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Cliente_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM clientetb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idCliente,'CL',''),'','')AS UNSIGNED INTEGER)) from clientetb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('CL000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('CL00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('CL0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('CL',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'CL0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Contrato_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM contratotb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idContrato,'CT',''),'','') AS UNSIGNED INTEGER)) from contratotb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('CT000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('CT00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('CT0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('CT',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'CT0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Disciplina_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM disciplinatb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idDisciplina,'DI',''),'','')AS UNSIGNED INTEGER)) from disciplinatb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('DI000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('DI00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('DI0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('DI',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'DI0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Empleado_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM empleadotb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idEmpleado,'EM',''),'','') AS UNSIGNED INTEGER)) from empleadotb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('EM000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('EM00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('EM0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('EM',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'EM0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Horario_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM horariotb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idHorario,'HO',''),'','') AS UNSIGNED INTEGER)) from horariotb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('HO000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('H000',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('HO0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('H0',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'H00001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Membresia_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM membresiatb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idMembresia,'ME',''),'','')AS UNSIGNED INTEGER)) from membresiatb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('ME000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('ME00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('ME0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('ME',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'ME0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Movimiento_Codigo_Numerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	#Routine body goes here...
-	DECLARE CodGenerado int;
-	DECLARE valorActual int;
-	IF EXISTS(SELECT * FROM movimientostb) THEN
-		SET valorActual = (SELECT MAX(idMovimiento) from movimientostb);
-		SET CodGenerado = valorActual + 1;
-	ELSE
-	SET CodGenerado = 1;
-	END IF;
-		
-	RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Obtener_Nombre_Periodo_Pago` (`idPeriodo` INT) RETURNS VARCHAR(30) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE result varchar(30);
-    SET result = (SELECT nombre FROM tabla_periodo_pago WHERE id = idPeriodo);
-    RETURN result;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Obtener_Nombre_Puesto` (`idPuesto` INT) RETURNS VARCHAR(30) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE result varchar(30);
-    SET result = (SELECT nombre FROM tabla_puesto WHERE id = idPuesto);
-    RETURN result;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Plan_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM plantb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idPlan,'PL',''),'','') AS UNSIGNED INTEGER)) from plantb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('PL000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('PL00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('PL0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('PL',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'PL0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Producto_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM productotb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idProducto,'PD',''),'','')AS UNSIGNED INTEGER)) from productotb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('PD000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('PD00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('PD0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('PD',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'PD0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Fc_Venta_Codigo_Almanumerico` () RETURNS VARCHAR(12) CHARSET utf8 NO SQL
-BEGIN
-	DECLARE CodGenerado varchar(12);
-    DECLARE ValorActual varchar(12);
-    DECLARE Incremental int;
-    IF EXISTS(SELECT * FROM ventatb) THEN
-        SET ValorActual = (SELECT MAX(CAST(REPLACE(REPLACE(idVenta,'VT',''),'','')AS UNSIGNED INTEGER)) from ventatb);
-        SET Incremental = CAST(ValorActual AS UNSIGNED INTEGER)+1;
-        IF Incremental<=9 THEN    	
-                SET CodGenerado = CONCAT('VT000',Incremental);        
-        ELSEIF Incremental>=10 and Incremental<=99 THEN    	
-                SET CodGenerado = CONCAT('VT00',Incremental);
-         ELSEIF Incremental>=100 and Incremental<=999 THEN    
-                SET CodGenerado = CONCAT('VT0',Incremental);	
-         ELSE 
-                SET CodGenerado = CONCAT('VT',Incremental);
-         END IF;   
-     ELSE 
-     	SET CodGenerado = 'VT0001';
-     END IF;
- RETURN CodGenerado;
-END$$
-
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `asistenciatb`
+-- Table structure for table `asistenciatb`
 --
 
 CREATE TABLE `asistenciatb` (
@@ -416,7 +40,7 @@ CREATE TABLE `asistenciatb` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `clientetb`
+-- Table structure for table `clientetb`
 --
 
 CREATE TABLE `clientetb` (
@@ -434,7 +58,7 @@ CREATE TABLE `clientetb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `clientetb`
+-- Dumping data for table `clientetb`
 --
 
 INSERT INTO `clientetb` (`idCliente`, `dni`, `apellidos`, `nombres`, `sexo`, `fechaNacimiento`, `codigo`, `email`, `celular`, `direccion`, `predeterminado`) VALUES
@@ -443,12 +67,15 @@ INSERT INTO `clientetb` (`idCliente`, `dni`, `apellidos`, `nombres`, `sexo`, `fe
 ('CL0003', '78945620', 'JUAN', 'DAMIAN', 0, '2020-12-25', '', '', '123456789', '', 0),
 ('CL0004', '12345678', 'MARIO', 'JUAN', 1, '2020-12-02', '', '', '999998600', '', 0),
 ('CL0005', '12345670', 'MARIA', 'ASD', 0, '2020-12-10', '', '', '123456789', '', 0),
-('CL0006', '11111111', 'VULCAN', 'VULCAN', 1, '2020-12-10', '', '', '666666', '', 0);
+('CL0006', '11111111', 'VULCAN', 'VULCAN', 1, '2020-12-10', '', '', '666666', '', 0),
+('CL0007', '76423388', 'LARA SERNA', 'LUIS', 1, '1996-05-25', '', '', '966750883', '', 0),
+('CL0008', '789456002', 'MARCOS SOLAR', 'MARIO', 1, '1993-01-05', '', '', '95422111', '', 0),
+('CL0009', '78451212', 'CASTORA', 'ALEXANDRA', 1, '1555-02-10', '', '', '789456123', '', 0);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `contratotb`
+-- Table structure for table `contratotb`
 --
 
 CREATE TABLE `contratotb` (
@@ -464,7 +91,7 @@ CREATE TABLE `contratotb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `contratotb`
+-- Dumping data for table `contratotb`
 --
 
 INSERT INTO `contratotb` (`idContrato`, `idEmpleado`, `puesto`, `fechaInicio`, `fechaCulminacion`, `horario`, `periodo`, `sueldo`, `estado`) VALUES
@@ -482,7 +109,7 @@ INSERT INTO `contratotb` (`idContrato`, `idEmpleado`, `puesto`, `fechaInicio`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `detalleventatb`
+-- Table structure for table `detalleventatb`
 --
 
 CREATE TABLE `detalleventatb` (
@@ -495,17 +122,20 @@ CREATE TABLE `detalleventatb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `detalleventatb`
+-- Dumping data for table `detalleventatb`
 --
 
 INSERT INTO `detalleventatb` (`idVenta`, `idOrigen`, `cantidad`, `precio`, `descuento`, `procedencia`) VALUES
-('VT0001', 'PL0004', '2.0000', '250.0000', '0.0000', 1),
-('VT0001', 'PL0005', '1.0000', '40.0000', '0.0000', 1);
+('VT0001', 'PL0005', '5.0000', '40.0000', '0.0000', 1),
+('VT0002', 'PL0006', '1.0000', '150.0000', '0.0000', 1),
+('VT0003', 'PL0004', '1.0000', '250.0000', '0.0000', 1),
+('VT0003', 'PL0005', '1.0000', '40.0000', '0.0000', 1),
+('VT0004', 'PL0005', '2.0000', '40.0000', '0.0000', 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `disciplinatb`
+-- Table structure for table `disciplinatb`
 --
 
 CREATE TABLE `disciplinatb` (
@@ -517,7 +147,7 @@ CREATE TABLE `disciplinatb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `disciplinatb`
+-- Dumping data for table `disciplinatb`
 --
 
 INSERT INTO `disciplinatb` (`idDisciplina`, `nombre`, `color`, `descripcion`, `estado`) VALUES
@@ -533,7 +163,7 @@ INSERT INTO `disciplinatb` (`idDisciplina`, `nombre`, `color`, `descripcion`, `e
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `empleadotb`
+-- Table structure for table `empleadotb`
 --
 
 CREATE TABLE `empleadotb` (
@@ -560,7 +190,7 @@ CREATE TABLE `empleadotb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `empleadotb`
+-- Dumping data for table `empleadotb`
 --
 
 INSERT INTO `empleadotb` (`idEmpleado`, `tipoDocumento`, `numeroDocumento`, `apellidos`, `nombres`, `sexo`, `fechaNacimiento`, `telefono`, `celular`, `email`, `direccion`, `codigo`, `ocupacion`, `formaPago`, `entidadBancaria`, `numeroCuenta`, `rol`, `usuario`, `clave`, `estado`) VALUES
@@ -575,7 +205,7 @@ INSERT INTO `empleadotb` (`idEmpleado`, `tipoDocumento`, `numeroDocumento`, `ape
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `horariotb`
+-- Table structure for table `horariotb`
 --
 
 CREATE TABLE `horariotb` (
@@ -586,7 +216,7 @@ CREATE TABLE `horariotb` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `horariotb`
+-- Dumping data for table `horariotb`
 --
 
 INSERT INTO `horariotb` (`idHorario`, `descripcion`, `dias`, `estado`) VALUES
@@ -598,7 +228,33 @@ INSERT INTO `horariotb` (`idHorario`, `descripcion`, `dias`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `membresiatb`
+-- Table structure for table `ingresotb`
+--
+
+CREATE TABLE `ingresotb` (
+  `idPrecedencia` varchar(12) NOT NULL,
+  `idIngreso` int(11) NOT NULL,
+  `detalle` varchar(200) NOT NULL,
+  `tipo` tinyint(4) NOT NULL,
+  `forma` tinyint(4) NOT NULL,
+  `numero` varchar(30) NOT NULL,
+  `monto` decimal(18,4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `ingresotb`
+--
+
+INSERT INTO `ingresotb` (`idPrecedencia`, `idIngreso`, `detalle`, `tipo`, `forma`, `numero`, `monto`) VALUES
+('VT0001', 1, 'INGRESO EN EFECTIVO DEL COMPROBANTE NT001-1', 2, 1, '', '100.0000'),
+('VT0002', 2, 'INGRESO EN EFECTIVO DEL COMPROBANTE NT001-2', 1, 1, '', '150.0000'),
+('VT0003', 3, 'INGRESO EN EFECTIVO DEL COMPROBANTE NT001-3', 2, 0, '', '0.0000'),
+('VT0004', 4, 'INGRESO EN EFECTIVO DEL COMPROBANTE NT001-4', 1, 1, '', '80.0000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `membresiatb`
 --
 
 CREATE TABLE `membresiatb` (
@@ -618,17 +274,20 @@ CREATE TABLE `membresiatb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `membresiatb`
+-- Dumping data for table `membresiatb`
 --
 
 INSERT INTO `membresiatb` (`idMembresia`, `idPlan`, `idCliente`, `idVenta`, `fechaInicio`, `horaInicio`, `fechaFin`, `horaFin`, `tipoMembresia`, `estado`, `cantidad`, `precio`, `descuento`) VALUES
-('ME0001', 'PL0004', 'CL0002', 'VT0001', '2020-12-13', '19:42:49', '2021-08-16', '19:42:49', '1', 1, '2.0000', '250.0000', '0'),
-('ME0002', 'PL0005', 'CL0002', 'VT0001', '2020-12-13', '19:42:58', '2021-01-15', '19:42:58', '1', 1, '1.0000', '40.0000', '0');
+('ME0001', 'PL0005', 'CL0009', 'VT0001', '2020-12-15', '07:49:46', '2021-05-17', '07:49:46', '1', 1, '5.0000', '40.0000', '0'),
+('ME0002', 'PL0006', 'CL0009', 'VT0002', '2020-12-15', '07:51:47', '2021-01-16', '07:51:47', '1', 1, '1.0000', '150.0000', '0'),
+('ME0003', 'PL0004', 'CL0001', 'VT0003', '2020-12-15', '07:53:52', '2021-04-20', '07:53:52', '1', 1, '1.0000', '250.0000', '0'),
+('ME0004', 'PL0005', 'CL0001', 'VT0003', '2020-12-15', '07:53:56', '2021-01-17', '07:53:56', '1', 1, '1.0000', '40.0000', '0'),
+('ME0005', 'PL0005', 'CL0004', 'VT0004', '2020-12-20', '09:08:30', '2021-02-21', '09:08:30', '1', 1, '2.0000', '40.0000', '0');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `mi_empresatb`
+-- Table structure for table `mi_empresatb`
 --
 
 CREATE TABLE `mi_empresatb` (
@@ -645,7 +304,7 @@ CREATE TABLE `mi_empresatb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `mi_empresatb`
+-- Dumping data for table `mi_empresatb`
 --
 
 INSERT INTO `mi_empresatb` (`idMiEmpresa`, `representante`, `nombreEmpresa`, `ruc`, `telefono`, `celular`, `email`, `paginaWeb`, `direccion`, `terminos`) VALUES
@@ -654,7 +313,7 @@ INSERT INTO `mi_empresatb` (`idMiEmpresa`, `representante`, `nombreEmpresa`, `ru
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `movimientostb`
+-- Table structure for table `movimientostb`
 --
 
 CREATE TABLE `movimientostb` (
@@ -669,7 +328,7 @@ CREATE TABLE `movimientostb` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `plantb`
+-- Table structure for table `plantb`
 --
 
 CREATE TABLE `plantb` (
@@ -687,7 +346,7 @@ CREATE TABLE `plantb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `plantb`
+-- Dumping data for table `plantb`
 --
 
 INSERT INTO `plantb` (`idPlan`, `nombre`, `tipoDisciplina`, `sesiones`, `meses`, `dias`, `freeze`, `precio`, `descripcion`, `estado`, `prueba`) VALUES
@@ -698,7 +357,7 @@ INSERT INTO `plantb` (`idPlan`, `nombre`, `tipoDisciplina`, `sesiones`, `meses`,
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `plantb_disciplinatb`
+-- Table structure for table `plantb_disciplinatb`
 --
 
 CREATE TABLE `plantb_disciplinatb` (
@@ -710,7 +369,7 @@ CREATE TABLE `plantb_disciplinatb` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `productotb`
+-- Table structure for table `productotb`
 --
 
 CREATE TABLE `productotb` (
@@ -727,7 +386,7 @@ CREATE TABLE `productotb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `productotb`
+-- Dumping data for table `productotb`
 --
 
 INSERT INTO `productotb` (`idProducto`, `clave`, `claveAlterna`, `nombre`, `categoria`, `impuesto`, `cantidad`, `costo`, `precio`, `estado`) VALUES
@@ -743,7 +402,7 @@ INSERT INTO `productotb` (`idProducto`, `clave`, `claveAlterna`, `nombre`, `cate
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tabla_ocupacion`
+-- Table structure for table `tabla_ocupacion`
 --
 
 CREATE TABLE `tabla_ocupacion` (
@@ -758,7 +417,7 @@ CREATE TABLE `tabla_ocupacion` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tabla_periodo_pago`
+-- Table structure for table `tabla_periodo_pago`
 --
 
 CREATE TABLE `tabla_periodo_pago` (
@@ -771,7 +430,7 @@ CREATE TABLE `tabla_periodo_pago` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tabla_periodo_pago`
+-- Dumping data for table `tabla_periodo_pago`
 --
 
 INSERT INTO `tabla_periodo_pago` (`id`, `nombre`, `descripcion`, `claveAlterna`, `estado`, `predeterminado`) VALUES
@@ -783,7 +442,7 @@ INSERT INTO `tabla_periodo_pago` (`id`, `nombre`, `descripcion`, `claveAlterna`,
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tabla_puesto`
+-- Table structure for table `tabla_puesto`
 --
 
 CREATE TABLE `tabla_puesto` (
@@ -796,7 +455,7 @@ CREATE TABLE `tabla_puesto` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tabla_puesto`
+-- Dumping data for table `tabla_puesto`
 --
 
 INSERT INTO `tabla_puesto` (`id`, `nombre`, `descripcion`, `claveAlterna`, `estado`, `predeterminado`) VALUES
@@ -808,7 +467,7 @@ INSERT INTO `tabla_puesto` (`id`, `nombre`, `descripcion`, `claveAlterna`, `esta
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tabla_rol`
+-- Table structure for table `tabla_rol`
 --
 
 CREATE TABLE `tabla_rol` (
@@ -821,7 +480,7 @@ CREATE TABLE `tabla_rol` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tabla_rol`
+-- Dumping data for table `tabla_rol`
 --
 
 INSERT INTO `tabla_rol` (`id`, `nombre`, `descripcion`, `claveAlterna`, `estado`, `predeterminado`) VALUES
@@ -832,7 +491,7 @@ INSERT INTO `tabla_rol` (`id`, `nombre`, `descripcion`, `claveAlterna`, `estado`
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tipocomprobantetb`
+-- Table structure for table `tipocomprobantetb`
 --
 
 CREATE TABLE `tipocomprobantetb` (
@@ -844,7 +503,7 @@ CREATE TABLE `tipocomprobantetb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `tipocomprobantetb`
+-- Dumping data for table `tipocomprobantetb`
 --
 
 INSERT INTO `tipocomprobantetb` (`idTipoComprobante`, `nombre`, `serie`, `numeracion`, `predeterminado`) VALUES
@@ -855,7 +514,7 @@ INSERT INTO `tipocomprobantetb` (`idTipoComprobante`, `nombre`, `serie`, `numera
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `turnotb`
+-- Table structure for table `turnotb`
 --
 
 CREATE TABLE `turnotb` (
@@ -866,7 +525,7 @@ CREATE TABLE `turnotb` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `turnotb`
+-- Dumping data for table `turnotb`
 --
 
 INSERT INTO `turnotb` (`idTurno`, `idHorario`, `horaInicio`, `horaSalida`) VALUES
@@ -880,7 +539,7 @@ INSERT INTO `turnotb` (`idTurno`, `idHorario`, `horaInicio`, `horaSalida`) VALUE
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `ventacreditotb`
+-- Table structure for table `ventacreditotb`
 --
 
 CREATE TABLE `ventacreditotb` (
@@ -894,10 +553,21 @@ CREATE TABLE `ventacreditotb` (
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `ventacreditotb`
+--
+
+INSERT INTO `ventacreditotb` (`idVenta`, `idVentaCredito`, `monto`, `fechaRegistro`, `horaRegistro`, `fechaPago`, `horaPago`, `estado`) VALUES
+('VT0001', 1, '100.0000', '2020-12-15', '07:50:02', '0000-00-00', '00:00:00', 1),
+('VT0001', 2, '100.0000', '2020-12-20', '07:50:02', '0000-00-00', '00:00:00', 0),
+('VT0003', 3, '100.0000', '2020-12-20', '07:54:37', '0000-00-00', '00:00:00', 0),
+('VT0003', 4, '100.0000', '2020-12-26', '07:54:37', '0000-00-00', '00:00:00', 0),
+('VT0003', 5, '90.0000', '2020-12-27', '07:54:37', '0000-00-00', '00:00:00', 0);
+
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `ventatb`
+-- Table structure for table `ventatb`
 --
 
 CREATE TABLE `ventatb` (
@@ -918,187 +588,202 @@ CREATE TABLE `ventatb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `ventatb`
+-- Dumping data for table `ventatb`
 --
 
 INSERT INTO `ventatb` (`idVenta`, `cliente`, `vendedor`, `documento`, `serie`, `numeracion`, `fecha`, `hora`, `tipo`, `forma`, `numero`, `pago`, `vuelto`, `estado`) VALUES
-('VT0001', 'CL0002', '0', 1, 'NT001', 1, '2020-12-13', '19:43:44', 1, 1, '', '540.0000', '0.0000', 1);
+('VT0001', 'CL0009', '0', 1, 'NT001', 1, '2020-12-15', '07:50:02', 2, 1, '', '0.0000', '0.0000', 2),
+('VT0002', 'CL0009', '0', 1, 'NT001', 2, '2020-12-15', '07:51:57', 1, 1, '', '200.0000', '50.0000', 1),
+('VT0003', 'CL0001', '0', 1, 'NT001', 3, '2020-12-15', '07:54:38', 2, 0, '', '0.0000', '0.0000', 2),
+('VT0004', 'CL0004', '0', 1, 'NT001', 4, '2020-12-15', '09:08:41', 1, 1, '', '100.0000', '20.0000', 1);
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `asistenciatb`
+-- Indexes for table `asistenciatb`
 --
 ALTER TABLE `asistenciatb`
   ADD PRIMARY KEY (`idAsistencia`);
 
 --
--- Indices de la tabla `clientetb`
+-- Indexes for table `clientetb`
 --
 ALTER TABLE `clientetb`
   ADD PRIMARY KEY (`idCliente`);
 
 --
--- Indices de la tabla `contratotb`
+-- Indexes for table `contratotb`
 --
 ALTER TABLE `contratotb`
   ADD PRIMARY KEY (`idContrato`);
 
 --
--- Indices de la tabla `detalleventatb`
+-- Indexes for table `detalleventatb`
 --
 ALTER TABLE `detalleventatb`
   ADD PRIMARY KEY (`idVenta`,`idOrigen`);
 
 --
--- Indices de la tabla `disciplinatb`
+-- Indexes for table `disciplinatb`
 --
 ALTER TABLE `disciplinatb`
   ADD PRIMARY KEY (`idDisciplina`) USING BTREE;
 
 --
--- Indices de la tabla `empleadotb`
+-- Indexes for table `empleadotb`
 --
 ALTER TABLE `empleadotb`
   ADD PRIMARY KEY (`idEmpleado`);
 
 --
--- Indices de la tabla `horariotb`
+-- Indexes for table `horariotb`
 --
 ALTER TABLE `horariotb`
   ADD PRIMARY KEY (`idHorario`);
 
 --
--- Indices de la tabla `membresiatb`
+-- Indexes for table `ingresotb`
+--
+ALTER TABLE `ingresotb`
+  ADD PRIMARY KEY (`idIngreso`,`idPrecedencia`);
+
+--
+-- Indexes for table `membresiatb`
 --
 ALTER TABLE `membresiatb`
   ADD PRIMARY KEY (`idMembresia`);
 
 --
--- Indices de la tabla `mi_empresatb`
+-- Indexes for table `mi_empresatb`
 --
 ALTER TABLE `mi_empresatb`
   ADD PRIMARY KEY (`idMiEmpresa`);
 
 --
--- Indices de la tabla `movimientostb`
+-- Indexes for table `movimientostb`
 --
 ALTER TABLE `movimientostb`
   ADD PRIMARY KEY (`idMovimiento`,`idTabla`) USING BTREE;
 
 --
--- Indices de la tabla `plantb`
+-- Indexes for table `plantb`
 --
 ALTER TABLE `plantb`
   ADD PRIMARY KEY (`idPlan`);
 
 --
--- Indices de la tabla `plantb_disciplinatb`
+-- Indexes for table `plantb_disciplinatb`
 --
 ALTER TABLE `plantb_disciplinatb`
   ADD PRIMARY KEY (`idPlan`,`idDisciplina`);
 
 --
--- Indices de la tabla `productotb`
+-- Indexes for table `productotb`
 --
 ALTER TABLE `productotb`
   ADD PRIMARY KEY (`idProducto`);
 
 --
--- Indices de la tabla `tabla_ocupacion`
+-- Indexes for table `tabla_ocupacion`
 --
 ALTER TABLE `tabla_ocupacion`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `tabla_periodo_pago`
+-- Indexes for table `tabla_periodo_pago`
 --
 ALTER TABLE `tabla_periodo_pago`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `tabla_puesto`
+-- Indexes for table `tabla_puesto`
 --
 ALTER TABLE `tabla_puesto`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `tabla_rol`
+-- Indexes for table `tabla_rol`
 --
 ALTER TABLE `tabla_rol`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `tipocomprobantetb`
+-- Indexes for table `tipocomprobantetb`
 --
 ALTER TABLE `tipocomprobantetb`
   ADD PRIMARY KEY (`idTipoComprobante`);
 
 --
--- Indices de la tabla `turnotb`
+-- Indexes for table `turnotb`
 --
 ALTER TABLE `turnotb`
   ADD PRIMARY KEY (`idHorario`,`idTurno`);
 
 --
--- Indices de la tabla `ventacreditotb`
+-- Indexes for table `ventacreditotb`
 --
 ALTER TABLE `ventacreditotb`
   ADD PRIMARY KEY (`idVentaCredito`,`idVenta`);
 
 --
--- Indices de la tabla `ventatb`
+-- Indexes for table `ventatb`
 --
 ALTER TABLE `ventatb`
   ADD PRIMARY KEY (`idVenta`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `mi_empresatb`
+-- AUTO_INCREMENT for table `ingresotb`
+--
+ALTER TABLE `ingresotb`
+  MODIFY `idIngreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `mi_empresatb`
 --
 ALTER TABLE `mi_empresatb`
   MODIFY `idMiEmpresa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `tabla_ocupacion`
+-- AUTO_INCREMENT for table `tabla_ocupacion`
 --
 ALTER TABLE `tabla_ocupacion`
   MODIFY `id` int(12) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `tabla_periodo_pago`
+-- AUTO_INCREMENT for table `tabla_periodo_pago`
 --
 ALTER TABLE `tabla_periodo_pago`
   MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT de la tabla `tabla_puesto`
+-- AUTO_INCREMENT for table `tabla_puesto`
 --
 ALTER TABLE `tabla_puesto`
   MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `tabla_rol`
+-- AUTO_INCREMENT for table `tabla_rol`
 --
 ALTER TABLE `tabla_rol`
   MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `tipocomprobantetb`
+-- AUTO_INCREMENT for table `tipocomprobantetb`
 --
 ALTER TABLE `tipocomprobantetb`
   MODIFY `idTipoComprobante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `ventacreditotb`
+-- AUTO_INCREMENT for table `ventacreditotb`
 --
 ALTER TABLE `ventacreditotb`
-  MODIFY `idVentaCredito` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idVentaCredito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

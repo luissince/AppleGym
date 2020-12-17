@@ -88,7 +88,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 <div class="col-xl-2 col-lg-12 col-md-12 col-sm-12 col-12">
                     <div class="tile p-0">
                         <ul class="nav flex-column nav-tabs user-tabs">
-                            <li class="nav-item"><a class="nav-link active" href="#menbresia" data-toggle="tab">Membresias</a></li>
+                            <li class="nav-item"><a class="nav-link active" href="#comprobantes" data-toggle="tab">Comprobantes</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#menbresia" data-toggle="tab">Membresias</a></li>
                             <li class="nav-item"><a class="nav-link" href="#asistencias" data-toggle="tab">Asistencias</a>
                             </li>
                         </ul>
@@ -97,7 +98,35 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 col-12">
                     <div class="tab-content">
 
-                        <div class="tab-pane active " id="menbresia">
+                        <div class="tab-pane active " id="comprobantes">
+                            <div class="tile p-3">                               
+                                <br>
+                                <div class="row">
+                                    <div class="table-responsive pl-3 pr-3">
+                                        <table class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 5%;">#</th>
+                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Fecha</th>
+                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20%;">Comprobante</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Tipo</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Estado</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Total</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Detalle</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Pagos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbListaVentas">
+                                                <!-- tbLista -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade " id="menbresia">
                             <div class="tile p-3">
                                 <div class="bs-component text-right">
                                     <button class="btn btn-success" type="button" id="btnReporte"><i class="fa fa-file"></i>
@@ -116,8 +145,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                     <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Plan</th>
                                                     <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Comprobante</th>
                                                     <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20%;">Duración</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Estado</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Importe</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Pago</th>
+                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Total</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbListaMembresia">
@@ -172,15 +201,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
             // let opcion = 0;
             // let state = false;
 
-            let tbListaMembresia = $("#tbListaMembresia")
-            let totalPaginacion = 0;
-            let paginacion = 0;
-            let idCliente = "<?php echo  $_GET["idCliente"]; ?>"
+            let tbListaMembresia = $("#tbListaMembresia");
+            let tbListaVenta = $("#tbListaVentas");
+            let idCliente = "<?php echo  $_GET["idCliente"]; ?>";
 
             $(document).ready(function() {
 
                 loadDataCliente(idCliente);
-                initTableMembresia()
+                initTableMembresia();
+                initTableVentas();
             })
 
             function loadDataCliente(idCurrentClient) {
@@ -201,9 +230,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         $("#loading").append('<img src="./images/loading.gif" width="25" height="25" />')
                     },
                     success: function(result) {
-                        // console.log(result)
                         if (result.estado == 1) {
-
                             let cliente = result.cliente;
                             $("#nombreCompleto").append((cliente.nombres + ' ' + cliente.apellidos).toUpperCase())
                             $("#dni").append(cliente.dni)
@@ -223,7 +250,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                             }, 1000);
                         }
-
                     },
                     error: function(error) {
                         tools.AlertError("Error", error.responseText);
@@ -233,26 +259,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function initTableMembresia() {
-                paginacion = 1;
                 loadTableMembresias(idCliente);
             }
 
             function loadTableMembresias(id) {
-
                 $.ajax({
                     url: "../app/membresias/Obtener_Membresia_Por_Cliente.php",
                     method: "GET",
                     data: {
-                        page: paginacion,
-                        idCliente: id
+                        "page": 1,
+                        "idCliente": id
                     },
                     beforeSend: function() {
-                        // state = true;
                         tbListaMembresia.empty();
                         tbListaMembresia.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
-
                     },
                     success: function(result) {
                         if (result.estado == 1) {
@@ -260,8 +282,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tbListaMembresia.empty();
                             for (let membresia of result.membresias) {
                                 let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
-                                let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">pagado</span>' : '<span class="badge badge-pill badge-danger">Pendiente</span>';
-
+                                let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">PAGADO</span>' : '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
                                 count++;
                                 tbListaMembresia.append('<tr role="row" class="odd">' +
                                     '<td class="sorting_1">' + count + '</td>' +
@@ -270,20 +291,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + membresia.serie + "-" + membresia.numeracion + '</td>' +
                                     '<td>Del ' + tools.getDateForma(membresia.fechaInicio) + ' al ' + tools.getDateForma(membresia.fechaFin) + '</td>' +
                                     '<td>' + estado + '</td>' +
-                                    '<td>' + tools.formatMoney(membresia.total, 2) + '</td>' +
+                                    '<td>S/ ' + tools.formatMoney(membresia.total, 2) + '</td>' +                               
                                     '</tr>');
                             }
-                            totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
-                                10))));
-                            $("#lblPaginaActual").html(paginacion);
-                            $("#lblPaginaSiguiente").html(totalPaginacion);
-                            // state = false;
                         } else {
                             tbListaMembresia.empty();
                             tbListaMembresia.append(
                                 '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
                                 result.mensaje + '</p></td></tr>');
-                            // state = false;
                         }
                     },
                     error: function(error) {
@@ -291,10 +306,63 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         tbListaMembresia.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
-                        // state = false;
                     }
                 });
             }
+
+            function initTableVentas() {
+                loadTableVentas(idCliente);
+            }
+
+            function loadTableVentas(id) {
+                $.ajax({
+                    url: "../app/venta/Listar_Venta.php",
+                    method: "GET",
+                    data: {
+                        "opcion":2,
+                        "idCliente": id
+                    },
+                    beforeSend: function() {
+                        tbListaVenta.empty();
+                        tbListaVenta.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                        );
+                    },
+                    success: function(result) {
+                        if (result.estado == 1) {
+                            tbListaVenta.empty();
+                            for(let venta of result.ventas){
+                                let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR PAGAR</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
+                                tbListaVenta.append('<tr>'+
+                                '<td>'+venta.id+'</td>'+
+                                '<td>'+tools.getDateForma(venta.fecha)+'<br>'+tools.getTimeForma(venta.hora)+'</td>'+
+                                '<td>'+venta.nombre+'<br>'+venta.serie+'-'+venta.numeracion+'</td>'+
+                                '<td>'+(venta.tipo==1?'CONTADO':'CRÉDITO')+'</td>'+
+                                '<td>'+estado+'</td>'+
+                                '<td>S/ '+tools.formatMoney(venta.total)+'</td>'+
+                                '<td><button class="btn btn-info"><i class="fa fa-eye"></i></button></td>'+
+                                '<td><button class="btn btn-primary"><i class="fa fa-briefcase"></i></button></td>'+
+                                '</tr>');
+                            }
+                            console.log(result)
+                        } else {
+                            tbListaVenta.empty();
+                            tbListaVenta.append(
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                                result.mensaje + '</p></td></tr>');
+                        }
+                    },
+                    error: function(error) {
+                        tbListaVenta.empty();
+                        tbListaVenta.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                            error.responseText + '</p></td></tr>');
+                    }
+                });
+            }
+
+             
+
         </script>
     </body>
 

@@ -302,7 +302,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 $("#btnAdd").click(function() {
                     $("#modalPlan").modal("show");
-                    $("#titulo-modal").append('<i class="fa fa-align-left"></i> Registrar Plane')
+                    $("#titulo-modal").append('<i class="fa fa-align-left"></i> Registrar Plan')
                 });
 
                 $("#btnGuardarModal").click(function() {
