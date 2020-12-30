@@ -17,6 +17,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
         <main class="app-content">
+
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
+
             <div class="app-title">
                 <h1><i class="fa fa-money"></i> Ingresos</h1>
             </div>
@@ -217,7 +221,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (!state) {
                             paginacion = 1;
                             loadTableIngresos("", fechaInicio.val(), fechaFinal.val());
-                             opcion = 0;
+                            opcion = 0;
                         }
                     }
                 });

@@ -190,8 +190,8 @@ class EmpleadoAdo
             $comando->bindParam(5, $y, PDO::PARAM_INT);
             $comando->execute();
             $arrayEmpleados = array();
-            while($row = $comando->fetch()){
-                array_push($arrayEmpleados,array(
+            while ($row = $comando->fetch()) {
+                array_push($arrayEmpleados, array(
                     "idEmpleado" => $row["idEmpleado"],
                     "tipoDocumento" => $row["tipoDocumento"],
                     "numeroDocumento" => $row["numeroDocumento"],
@@ -223,7 +223,7 @@ class EmpleadoAdo
             $comando->execute();
             $resultTotal =  $comando->fetchColumn();
 
-            array_push($array,$arrayEmpleados,$resultTotal);
+            array_push($array, $arrayEmpleados, $resultTotal);
             return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
@@ -433,5 +433,43 @@ class EmpleadoAdo
         } catch (Exception $ex) {
         }
         return $array;
+    }
+
+    public static function getMembresiaMarcarAsistencia($buscar)
+    {
+        try {
+            $array = array();
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE numeroDocumento = ? or codigo = ?");
+            $comando->bindValue(1, $buscar, PDO::PARAM_STR);
+            $comando->bindValue(2, $buscar, PDO::PARAM_STR);
+            $comando->execute();
+            $empleado = $comando->fetchObject();
+            if (!$empleado) {
+                throw new Exception("Datos no encontrados, intente nuevamente o consulte al encargado sobre su información");
+            }
+
+            $resultAsistencia = "";
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1");
+            $comando->bindValue(1, $empleado->idEmpleado , PDO::PARAM_STR);
+            $comando->execute();
+            if ($comando->fetch()) {
+                $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1 and fechaApertura  = CURDATE()");
+                $comando->bindValue(1, $empleado->idEmpleado , PDO::PARAM_STR);
+                $comando->execute();
+                $validate = $comando->fetchObject();
+                if ($validate) {
+                    $resultAsistencia = $validate;
+                } else {
+                    $resultAsistencia = "MARCAR ENTRADA";
+                }
+            } else {
+                $resultAsistencia = "MARCAR ENTRADA";
+            }
+
+            array_push($array, $empleado, $resultAsistencia);
+            return $array;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 }

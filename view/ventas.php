@@ -17,6 +17,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
         <main class="app-content">
+
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
+
             <div class="app-title">
                 <h1><i class="fa fa-folder"></i> Ventas</h1>
             </div>
@@ -79,13 +83,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     <div class="col-lg-4">
                         <label for="f-inicio">Fecha de inicio: </label>
                         <div class="form-group">
-                            <input class="form-control" id="fechaInicio"  type="date" >
+                            <input class="form-control" id="fechaInicio" type="date">
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <label for="f-fin">Fecha de fin: </label>
                         <div class="form-group">
-                            <input class="form-control"  id="fechaFin"  type="date" >
+                            <input class="form-control" id="fechaFin" type="date">
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -293,7 +297,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
                                     '<td>' + venta.nombres + '<br>' + venta.apellidos + '</td>' +
                                     '<td>' + (venta.tipo == 1 ? "CONTADO" : "CRÉDITO") + '</td>' +
-                                    '<td>' + estado + '</td>' +                                   
+                                    '<td>' + estado + '</td>' +
                                     '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
                                     '<td>' + venta.empleadoNombres + '<br>' + venta.empleadoApellidos + '</td>' +
                                     '<td><button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button></td>' +

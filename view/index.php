@@ -1,21 +1,27 @@
 <?php
 session_start();
 if (!isset($_SESSION["IdEmpleado"])) {
-    echo '<script>location.href = "./login.php";</script>';
+  echo '<script>location.href = "./login.php";</script>';
 } else {
-    ?>
+?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <?php include './layout/head.php';?>
-</head>
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <?php include './layout/head.php'; ?>
+  </head>
+
   <body class="app sidebar-mini">
     <!-- Navbar-->
     <?php include("./layout/header.php"); ?>
     <!-- Sidebar menu-->
     <?php include("./layout/menu.php"); ?>
     <main class="app-content">
+
+      <!-- Sidebar menu-->
+      <?php include "./marcarentrada.php"; ?>
+
       <div class="app-title">
         <div>
           <h1><i class="fa fa-dashboard"></i> Dashboard</h1>
@@ -26,6 +32,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
           <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
         </ul>
       </div>
+
       <div class="row">
         <div class="col-md-6 col-lg-3">
           <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
@@ -60,6 +67,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-6">
           <div class="tile">
@@ -80,46 +88,47 @@ if (!isset($_SESSION["IdEmpleado"])) {
       </div>
     </main>
     <!-- Essential javascripts for application to work-->
-    <?php include("./layout/footer.php"); ?>
+    <?php include "./layout/footer.php"; ?>
+
     <script type="text/javascript">
+      let tools = new Tools();
+
       var data = {
-      	labels: ["January", "February", "March", "April", "May"],
-      	datasets: [
-      		{
-      			label: "My First dataset",
-      			fillColor: "rgba(220,220,220,0.2)",
-      			strokeColor: "rgba(220,220,220,1)",
-      			pointColor: "rgba(220,220,220,1)",
-      			pointStrokeColor: "#fff",
-      			pointHighlightFill: "#fff",
-      			pointHighlightStroke: "rgba(220,220,220,1)",
-      			data: [65, 59, 80, 81, 56]
-      		},
-      		{
-      			label: "My Second dataset",
-      			fillColor: "rgba(151,187,205,0.2)",
-      			strokeColor: "rgba(151,187,205,1)",
-      			pointColor: "rgba(151,187,205,1)",
-      			pointStrokeColor: "#fff",
-      			pointHighlightFill: "#fff",
-      			pointHighlightStroke: "rgba(151,187,205,1)",
-      			data: [28, 48, 40, 19, 86]
-      		}
-      	]
+        labels: ["January", "February", "March", "April", "May"],
+        datasets: [{
+            label: "My First dataset",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [65, 59, 80, 81, 56]
+          },
+          {
+            label: "My Second dataset",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: [28, 48, 40, 19, 86]
+          }
+        ]
       };
-      var pdata = [
-      	{
-      		value: 300,
-      		color: "#46BFBD",
-      		highlight: "#5AD3D1",
-      		label: "Complete"
-      	},
-      	{
-      		value: 50,
-      		color:"#F7464A",
-      		highlight: "#FF5A5E",
-      		label: "In-Progress"
-      	}
+      var pdata = [{
+          value: 300,
+          color: "#46BFBD",
+          highlight: "#5AD3D1",
+          label: "Complete"
+        },
+        {
+          value: 50,
+          color: "#F7464A",
+          highlight: "#FF5A5E",
+          label: "In-Progress"
+        }
       ]
 
       var ctxl = $("#lineChartDemo").get(0).getContext("2d");
@@ -129,7 +138,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
       var pieChart = new Chart(ctxp).Pie(pdata);
     </script>
   </body>
-</html>
+
+  </html>
 
 <?php
 }

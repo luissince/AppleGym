@@ -19,6 +19,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <?php include "./layout/menu.php"; ?>
         <main class="app-content">
 
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
+
             <!-- modal detelle de la venta -->
             <div class="row">
                 <div class="modal fade show" id="modalDetalle" data-backdrop="static" aria-modal="true">
@@ -316,12 +319,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <table class="table table-hover table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th  style="width: 5%;">#</th>
-                                                    <th  style="width: 20%;">Fecha de Ingreso</th>
-                                                    <th  style="width: 20%;">Hora de Ingreso</th>
-                                                    <th  style="width: 20%;">Fecha de Salida</th>
-                                                    <th  style="width: 20%;">Hora de Salida</th>
-                                                    <th  style="width: 20%;">Estado</th>
+                                                    <th style="width: 5%;">#</th>
+                                                    <th style="width: 20%;">Fecha de Ingreso</th>
+                                                    <th style="width: 20%;">Hora de Ingreso</th>
+                                                    <th style="width: 20%;">Fecha de Salida</th>
+                                                    <th style="width: 20%;">Hora de Salida</th>
+                                                    <th style="width: 20%;">Estado</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbListaAsistencia">

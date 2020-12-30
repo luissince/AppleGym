@@ -19,6 +19,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
         <main class="app-content">
+
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
+
             <div class="app-title">
                 <div>
                     <h1><i class="fa fa-align-left"></i> Planes</h1>

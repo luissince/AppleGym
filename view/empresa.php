@@ -18,6 +18,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
         <main class="app-content">
+
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
+
             <div class="app-title">
                 <div>
                     <h1><i class="fa fa-calendar"></i> Datos de mi empresa <spam id="loading"></spam>
@@ -206,8 +210,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $.ajax({
                     url: "../app/miempresa/Obtener_MiEmpresa.php",
                     method: "",
-                    data: {
-                    },
+                    data: {},
                     beforeSend: function() {
                         state = true
                         loading.append('<img src="./images/loading.gif" width="25" height="25"/>')
@@ -267,14 +270,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         "terminos": (terminos.toUpperCase()).trim()
                     }),
                     beforeSend: function() {
-                        tools.ModalAlertInfo('Disciplinas','Procesando petición...'); 
+                        tools.ModalAlertInfo('Disciplinas', 'Procesando petición...');
                     },
                     success: function(result) {
                         if (result.estado == 1) {
-                            tools.ModalAlertSuccess('Disciplinas',result.mensaje); 
+                            tools.ModalAlertSuccess('Disciplinas', result.mensaje);
 
                         } else {
-                            tools.ModalAlertWarning('Disciplinas',result.mensaje); 
+                            tools.ModalAlertWarning('Disciplinas', result.mensaje);
                         }
                     },
                     error: function(error) {

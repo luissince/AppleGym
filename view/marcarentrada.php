@@ -4,7 +4,7 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h4 class="modal-title" id="titulo-modal">
+                    <h4 class="modal-title">
                         <i class="fa fa-hand-pointer-o fa-lg"></i> Marcar Entrada
                     </h4>
                     <button type="button" class="close" id="btnCloseMarcarEntrada">
@@ -25,10 +25,37 @@
                                 <h4 class="l-text">Cargando información...</h4>
                             </div>
                             <div class="tile-body">
+
+                                <div class="row text-center">
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" id="rbCliente" type="radio" name="tipopersona" checked="">Cliente
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" id="rbTrabajador" type="radio" name="tipopersona">Trabajador
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
                                         <div class="form-group">
-                                            <input type="search" class="form-control" placeholder="Ingrese su código o n° dni" id="txtCliente" />
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Ingrese su código o n° dni" id="txtCliente" />
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary" type="button" id="btnBuscarAsistencia"><i class="fa fa-search"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +127,7 @@
                                                 </div>
                                                 <button type="button" class="btn btn-info btn-sm" id="btnMarcarEntrada">
                                                     <i class="fa fa-save"></i> Marcar Entrada</button>
-                                                    <button type="button" class="btn btn-warning btn-sm" id="btnCerrarEntrada">
+                                                <button type="button" class="btn btn-warning btn-sm" id="btnCerrarEntrada">
                                                     <i class="fa fa-arrow-left"></i> Cerrar Entrada</button>
                                             </div>
                                         </div>
