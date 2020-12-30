@@ -17,12 +17,18 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <?php include "./layout/header.php"; ?>
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
+
+
+
         <main class="app-content">
             <div class="app-title">
                 <div>
                     <h1><i class="fa fa-shopping-cart"></i> Punto de Venta</h1>
                 </div>
             </div>
+
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
 
             <!-- modal pagar  -->
             <div class="row">
@@ -160,7 +166,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                             <div class="col-md-12">
                                                                 <label>Forma de Pago:</label>
                                                                 <div class="form-group">
-                                                                    <select id="tipopagocredito" class="form-control form-control-sm">
+                                                                    <select id="formapagocredito" class="form-control form-control-sm">
                                                                         <option value="">- Selecciona -</option>
                                                                         <option value="1">EFECTIVO</option>
                                                                         <option value="2">TARJETA</option>
@@ -213,8 +219,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                 <div class="row">
                                     <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearchLista">
+                                        <div class="form-group d-flex">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Buscar por apellidos, nombres o dni" aria-controls="sampleTable" id="txtSearchLista">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" id="btnReloadCliente"><i class="fa fa-refresh"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
@@ -381,7 +392,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <h4 class="modal-title" id="titulo-modal">
                                     <i class="fa fa-bandcamp"></i> Planes
                                 </h4>
-                                <button type="button" class="close" id="btnCloseModalPlan">
+                                <button type="button" class="close" id="btnCloseModalPlanes">
                                     <i class="fa fa-close"></i>
                                 </button>
                             </div>
@@ -469,12 +480,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     </div>
                                 </div>
 
-                                <div class="modal-footer">
-                                    <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
-                                    <button type="button" class="btn btn-info" id="btnGuardarModalPlanes">
-                                        <i class="fa fa-check"></i> Aceptar</button>
-                                </div>
+                            </div>
 
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">
+                                    Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios
+                                </p>
+                                <button type="button" class="btn btn-success" id="btnGuardarModalPlanes">
+                                    <i class="fa fa-check"></i> Aceptar</button>
+                                <button type="button" class="btn btn-danger" id="btnCancelarModalPlanes">
+                                    <i class="fa fa-close"></i> Cancelar</button>
                             </div>
 
                         </div>
@@ -489,7 +504,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title" id="titulo-modal">
-                                    <i class="fa fa-cube"></i> Lista de Productos
+                                    <i class="fa fa fa-shopping-bag"></i> Lista de Productos
                                 </h4>
                                 <button type="button" class="close" id="btnCloseModalProductos">
                                     <i class="fa fa-close"></i>
@@ -525,33 +540,26 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 ">
-                                        <div class="tile">
-                                            <div class="tile-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
-                                                                <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Codigo / Nombre
-                                                                </th>
-                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">
-                                                                    Categoria</th>
-                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Cantidad
-                                                                </th>
-                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Precio
-                                                                </th>
-                                                                <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1"
-                                                                colspan="1" style="width: 69px;">Membresia
-                                                            </th> -->
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="tbListaProductos">
-                                                            <!-- tbLista -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+
+                                        <div class="tile-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="sorting" width="5%">#</th>
+                                                            <th class="sorting_asc" width="50%">Codigo / Nombre</th>
+                                                            <th class="sorting" width="15%">Categoria</th>
+                                                            <th class="sorting" width="15%">Cantidad </th>
+                                                            <th class="sorting" width="15%">Precio</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbListaProductos">
+
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
 
@@ -668,7 +676,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             let total = 0;
             let montoCambio = 0;
 
-            let idEmpleado = "<?php echo $_SESSION["IdEmpleado"]?>";
+            let idEmpleado = "<?php echo $_SESSION["IdEmpleado"] ?>";
 
             $(document).ready(function() {
 
@@ -706,6 +714,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     if ($("#txtSearchLista").val().trim() != '') {
                         listaClientes($("#txtSearchLista").val());
                     }
+                });
+
+                $("#btnReloadCliente").click(function() {
+                    listaClientes("");
                 });
 
                 $("#btnCloseModalClientes").click(function() {
@@ -749,12 +761,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     } else {
                         tools.ModalDialog('Cliente', '¿Desea guardar los datos?', 'question', function(result) {
                             if (result) {
-                                registrarCliente($("#dni").val(), $("#apellidos").val(), $("#nombres")
-                                    .val(), $(
-                                        "#genero").val(),
-                                    $("#nacimiento").val(), $("#codigo").val(), $("#email").val(),
-                                    $("#celular")
-                                    .val(),
+                                registrarCliente($("#dni").val(),
+                                    $("#apellidos").val(),
+                                    $("#nombres").val(),
+                                    $("#genero").val(),
+                                    $("#nacimiento").val(),
+                                    $("#codigo").val(),
+                                    $("#email").val(),
+                                    $("#celular").val(),
                                     $("#direccion").val());
                             }
                         });
@@ -762,7 +776,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
                 //-----------------------------------
 
-                $("#inicio").change(function(){
+                $("#inicio").change(function() {
                     $("#fechainicio").prop('disabled', !$("#inicio").is(':checked'));
                 });
 
@@ -771,7 +785,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     listaPlanes();
                 });
 
-                $("#btnCloseModalPlan").click(function() {
+                $("#btnCloseModalPlanes").click(function() {
+                    $("#modalPlan").modal("hide");
+                    clearPlanes();
+                });
+
+                $("#btnCancelarModalPlanes").click(function() {
                     $("#modalPlan").modal("hide");
                     clearPlanes();
                 });
@@ -797,14 +816,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#btnGuardarModalPlanes").click(function() {                    
+                $("#btnGuardarModalPlanes").click(function() {
                     if (idPlan == '') {
                         tools.AlertWarning("Ventas: ", "Seleccione un plan.")
                         $("#plan").focus();
                     } else if ($("#Membresia").val() == '') {
                         tools.AlertWarning("Ventas: ", "Seleccione una membresia.")
                         $("#Membresia").focus();
-                    }else if($("#inicio").is(':checked') && !tools.validateDate($("#fechainicio").val())){
+                    } else if ($("#inicio").is(':checked') && !tools.validateDate($("#fechainicio").val())) {
                         tools.AlertWarning("Ventas: ", "Ingre la fecha de inicio.")
                         $("#fechainicio").focus()
                     } else if (!tools.isNumeric($("#cantidad").val())) {
@@ -829,8 +848,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             let currentDays = fecha.getDate() > 9 ? fecha.getDate() : "0" + fecha.getDate();
 
                             fechaFin = currentYear + '-' + currentMonth + '-' + currentDays;
-                            console.log(fechaInicio)
-                            console.log(fechaFin)
 
                             listaVenta.push({
                                 "idPlan": idPlan,
@@ -938,7 +955,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
                                 if (value) {
                                     $.ajax({
-                                        url: "../app/venta/Registrar_Venta.php",
+                                        url: "../app/venta/RegistrarVenta.php",
                                         method: 'POST',
                                         accepts: "application/json",
                                         contentType: "application/json",
@@ -987,7 +1004,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
                                 if (value) {
                                     $.ajax({
-                                        url: "../app/venta/Registrar_Venta.php",
+                                        url: "../app/venta/RegistrarVenta.php",
                                         method: 'POST',
                                         accepts: "application/json",
                                         contentType: "application/json",
@@ -1057,28 +1074,28 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tools.AlertWarning("Ventas: ", "Hay campos de tipo fecha en la tablas sin ingresar.");
                         } else if (sumMonto != total) {
                             tools.AlertWarning("Ventas: ", "La suma total no es igual al monto de la tabla.");
-                        } else if ($("#tipopagocredito").val() == '' && valueInicial > 0) {
+                        } else if ($("#formapagocredito").val() == '' && valueInicial > 0) {
                             tools.AlertWarning("Ventas: ", "Selecciona la forma de pago.");
-                            $("#tipopagocredito").focus();
-                        } else if ($("#numerocreditotarjeta").val() == '' && $("#tipopagocredito").val() == '2') {
+                            $("#formapagocredito").focus();
+                        } else if ($("#numerocreditotarjeta").val() == '' && $("#formapagocredito").val() == '2') {
                             tools.AlertWarning("Ventas: ", "Ingrese el número de la operación");
                             $("#numerocreditotarjeta").focus();
                         } else {
                             tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
                                 if (value) {
                                     $.ajax({
-                                        url: "../app/venta/Registrar_Venta.php",
+                                        url: "../app/venta/RegistrarVenta.php",
                                         method: 'POST',
                                         accepts: "application/json",
                                         contentType: "application/json",
                                         data: JSON.stringify({
                                             "tipoDocumento": $("#comprobante").val(),
                                             "cliente": idCliente,
-                                            "vendedor": 0,
+                                            "vendedor": idEmpleado,
                                             "fecha": tools.getCurrentDate(),
                                             "hora": tools.getCurrentTime(),
                                             "tipo": 2,
-                                            "forma": $("#tipopagocredito").val(),
+                                            "forma": $("#formapagocredito").val(),
                                             "numero": $("#numerocreditotarjeta").val(),
                                             "pago": "0",
                                             "vuelto": "0",
@@ -1121,20 +1138,17 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 for (let detalle of listaVenta) {
                     suma = detalle.precio * detalle.cantidad;
                     $("#tbLista").append('<tr>' +
-                        '                   <td>' + detalle.nombre + '</td>' +
-                        '                   <td>' + detalle.cantidad + '</td>' +
-                        '                   <td>S/ ' + tools.formatMoney(detalle.precio) + '</td>' +
-                        '                   <td>0</td>' +
-                        '                   <td>S/ ' + tools.formatMoney(suma) + '</td>' +
-                        '                   <td>' +
-                        '                       <button onclick="removeDetalleVenta(\'' + detalle.idPlan + '\')" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i> Quitar</button>' +
-                        '                   </td>' +
+                        '<td>' + detalle.nombre + '</td>' +
+                        '<td>' + detalle.cantidad + '</td>' +
+                        '<td>S/ ' + tools.formatMoney(detalle.precio) + '</td>' +
+                        '<td>0</td>' +
+                        '<td>S/ ' + tools.formatMoney(suma) + '</td>' +
+                        '<td>' +
+                        '  <button onclick="removeDetalleVenta(\'' + detalle.idPlan + '\')" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i> Quitar</button>' +
+                        '</td>' +
                         '</tr>');
                     total += suma;
                 }
-
-
-
                 $("#lblSumaTotal").html("S/ " + tools.formatMoney(total));
                 $("#lblTotalPagar").html("S/ " + tools.formatMoney(total));
             }
@@ -1166,7 +1180,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     url: "../app/cliente/Obtener_Clientes.php",
                     method: "GET",
                     data: {
-                        opcion: 2,
+                        opcion: 1,
                         page: 1,
                         datos: text
                     },
@@ -1293,16 +1307,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         );
                     },
                     success: function(result) {
-                        let data = JSON.parse(result);
+                        let data = result;
                         if (data.estado == 1) {
                             tbListaProductos.empty();
                             for (let producto of data.productos) {
                                 tbListaProductos.append('<tr role="row" class="odd">' +
-                                    '<td class="sorting_1">' + producto.idProducto + '</td>' +
-                                    '<td>' + producto.clave + ' - ' + producto.nombre + '</td>' +
+                                    '<td class="text-center">' + producto.id + '</td>' +
+                                    '<td>' + producto.clave + '<br>' + producto.nombre + '</td>' +
                                     '<td>' + producto.categoria + '</td>' +
-                                    '<td>' + producto.cantidad + '</td>' +
-                                    '<td>' + producto.precio + '</td>' +
+                                    '<td class="text-right">' + tools.formatMoney(producto.cantidad) + '</td>' +
+                                    '<td class="text-right">' + tools.formatMoney(producto.precio) + '</td>' +
                                     '</tr>');
                             }
                             // totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
@@ -1391,7 +1405,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#vuelto").val("");
                 $("#montotarjeta").val("");
                 $("#numerotarjeta").val("");
-                $("#tipopagocredito").val("");
+                $("#formapagocredito").val("");
                 $("#numerocreditotarjeta").val("");
                 $("#tvPlazos").empty();
             }
@@ -1412,7 +1426,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#lblDescripcionPlan").html("Descripcion:");
                 $("#lblTiempoPlan").html("Tiempo: ");
                 $("#lblDisciplinasPlan").html("Disciplinas: ");
-                $("#inicio").prop('checked',false)
+                $("#inicio").prop('checked', false)
                 $("#fechainicio").val("");
                 $("#fechainicio").prop('disabled', true);
             }

@@ -2,13 +2,11 @@
 @font-face {
     font-family: 'Roboto Bold';
     src: url('../fonts/Roboto-Bold.ttf') format('truetype');
-    ;
 }
 
 @font-face {
     font-family: 'Roboto';
     src: url('../fonts/Roboto-Regular.ttf') format('truetype');
-    ;
     font-weight: normal;
     font-style: normal;
 }
@@ -16,13 +14,11 @@
 @font-face {
     font-family: 'Roboto Black';
     src: url('../fonts/Roboto-Black.ttf') format('truetype');
-    ;
 }
 
 @font-face {
     font-family: 'Roboto Light';
     src: url('../fonts/Roboto-Light.ttf') format('truetype');
-    ;
 }
 
 
@@ -454,7 +450,7 @@ h4,
 
 h5,
 .h5 {
-    font-size: 1.09375rem;
+    font-size: 1.08375rem;
 }
 
 h6,
@@ -1800,6 +1796,7 @@ pre code {
     width: 100%;
     margin-bottom: 1rem;
     color: #212529;
+    cursor: pointer;
 }
 
 .table th,
@@ -15705,7 +15702,7 @@ be a descendant of the grid when it is being dragged.
 
 .app-sidebar__user-name,
 .app-sidebar__user-designation {
-    white-space:normal;
+    white-space: normal;
     overflow: hidden;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
@@ -16037,7 +16034,8 @@ be a descendant of the grid when it is being dragged.
     left: 0;
     bottom: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -16051,12 +16049,12 @@ be a descendant of the grid when it is being dragged.
     -webkit-box-direction: normal;
     -ms-flex-direction: row;
     flex-direction: row;
-    color: #555;
+    color: rgb(255, 252, 252);
     border-radius: 3px;
 }
 
 .tile .overlay .l-text {
-    font-size: 24px;
+    font-size: 1.1987960rem;
     margin-top: 15px;
 }
 
@@ -16410,7 +16408,7 @@ be a descendant of the grid when it is being dragged.
 .path {
     stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
-    stroke: #009688;
+    stroke: #ffffff;
     -webkit-animation: dash 1.5s ease-in-out infinite;
     animation: dash 1.5s ease-in-out infinite;
     stroke-linecap: round;

@@ -142,7 +142,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                             <div id="contacto" class="tabcontent">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="nacimiento">Fecha de Nacimiento: </label>
                                             <input id="nacimiento" type="date" name="nacimiento" class="form-control"
@@ -273,8 +273,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <input id="pass" type="password" name="pass" class="form-control"
                                                     placeholder="Ingrese la contraseña de usuario" required=""
                                                     minlength="2">
-                                                <button type="button" class="btn btn-info btn-group-sm" id="btnVer">
-                                                    <i class="fa fa-eye"></i></button>
                                             </div>
 
                                         </div>
@@ -451,7 +449,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             if ($("#txtSearch").val().trim() != '') {
                 if (!state) {
                     paginacion = 1;
-                    loadTableEmpleados();
+                    loadTableEmpleados($("#txtSearch").val().trim());
                     opcion = 1;
                 }
             }
@@ -505,7 +503,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
     function loadInitEmpleados() {
         if (!state) {
             paginacion = 1;
-            loadTableEmpleados();
+            loadTableEmpleados('');
             opcion = 0;
         }
     }
@@ -513,32 +511,31 @@ if (!isset($_SESSION["IdEmpleado"])) {
     function onEventPaginacion() {
         switch (opcion) {
             case 0:
-                loadTableEmpleados();
+                loadTableEmpleados('');
                 break;
             case 1:
-                loadTableEmpleados();
+                loadTableEmpleados($("#txtSearch").val().trim());
                 break;
         }
     }
 
-    function loadTableEmpleados() {
+    function loadTableEmpleados(text) {
         $.ajax({
             url: "../app/empleados/Obtener_Empleados.php",
             method: "",
             data: {
                 opcion: 1,
                 page: paginacion,
-                datos: ''
+                datos: text
             },
             beforeSend: function() {
                 state = true;
                 tbLista.empty();
                 tbLista.append(
-                    '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                 );
             },
             success: function(result) {
-
                 if (result.estado == 1) {
                     let count = 0;
                     tbLista.empty();
@@ -551,7 +548,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             '</button>';
 
                         tbLista.append('<tr role="row" class="odd">' +
-                            '<td class="sorting_1">' + count + '</td>' +
+                            '<td>' + count + '</td>' +
                             '<td>' + empleado.numeroDocumento + '</td>' +
                             '<td>' + empleado.apellidos + " " + empleado.nombres + '</td>' +
                             '<td>' + empleado.celular + '</td>' +
@@ -622,37 +619,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
             beforeSend: function() {
                 closeClearModal();
                 tools.ModalAlertInfo('Empleados', 'Procesando petición...');
-                // $("#btnGuardarModal").empty();
-                // $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
-
             },
             success: function(result) {
-                // console.log(result)
                 if (result.estado == 1) {
                     tools.ModalAlertSuccess('Empleados', result.mensaje);
-                    // setTimeout(function() {
-                    //     location.href = "./empleados.php"
-                    // }, 1500);
-                    loadInitEmpleados()
-                    
+                    loadInitEmpleados()                    
                 } else {
                     tools.ModalAlertWarning('Empleados', result.mensaje);
-                    // $("#btnGuardarModal").empty();
-                    // $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
-                    
                 }
             },
             error: function(error) {
                 tools.ModalAlertError("Empleados", error.responseText);
-                // $("#btnGuardarModal").empty();
-                // $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
-
             }
         });
     }
 
     function closeClearModal() {
-
         $("#modalEmpleado").modal("hide")
         $("#titulo-modal").empty()
 
@@ -696,14 +678,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 "idEmpleado": idEmpleado
             }),
             beforeSend: function() {
-                // $("#btnGuardarModal").empty();
-                // $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
+                tools.AlertInfo("Producto", "Cargando datos..");
             },
             success: function(result) {
 
                 if (result.estado == 1) {
-                    let empleado = result.empleados[0];
-                    // console.log(empleado)
+                    let empleado = result.empleados;
 
                     $("#tipoDocumento").val(empleado.tipoDocumento)
                     $("#numeroDocumento").val(empleado.numeroDocumento)
@@ -728,7 +708,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#pass").val(empleado.clave)
                     $("#estado").val(empleado.estado)
 
-
+                    tools.AlertSuccess("Mensaje", "Se cargo correctamente los datos.")
                 } else {
                     tools.AlertWarning("Mensaje", result.mensaje)
                     setTimeout(function() {

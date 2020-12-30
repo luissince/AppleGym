@@ -10,5 +10,5 @@ unset($_SESSION);
 session_destroy();
 
 //Redireccionamos a el index
-header("Location: login.php");
+header("Location: index.php");
 die();

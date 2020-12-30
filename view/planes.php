@@ -262,16 +262,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <table class="table table-hover table-bordered">
                                     <thead>
                                         <tr role="row">
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 5%;">#</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 18%;">Nombre</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Precio</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 15%;">Tiempo</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Freeze</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 25%;">Descripción</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Estado</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Prueba</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Editar</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 10%;">Eliminar</th>
+                                            <th width="5%;">#</th>
+                                            <th width="18%;">Nombre</th>
+                                            <th width="10%;">Precio</th>
+                                            <th width="15%;">Tiempo</th>
+                                            <th width="10%;">Freeze</th>
+                                            <th width="25%;">Descripción</th>
+                                            <th width="10%;">Estado</th>
+                                            <th width="10%;">Prueba</th>
+                                            <th width="10%;">Editar</th>
+                                            <th width="10%;">Eliminar</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbLista">

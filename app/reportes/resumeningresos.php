@@ -7,9 +7,13 @@ include_once('../venta/VentaAdo.php');
 
 $rutaImage = __DIR__ . "/../../view/images/logo.jpeg";
 $title = "RESUMEN DE INGRESOS";
-$fechaIngreso = "FECHA: ".$_GET["fechaInicial"]." al ".$_GET["fechaFinal"];
+$fechaIngreso =  date("d-m-Y", strtotime($_GET["fechaInicial"]))." al ".date("d-m-Y", strtotime($_GET["fechaFinal"]));
 $recibos = "RECIBOS DEL : B001-000001 al B001-000002";
-$resumen = VentaAdo::ResumenIngresosPorFecha();
+$resumen = VentaAdo::reportePorFechaIngresos($_GET["fechaInicial"], $_GET["fechaFinal"]);
+if (!is_array($resumen)) {
+    echo $resumen;
+} else {
+    $ingresos = $resumen;
     $html = '
 <html>
 <head>
@@ -66,7 +70,7 @@ $resumen = VentaAdo::ResumenIngresosPorFecha();
             </td>
             <td width="50%" style="color:#969696;text-align: right;">
                 <span style="font-weight: bold; font-size: 9pt;">
-                   '.date("j-m-Y").'
+                   ' . date("j-m-Y") . '
                 </span>
             </td>
         </tr>
@@ -92,7 +96,7 @@ mpdf-->
             </span>
             <br>
             <span style="font-size: 10pt; color: black; font-family: sans;">
-                ' . $fechaIngreso . ' 
+                DEL ' . $fechaIngreso . ' 
         </span>
         </td>
     </tr>
@@ -105,26 +109,40 @@ mpdf-->
     <thead>
         <tr>
             <th width="5%" rowspan="2">N°</th>
-            <th width="35%" rowspan="2">Concepto</th>
+            <th width="35%" rowspan="2">Transacciòn</th>
             <th width="10%" rowspan="2">Cant.</th>
             <th width="20%" colspan="2">CONTADO</th>
-            <th width="20%" colspan="2">CRÉDITO</th>
         </tr>
         <tr> 
             <th>EFECTIVO</th>
             <th>TARJETA</th>
-            <th>EFECTIVO</th>
-            <th>TARJETA</th>
         </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>' ?>;
+
+<?php
+    $efectivoTotal = 0;
+    $tarjetaTotal = 0;
+    foreach ($ingresos as $value) {
+        $efectivoTotal += $value["efectivo"];
+        $tarjetaTotal += $value["tarjeta"];
+        $html .= '<tr>
+                <td align="center">' . $value["id"] . '</td>
+                <td align="left">' . $value["transaccion"] . '</td>
+                <td align="center">' . $value["cantidad"] . '</td>
+                <td align="right">' . ($value["efectivo"] <= 0 ? '' : number_format(round($value["efectivo"], 2, PHP_ROUND_HALF_UP), 2, '.', '')) . '</td>
+                <td align="right">' . ($value["tarjeta"] <= 0 ? '' : number_format(round($value["tarjeta"], 2, PHP_ROUND_HALF_UP), 2, '.', '')) . '</td>
+            </tr>';
+    }
+?>
+
+<?php
+    $html .= '</tbody>
     <tfoot>
         <tr>
             <td align="center" colspan="3" style="border-left:1px solid white;border-bottom:1px solid white;"></td>
-            <td align="right">'.number_format(round(0, 2, PHP_ROUND_HALF_UP), 2, '.', '').'</td>
-            <td align="right">0.00</td>
-            <td align="right">'.number_format(round(0, 2, PHP_ROUND_HALF_UP), 2, '.', '').'</td>
-            <td align="right">0.00</td>
+            <td align="right">' . number_format(round($efectivoTotal, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</td>
+            <td align="right">' . number_format(round($tarjetaTotal, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</td>
         </tr>
     </tfoot>
 </table>
@@ -135,23 +153,16 @@ mpdf-->
 <table class="items" width="30%" style="font-size: 9pt; border-collapse: collapse;" >
     <thead>        
         <tr>
-            <th align="left" style="padding:8pt;font-weight:normal;">CONTADO:</th>
             <th align="left" style="padding:8pt;font-weight:normal;">EFECTIVO:</th>
-            <th align="right" style="padding:8pt;">'.number_format(round(0, 2, PHP_ROUND_HALF_UP), 2, '.', '').'</th>
+            <th align="right" style="padding:8pt;">' . number_format(round($efectivoTotal, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</th>
         </tr>
         <tr>
-            <th align="left" style="padding:8pt;font-weight:normal;">CONTADO:</th>
             <th align="left" style="padding:8pt;font-weight:normal;">TARJETA:</th>
-            <th align="right" style="padding:8pt;">'.number_format(round(0, 2, PHP_ROUND_HALF_UP), 2, '.', '').'</th>
+            <th align="right" style="padding:8pt;">' . number_format(round($tarjetaTotal, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</th>
         </tr>
         <tr>
-            <th align="left" style="padding:8pt;font-weight:normal;">CRÉDITO:</th>
-            <th align="left" style="padding:8pt;font-weight:normal;">ADELANTO:</th>
-            <th align="right" style="padding:8pt;">0.00</th>
-        </tr>
-        <tr>
-            <th align="left" colspan="2" style="padding:8pt;font-weight:normal;">TOTAL:</th>
-            <th align="right" style="padding:8pt;">'.number_format(round(0, 2, PHP_ROUND_HALF_UP), 2, '.', '').'</th>
+            <th align="left" colspan="1" style="padding:8pt;font-weight:bold;">TOTAL:</th>
+            <th align="right" style="padding:8pt;">' . number_format(round($efectivoTotal + $tarjetaTotal, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</th>
         </tr>
     </thead>
 </table>
@@ -181,4 +192,4 @@ mpdf-->
     $mpdf->WriteHTML($html);
 
     $mpdf->Output();
-
+}

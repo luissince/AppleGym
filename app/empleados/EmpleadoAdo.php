@@ -2,38 +2,40 @@
 
 require '../database/DataBaseConexion.php';
 
-class EmpleadoAdo {
+class EmpleadoAdo
+{
 
-    function __construct() {
-        
+    function __construct()
+    {
     }
 
-    public static function insertEmpleado($body) {
+    public static function insertEmpleado($body)
+    {
 
         $quey = "SELECT Fc_Empleado_Codigo_Almanumerico();";
 
         $empleado = "INSERT INTO empleadotb ( " .
-                "idEmpleado," .
-                "tipoDocumento," .
-                "numeroDocumento," .
-                "apellidos," .
-                "nombres," .
-                "sexo," .
-                "fechaNacimiento," .
-                "codigo," .
-                "ocupacion," .
-                "formaPago," .
-                "entidadBancaria," .
-                "numeroCuenta," .
-                "rol," .
-                "estado," .
-                "telefono," .
-                "celular," .
-                "email," .
-                "direccion," .
-                "usuario," .
-                "clave)" .
-                " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "idEmpleado," .
+            "tipoDocumento," .
+            "numeroDocumento," .
+            "apellidos," .
+            "nombres," .
+            "sexo," .
+            "fechaNacimiento," .
+            "codigo," .
+            "ocupacion," .
+            "formaPago," .
+            "entidadBancaria," .
+            "numeroCuenta," .
+            "rol," .
+            "estado," .
+            "telefono," .
+            "celular," .
+            "email," .
+            "direccion," .
+            "usuario," .
+            "clave)" .
+            " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             // Preparar la sentencia
@@ -45,27 +47,28 @@ class EmpleadoAdo {
 
             $executeEmpleado = Database::getInstance()->getDb()->prepare($empleado);
             $executeEmpleado->execute(
-                    array(
-                        $idEmpleado,
-                        $body['tipoDocumento'],
-                        $body['numeroDocumento'],
-                        $body['apellidos'],
-                        $body['nombres'],
-                        $body['sexo'],
-                        $body['fechaNacimiento'],
-                        $body['codigo'],
-                        $body['ocupacion'],
-                        $body['formaPago'],
-                        $body['entidadBancaria'],
-                        $body['numeroCuenta'],
-                        $body['rol'],
-                        $body['estado'],
-                        $body['telefono'],
-                        $body['celular'],
-                        $body['email'],
-                        $body['direccion'],
-                        $body['usuario'],
-                        $body['clave'])
+                array(
+                    $idEmpleado,
+                    $body['tipoDocumento'],
+                    $body['numeroDocumento'],
+                    $body['apellidos'],
+                    $body['nombres'],
+                    $body['sexo'],
+                    $body['fechaNacimiento'],
+                    $body['codigo'],
+                    $body['ocupacion'],
+                    $body['formaPago'],
+                    $body['entidadBancaria'],
+                    $body['numeroCuenta'],
+                    $body['rol'],
+                    $body['estado'],
+                    $body['telefono'],
+                    $body['celular'],
+                    $body['email'],
+                    $body['direccion'],
+                    $body['usuario'],
+                    $body['clave']
+                )
             );
 
             Database::getInstance()->getDb()->commit();
@@ -76,29 +79,30 @@ class EmpleadoAdo {
         }
     }
 
-    public static function editEmpleado($body) {
+    public static function editEmpleado($body)
+    {
 
         $comando = "UPDATE empleadotb " .
-                "SET tipoDocumento = ?," .
-                " numeroDocumento = ?," .
-                " apellidos = ?," .
-                " nombres = ?," .
-                " sexo = ?," .
-                " fechaNacimiento = ?," .
-                " codigo = ?," .
-                " ocupacion = ?," .
-                " formaPago = ?," .
-                " entidadBancaria = ?," .
-                " numeroCuenta = ?," .
-                " rol = ?," .
-                " estado = ?," .
-                " telefono = ?," .
-                " celular = ?," .
-                " email = ?," .
-                " direccion = ?," .
-                " usuario = ?," .
-                " clave = ?" .
-                "WHERE idEmpleado = ?";
+            "SET tipoDocumento = ?," .
+            " numeroDocumento = ?," .
+            " apellidos = ?," .
+            " nombres = ?," .
+            " sexo = ?," .
+            " fechaNacimiento = ?," .
+            " codigo = ?," .
+            " ocupacion = ?," .
+            " formaPago = ?," .
+            " entidadBancaria = ?," .
+            " numeroCuenta = ?," .
+            " rol = ?," .
+            " estado = ?," .
+            " telefono = ?," .
+            " celular = ?," .
+            " email = ?," .
+            " direccion = ?," .
+            " usuario = ?," .
+            " clave = ?" .
+            "WHERE idEmpleado = ?";
 
         try {
             // Preparar la sentencia         
@@ -106,28 +110,28 @@ class EmpleadoAdo {
 
             $sentencia = Database::getInstance()->getDb()->prepare($comando);
             $sentencia->execute(
-                    array(
-                        $body['tipoDocumento'],
-                        $body['numeroDocumento'],
-                        $body['apellidos'],
-                        $body['nombres'],
-                        $body['sexo'],
-                        $body['fechaNacimiento'],
-                        $body['codigo'],
-                        $body['ocupacion'],
-                        $body['formaPago'],
-                        $body['entidadBancaria'],
-                        $body['numeroCuenta'],
-                        $body['rol'],
-                        $body['estado'],
-                        $body['telefono'],
-                        $body['celular'],
-                        $body['email'],
-                        $body['direccion'],
-                        $body['usuario'],
-                        $body['clave'],
-                        $body['idEmpleado']
-                    )
+                array(
+                    $body['tipoDocumento'],
+                    $body['numeroDocumento'],
+                    $body['apellidos'],
+                    $body['nombres'],
+                    $body['sexo'],
+                    $body['fechaNacimiento'],
+                    $body['codigo'],
+                    $body['ocupacion'],
+                    $body['formaPago'],
+                    $body['entidadBancaria'],
+                    $body['numeroCuenta'],
+                    $body['rol'],
+                    $body['estado'],
+                    $body['telefono'],
+                    $body['celular'],
+                    $body['email'],
+                    $body['direccion'],
+                    $body['usuario'],
+                    $body['clave'],
+                    $body['idEmpleado']
+                )
             );
 
 
@@ -139,7 +143,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function deleteEmpleado($body) {
+    public static function deleteEmpleado($body)
+    {
         try {
             Database::getInstance()->getDb()->beginTransaction();
 
@@ -170,46 +175,78 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getAllEmpleado($x, $y) {
-        $consulta = "SELECT * FROM empleadotb LIMIT $x,$y";
+    public static function getAllEmpleado($search, $x, $y)
+    {
         try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
+            $array = array();
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb 
+            WHERE numeroDocumento LIKE concat(?,'%') OR apellidos LIKE concat(?,'%') OR nombres LIKE concat(?,'%') 
+            LIMIT ?,?");
+            $comando->bindParam(1, $search, PDO::PARAM_STR);
+            $comando->bindParam(2, $search, PDO::PARAM_STR);
+            $comando->bindParam(3, $search, PDO::PARAM_STR);
+            $comando->bindParam(4, $x, PDO::PARAM_INT);
+            $comando->bindParam(5, $y, PDO::PARAM_INT);
             $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            $arrayEmpleados = array();
+            while($row = $comando->fetch()){
+                array_push($arrayEmpleados,array(
+                    "idEmpleado" => $row["idEmpleado"],
+                    "tipoDocumento" => $row["tipoDocumento"],
+                    "numeroDocumento" => $row["numeroDocumento"],
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],
+                    "sexo" => $row["sexo"],
+                    "fechaNacimiento" => $row["fechaNacimiento"],
+                    "telefono" => $row["telefono"],
+                    "celular" => $row["celular"],
+                    "email" => $row["email"],
+                    "direccion" => $row["direccion"],
+                    "codigo" => $row["codigo"],
+                    "ocupacion" => $row["ocupacion"],
+                    "formaPago" => $row["formaPago"],
+                    "entidadBancaria" => $row["entidadBancaria"],
+                    "numeroCuenta" => $row["numeroCuenta"],
+                    "rol" => $row["rol"],
+                    "usuario" => $row["usuario"],
+                    "clave" => $row["clave"],
+                    "estado" => $row["estado"]
+                ));
+            }
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM empleadotb 
+            WHERE numeroDocumento LIKE concat(?,'%') OR apellidos LIKE concat(?,'%') OR nombres LIKE concat(?,'%')");
+            $comando->bindParam(1, $search, PDO::PARAM_STR);
+            $comando->bindParam(2, $search, PDO::PARAM_STR);
+            $comando->bindParam(3, $search, PDO::PARAM_STR);
+            $comando->execute();
+            $resultTotal =  $comando->fetchColumn();
+
+            array_push($array,$arrayEmpleados,$resultTotal);
+            return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
         }
     }
 
-    public static function getAllCountEmpleado() {
-        $consulta = "SELECT COUNT(*) FROM empleadotb";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchColumn();
-        } catch (PDOException $e) {
-            return 0;
-        }
-    }
 
-    public static function getEmpleadoById($idEmpleado) {
+    public static function getEmpleadoById($idEmpleado)
+    {
         $consulta = "SELECT * FROM empleadotb WHERE idEmpleado = ?";
         try {
             // Preparar sentencia
             $comando = Database::getInstance()->getDb()->prepare($consulta);
             // Ejecutar sentencia preparada
             $comando->execute(array($idEmpleado['idEmpleado']));
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            return $comando->fetchObject();
         } catch (PDOException $e) {
             return false;
         }
     }
 
-    public static function getAllDatosSearchEmpleado($datos, $x, $y) {
+    public static function getAllDatosSearchEmpleado($datos, $x, $y)
+    {
         $consulta = "SELECT * FROM empleadotb WHERE (apellidos LIKE ? OR numeroDocumento LIKE ?) LIMIT ?,?";
         try {
             // Preparar sentencia
@@ -226,7 +263,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getEmpleadoForLogin($usuario, $clave) {
+    public static function getEmpleadoForLogin($usuario, $clave)
+    {
         $consulta = "SELECT * FROM empleadotb WHERE usuario = ? and clave = ? ";
 
         try {
@@ -242,7 +280,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getEmpleadosForLista() {
+    public static function getEmpleadosForLista()
+    {
         $consulta = "SELECT * FROM empleadotb ORDER BY apellidos ASC";
         try {
             // Preparar sentencia
@@ -256,7 +295,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getPuestoForLista() {
+    public static function getPuestoForLista()
+    {
         $consulta = "SELECT * FROM tabla_puesto ORDER BY nombre ASC";
         try {
             // Preparar sentencia
@@ -270,7 +310,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getPeridoPagoForLista() {
+    public static function getPeridoPagoForLista()
+    {
         $consulta = "SELECT * FROM tabla_periodo_pago ORDER BY nombre ASC";
         try {
             // Preparar sentencia
@@ -284,7 +325,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getEmpleadoByNumeroDocumento($numeroDocumento) {
+    public static function getEmpleadoByNumeroDocumento($numeroDocumento)
+    {
         $consulta = "SELECT * FROM empleadotb WHERE numeroDocumento = ?";
         try {
             // Preparar sentencia
@@ -297,7 +339,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function validateEmpleadoId($idEmpleados) {
+    public static function validateEmpleadoId($idEmpleados)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idEmpleado FROM empleadotb WHERE idEmpleado = ?");
         $validate->bindParam(1, $idEmpleados);
         $validate->execute();
@@ -308,7 +351,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function validateEmpleadoNumeroDocumento($documento) {
+    public static function validateEmpleadoNumeroDocumento($documento)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE numeroDocumento = ?");
         $validate->bindParam(1, $documento);
         $validate->execute();
@@ -319,7 +363,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function validateEmpledoNumeroDocumentoById($idEmpleado, $documento) {
+    public static function validateEmpledoNumeroDocumentoById($idEmpleado, $documento)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idEmpleado FROM empleadotb WHERE idEmpleado <> ? AND numeroDocumento = ?");
         $validate->bindParam(1, $idEmpleado);
         $validate->bindParam(2, $documento);
@@ -331,7 +376,8 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getContratoById($idContrato) {
+    public static function getContratoById($idContrato)
+    {
         $consulta = "SELECT c.idEmpleado,e.apellidos,e.nombres,c.puesto,c.fechaInicio,c.fechaCulminacion,c.horario,c.periodo,c.sueldo
                 FROM systemagym.contratotb as c INNER JOIN systemagym.empleadotb as e on c.idEmpleado = e.idEmpleado
                 WHERE c.idContrato = ?";
@@ -346,11 +392,12 @@ class EmpleadoAdo {
         }
     }
 
-    public static function getDatosEmpresa(){
+    public static function getDatosEmpresa()
+    {
         $array = null;
         try {
             $comando = Database::getInstance()->getDb()->prepare("SELECT idMiEmpresa,representante,nombreEmpresa,ruc,telefono,celular,email,paginaWeb,direccion,terminos FROM mi_empresatb");
-            $comando->execute();                
+            $comando->execute();
             while ($row = $comando->fetch()) {
                 $array = array(
                     "idMiEmpresa" => $row["idMiEmpresa"],
@@ -365,29 +412,26 @@ class EmpleadoAdo {
                     "terminos" => $row["terminos"]
                 );
             }
-            
         } catch (Exception $ex) {
-            
         }
         return $array;
     }
-    
-    public static function getDatosCliente() {
+
+    public static function getDatosCliente()
+    {
         $array = null;
-        try{
+        try {
             $comando = Database::getInstance()->getDb()->prepare("SELECT idCliente,apellidos,nombres FROM clientetb WHERE predeterminado = 1");
-            $comando->execute();            
-            while ($row = $comando->fetch()){
+            $comando->execute();
+            while ($row = $comando->fetch()) {
                 $array = array(
-                    "idCliente"=>$row["idCliente"],
-                    "apellidos"=>$row["apellidos"],
-                    "nombres"=>$row["nombres"]
+                    "idCliente" => $row["idCliente"],
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"]
                 );
-            }            
+            }
         } catch (Exception $ex) {
-
         }
         return $array;
     }
-
 }

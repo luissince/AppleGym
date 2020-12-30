@@ -119,8 +119,7 @@ class AsistenciaAdo {
             $comandoUno->bindValue(1, $idPersona, PDO::PARAM_STR);
             // Ejecutar sentencia preparada        
             $comandoUno->execute();
-            $validateUno = $comandoUno->fetchAll(PDO::FETCH_ASSOC);
-            if ($validateUno) {
+            if ($comandoUno->fetch()) {
                 return "1";
             } else {
                 return "0";
@@ -137,11 +136,11 @@ class AsistenciaAdo {
             $comando->bindValue(1, $idPersona, PDO::PARAM_STR);
             // Ejecutar sentencia preparada        
             $comando->execute();
-            $validate = $comando->fetchAll(PDO::FETCH_ASSOC);
+            $validate = $comando->fetchObject();
             if ($validate) {
                 return array("estado" => "2", "mensaje" => $validate);
             } else {
-                return array("estado" => "3", "mensaje" => "No cerro su turno");
+                return array("estado" => "3", "mensaje" => "Tiene un turno aperturado");
             }
         } catch (PDOException $e) {
             return $e->getMessage();

@@ -12,8 +12,10 @@
         <ul class="app-menu">
                 <li><a class="app-menu__item" href="index.php"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
                 <li><a class="app-menu__item" href="ingresos.php"><i class="app-menu__icon fa fa-money"></i><span class="app-menu__label">Ingresos</span></a></li>
+                <li><a class="app-menu__item" href="ventas.php"><i class="app-menu__icon fa fa-folder"></i><span class="app-menu__label">Ventas</span></a></li>
                 <li><a class="app-menu__item" href="clientes.php"><i class="app-menu__icon fa fa-users"></i><span class="app-menu__label">Clientes</span></a></li>
                 <li><a class="app-menu__item" href="empleados.php"><i class="app-menu__icon fa fa-grav "></i><span class="app-menu__label">Empleados</span></a></li>
+            <li><a class="app-menu__item" href="productos.php"><i class="app-menu__icon fa fa-shopping-bag"></i><span class="app-menu__label">Productos</span></a></li>
                 <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-calendar"></i><span class="app-menu__label">Citas</span></a></li>
                 <li><a class="app-menu__item" href="planes.php"><i class="app-menu__icon fa fa-align-left"></i><span class="app-menu__label">Planes</span></a></li>
                 <li><a class="app-menu__item" href="disciplinas.php"><i class="app-menu__icon fa fa-indent"></i><span class="app-menu__label">Disciplinas</span></a></li>

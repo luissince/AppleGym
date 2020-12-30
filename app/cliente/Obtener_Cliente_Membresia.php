@@ -1,29 +1,25 @@
 <?php
 
-/**
- * Obtiene un cliente de la base de datos por su id
- */
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-
+header('Content-Type: application/json; charset=UTF-8');
 require './ClienteAdo.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $body = json_decode(file_get_contents("php://input"), true);
-    // Manejar petición GET
-    $cliente = ClienteAdo::getClientById($body);
-    $membresia = ClienteAdo::getMembresiaClienteById($body);
-    if ($cliente) {
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+    $cliente = ClienteAdo::getMembresiaMarcarAsistencia($_GET["buscar"]);
+    if (is_array($cliente)) {
         print json_encode(array(
             "estado" => 1,
-            "clientes" => $cliente,
-            "membresias" => $membresia
+            "cliente" => $cliente[0],
+            "membresias" => $cliente[1],
+            "asistencia" => $cliente[2]
         ));
     } else {
         print json_encode(array(
-            "estado" => 2,
-            "mensaje" => "Ha ocurrido un error"
+            "estado" => 0,
+            "mensaje" => $cliente
         ));
     }
     exit();

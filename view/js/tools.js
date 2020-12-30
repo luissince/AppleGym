@@ -26,6 +26,10 @@ function Tools() {
         );
     }
 
+    this.getNull = function(value) {
+        return value == null ? '' : value;
+    }
+
     this.getTimeForma = function(value, option) {
         let ar = value.split(":");
         let hr = ar[0];
@@ -177,7 +181,6 @@ function Tools() {
     }
 
     this.ModalDialog = function(title, mensaje, type, callback) {
-
         swal({
             title: title,
             text: mensaje,

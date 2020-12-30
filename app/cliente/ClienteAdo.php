@@ -13,62 +13,6 @@ class ClienteAdo
     {
     }
 
-    /**
-     * Retorna en la todas las filas especificada de la tabla 'Clientes'
-     *
-     * @param $idCliente Identificador del registro
-     * @return array Datos del registro
-     */
-    public static function getAll($x, $y)
-    {
-       
-        try {
-            $array = array();
-            // Preparar sentencia
-            $clientes = Database::getInstance()->getDb()->prepare("SELECT * FROM clientetb LIMIT $x,$y");
-            $membresias = Database::getInstance()->getDb()->prepare("SELECT idVenta,estado FROM  membresiatb WHERE idCliente = ? AND estado = 1");
-            $venta = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta = ? AND estado = 0");
-            // Ejecutar sentencia preparada
-            $clientes->execute();
-            $arrayClientes = array();
-            while ($row = $clientes->fetch()) {
-
-                $membresias->execute(array($row["idCliente"]));
-                $total_membresias = 0;
-                $total_deudas = 0;
-                while ($rows = $membresias->fetch()) {
-                    $total_membresias++;
-                    $venta->execute(array($rows['idVenta']));
-                    while ($rowv = $venta->fetch()) {
-                        $total_deudas++;
-                    }
-                }
-
-                array_push($arrayClientes, array(
-                    "idCliente" => $row["idCliente"],
-                    "dni" => $row["dni"],
-                    "apellidos" => $row["apellidos"],
-                    "nombres" => $row["nombres"],
-                    "email" => $row["email"],
-                    "celular" => $row["celular"],
-                    "direccion" => $row["direccion"],
-                    "predeterminado" => $row["predeterminado"],
-                    "membresia" => $total_membresias,
-                    "venta" => $total_deudas
-                ));
-            }
-
-            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM clientetb");
-            $comando->execute();
-            $totalClientes = $comando->fetchColumn();
-            
-            array_push($array,$arrayClientes,$totalClientes);
-            return $array;
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
     public static function getAllDatos($datos, $x, $y)
     {
 
@@ -84,24 +28,19 @@ class ClienteAdo
             $clientes->bindValue(4, $x, PDO::PARAM_INT);
             $clientes->bindValue(5, $y, PDO::PARAM_INT);
 
-            $membresias = Database::getInstance()->getDb()->prepare("SELECT idVenta FROM  membresiatb WHERE idCliente = ? AND estado = 1");
-            $venta = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta = ? AND estado = 0");
+            $membresias = Database::getInstance()->getDb()->prepare("SELECT * FROM  membresiatb WHERE idCliente = ? AND estado = 1");
             $clientes->execute();
             $arrayClientes = array();
             $count = 0;
             while ($row = $clientes->fetch()) {
 
-                $membresias->execute(array($row["idCliente"]));
                 $total_membresias = 0;
-                $total_deudas = 0;
 
+                $membresias->execute(array($row["idCliente"]));
                 while ($rows = $membresias->fetch()) {
                     $total_membresias++;
-                    $venta->execute(array($rows['idVenta']));
-                    while ($rowv = $venta->fetch()) {
-                        $total_deudas++;
-                    }
                 }
+
                 $count++;
                 array_push($arrayClientes, array(
                     "id" => $count + $x,
@@ -113,8 +52,7 @@ class ClienteAdo
                     "celular" => $row["celular"],
                     "direccion" => $row["direccion"],
                     "predeterminado" => $row["predeterminado"],
-                    "membresia" => $total_membresias,
-                    "venta" => $total_deudas
+                    "membresia" => $total_membresias
                 ));
             }
 
@@ -134,12 +72,6 @@ class ClienteAdo
         }
     }
 
-    /**
-     * Retorna en la fila especificada de la tabla 'Clientes'
-     *
-     * @param $idCliente Identificador del registro
-     * @return array Datos del registro
-     */
     public static function getClientById($idCliente)
     {
         $consulta = "SELECT * FROM clientetb WHERE idCliente = ?";
@@ -147,7 +79,60 @@ class ClienteAdo
             $comando = Database::getInstance()->getDb()->prepare($consulta);
             $comando->execute(array($idCliente['idCliente']));
             return $comando->fetchObject();
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public static function getMembresiaMarcarAsistencia($buscar)
+    {
+        try {
+            $array = array();
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM clientetb WHERE dni = ? or codigo = ?");
+            $comando->bindValue(1, $buscar, PDO::PARAM_STR);
+            $comando->bindValue(2, $buscar, PDO::PARAM_STR);
+            $comando->execute();
+            $cliente = $comando->fetchObject();
+            if (!$cliente) {
+                throw new Exception("Datos no encontrados, intente nuevamente o consulte al encargado sobre su información");
+            }
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT p.nombre,m.fechaInicio,m.fechaFin
+            FROM membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan 
+            WHERE m.idCliente = ? AND m.estado = 1");
+            $comando->bindValue(1, $cliente->idCliente, PDO::PARAM_STR);
+            $comando->execute();
+
+            $arrayMembresias = array();
+            while ($row = $comando->fetch()) {
+                array_push($arrayMembresias, array(
+                    "nombre" => $row["nombre"],
+                    "fechaInicio" => $row["fechaInicio"],
+                    "fechaFin" => $row["fechaFin"]
+                ));
+            }
+
+            $resultAsistencia = "";
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1");
+            $comando->bindValue(1, $cliente->idCliente, PDO::PARAM_STR);
+            $comando->execute();
+            if ($comando->fetch()) {
+                $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1 and fechaApertura  = CURDATE()");
+                $comando->bindValue(1, $cliente->idCliente, PDO::PARAM_STR);
+                $comando->execute();
+                $validate = $comando->fetchObject();
+                if ($validate) {
+                   $resultAsistencia = $validate;
+                } else {
+                    $resultAsistencia = "MARCAR ENTRADA";
+                }
+            } else {
+                $resultAsistencia = "MARCAR ENTRADA";
+            }
+
+            array_push($array, $cliente, $arrayMembresias, $resultAsistencia);
+            return $array;
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -156,8 +141,7 @@ class ClienteAdo
     {
         $array = array();
         try {
-            // Preparar sentencia
-            $membresia = Database::getInstance()->getDb()->prepare("select 
+            $membresia = Database::getInstance()->getDb()->prepare("SELECT 
                 c.idPlan,
                 m.idVenta,
                 c.nombre,
@@ -172,10 +156,9 @@ class ClienteAdo
                 m.fechaFin,
                 m.horaFin,
                 m.estado
-                from
-                membresiatb as m INNER JOIN plantb as c on m.idPlan = c.idPlan 
+                FROM
+                membresiatb AS m INNER JOIN plantb AS c ON m.idPlan = c.idPlan 
                 WHERE m.idCliente = ? ORDER BY m.fechaInicio DESC,m.horaInicio DESC");
-            // Ejecutar sentencia preparada
             $membresia->execute(array($idCliente['idCliente']));
 
             $disciplina = Database::getInstance()->getDb()->prepare("SELECT 
@@ -229,9 +212,10 @@ class ClienteAdo
                     "venta" => $array_venta
                 ));
             }
+            return $array;
         } catch (PDOException $e) {
+            return $e->getMessage();
         }
-        return $array;
     }
 
     /**
@@ -410,35 +394,6 @@ class ClienteAdo
         } catch (Exception $ex) {
             Database::getInstance()->getDb()->rollback();
             return $ex->getMessage();
-        }
-    }
-
-    public static function getClientByNumeroDocumento($value)
-    {
-        $query_cliente = "SELECT * FROM clientetb WHERE dni = ? or codigo = ?";
-
-        $query_membresia = "SELECT m.fechaInicio,m.fechaFin,m.estado,p.nombre,p.tipoDisciplina,p.meses,p.dias,p.freeze,p.precio FROM 
-                membresiatb as m INNER JOIN plantb as p on m.idPlan = p.idPlan  
-                WHERE m.idCliente = ?";
-
-        $query_venta = "SELECT * FROM ";
-
-        $array = array();
-        try {
-            $execute_cliente = Database::getInstance()->getDb()->prepare($query_cliente);
-            $execute_cliente->execute(array($value, $value));
-
-            $cliente = $execute_cliente->fetchObject();
-
-            array_push($array, $cliente);
-
-            $execute_membresia = Database::getInstance()->getDb()->prepare($query_membresia);
-            $execute_membresia->bindParam(1, $cliente->idCliente);
-            $execute_membresia->execute();
-            array_push($array, $execute_membresia->fetchObject());
-            return $array;
-        } catch (PDOException $e) {
-            return array();
         }
     }
 

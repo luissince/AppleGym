@@ -5,11 +5,15 @@
     <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
     <!-- Navbar Right Menu-->
     <ul class="app-nav">
-        <li class="dropdown"><a class="app-nav__item" href="puntoDeVenta.php">
-            <i class="fa fa fa-shopping-cart fa-lg"></i> Punto de Venta</a>            
+        <li class="dropdown">
+            <a class="app-nav__item" href="puntoDeVenta.php">
+                <i class="fa fa fa-shopping-cart fa-lg"></i> Punto de Venta
+            </a>
         </li>
-        <li class="dropdown"><a class="app-nav__item" href="#">
-            <i class="fa fa-hand-pointer-o fa-lg"></i> Marcar Entrada</a>            
+        <li class="dropdown">
+            <a class="app-nav__item" href="javascript:void(0)" onclick="openMarcarEntrada()">
+                <i class="fa fa-hand-pointer-o fa-lg"></i> Marcar Entrada
+            </a>
         </li>
         <!-- User Menu-->
         <li class="dropdown"><a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>

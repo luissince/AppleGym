@@ -2,71 +2,124 @@
 
 require '../database/DataBaseConexion.php';
 
-class ProductoAdo {
+class ProductoAdo
+{
 
-    function __construct() {
-        
+    function __construct()
+    {
     }
 
-    public static function insertProducto($body) {
-
-        // Sentencia INSERT
-        $quey = "SELECT Fc_Producto_Codigo_Almanumerico();";
-
-        $producto = "INSERT INTO productotb ( " .
-                "idProducto," .
-                "clave," .
-                "claveAlterna," .
-                "nombre," .
-                "categoria," .
-                "impuesto," .
-                "cantidad," .
-                "costo," .
-                "precio," .
-                "estado)" .
-                " VALUES(?,?,?,?,?,?,?,?,?,?)";
+    public static function insertProducto($body)
+    {
 
         try {
             // Preparar la sentencia
             Database::getInstance()->getDb()->beginTransaction();
 
-            $validateclave = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE clave = ?");
-            $validateclave->execute(array($body['clave']));
+            $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto = ?");
+            $validateProducto->bindParam(1, $body['idProducto'], PDO::PARAM_STR);
+            $validateProducto->execute();
 
-            if ($validateclave->rowCount() == 1) {
-                Database::getInstance()->getDb()->rollBack();
-                return "duplicate";
+            if ($validateProducto->fetch()) {
+
+                $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto <> ? AND clave = ?");
+                $validateProducto->bindParam(1, $body['idProducto'], PDO::PARAM_STR);
+                $validateProducto->bindParam(2, $body['clave'], PDO::PARAM_STR);
+                $validateProducto->execute();
+
+                if ($validateProducto->fetch()) {
+                    Database::getInstance()->getDb()->rollBack();
+                    return "duplicate";
+                } else {
+
+                    $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto <> ? AND nombre = ?");
+                    $validateProducto->bindParam(1, $body['idProducto'], PDO::PARAM_STR);
+                    $validateProducto->bindParam(2, $body['nombre'], PDO::PARAM_STR);
+                    $validateProducto->execute();
+
+                    if ($validateProducto->fetch()) {
+                        Database::getInstance()->getDb()->rollBack();
+                        return "duplicatename";
+                    } else {
+
+                        $sentencia = Database::getInstance()->getDb()->prepare("UPDATE productotb 
+                        SET clave = ?,
+                        claveAlterna = ?,
+                        nombre = ?,
+                        categoria = ?,
+                        impuesto = ?,
+                        cantidad = ?,
+                        costo = ?,
+                        precio = ?,
+                        estado = ?
+                        WHERE idProducto = ?");
+                        $sentencia->bindParam(1, $body['clave'], PDO::PARAM_STR);
+                        $sentencia->bindParam(2, $body['claveAlterna'], PDO::PARAM_STR);
+                        $sentencia->bindParam(3, $body['nombre'], PDO::PARAM_STR);
+                        $sentencia->bindParam(4, $body['categoria'], PDO::PARAM_STR);
+                        $sentencia->bindParam(5, $body['impuesto'], PDO::PARAM_STR);
+                        $sentencia->bindParam(6, $body['cantidad'], PDO::PARAM_STR);
+                        $sentencia->bindParam(7, $body['costo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(8, $body['precio'], PDO::PARAM_STR);
+                        $sentencia->bindParam(9, $body['estado'], PDO::PARAM_STR);
+                        $sentencia->bindParam(10, $body['idProducto'], PDO::PARAM_STR);
+                        $sentencia->execute();
+
+                        Database::getInstance()->getDb()->commit();
+                        return "updated";
+                    }
+                }
             } else {
 
-                $validatename = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE nombre = ?");
-                $validatename->execute(array($body['nombre']));
+                $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE clave = ?");
+                $validateProducto->bindParam(1, $body['idProducto'], PDO::PARAM_STR);
+                $validateProducto->execute();
 
-                if ($validatename->rowCount() == 1) {
+                if ($validateProducto->fetch()) {
                     Database::getInstance()->getDb()->rollBack();
-                    return "duplicatename";
+                    return "duplicate";
                 } else {
-                    $codigoProducto = Database::getInstance()->getDb()->prepare($quey);
-                    $codigoProducto->execute();
-                    $idProducto = $codigoProducto->fetchColumn();
 
-                    $executeProducto = Database::getInstance()->getDb()->prepare($producto);
-                    $executeProducto->execute(
-                            array(
-                                $idProducto,
-                                $body['clave'],
-                                $body['claveAlterna'],
-                                $body['nombre'],
-                                $body['categoria'],
-                                $body['impuesto'],
-                                $body['cantidad'],
-                                $body['costo'],
-                                $body['precio'],
-                                $body['estado']
-                            )
-                    );
+                    $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE nombre = ?");
+                    $validateProducto->bindParam(1, $body['nombre'], PDO::PARAM_STR);
+                    $validateProducto->execute();
 
-                    Database::getInstance()->getDb()->commit();
-                    return "inserted";
+                    if ($validateProducto->fetch()) {
+                        Database::getInstance()->getDb()->rollBack();
+                        return "duplicatename";
+                    } else {
+
+                        $codigoProducto = Database::getInstance()->getDb()->prepare("SELECT Fc_Producto_Codigo_Almanumerico();");
+                        $codigoProducto->execute();
+                        $idProducto = $codigoProducto->fetchColumn();
+
+                        $sentencia = Database::getInstance()->getDb()->prepare("INSERT INTO productotb ( 
+                        idProducto,
+                        clave,
+                        claveAlterna,
+                        nombre,
+                        categoria,
+                        impuesto,
+                        cantidad,
+                        costo,
+                        precio,
+                        estado)
+                        VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        $sentencia->bindParam(1, $idProducto, PDO::PARAM_STR);
+                        $sentencia->bindParam(2, $body['clave'], PDO::PARAM_STR);
+                        $sentencia->bindParam(3, $body['claveAlterna'], PDO::PARAM_STR);
+                        $sentencia->bindParam(4, $body['nombre'], PDO::PARAM_STR);
+                        $sentencia->bindParam(5, $body['categoria'], PDO::PARAM_STR);
+                        $sentencia->bindParam(6, $body['impuesto'], PDO::PARAM_STR);
+                        $sentencia->bindParam(7, $body['cantidad'], PDO::PARAM_STR);
+                        $sentencia->bindParam(8, $body['costo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(9, $body['precio'], PDO::PARAM_STR);
+                        $sentencia->bindParam(10, $body['estado'], PDO::PARAM_STR);
+                        $sentencia->execute();
+
+                        Database::getInstance()->getDb()->commit();
+                        return "inserted";
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -75,70 +128,8 @@ class ProductoAdo {
         }
     }
 
-    public static function editProducto($body) {
-
-        // Sentencia UPDATE
-
-        $comando = "UPDATE productotb " .
-                "SET clave = ?," .
-                " claveAlterna = ?," .
-                " nombre = ?," .
-                " categoria = ?," .
-                " impuesto = ?," .
-                " cantidad = ?," .
-                " costo = ?," .
-                " precio = ?," .
-                " estado = ?" .
-                "WHERE idProducto = ?";
-
-        try {
-            // Preparar la sentencia         
-            Database::getInstance()->getDb()->beginTransaction();
-
-            $validateclave = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto <> ? AND clave = ?");
-            $validateclave->execute(array($body['idProducto'], $body['clave']));
-
-            if ($validateclave->rowCount() == 1) {
-                Database::getInstance()->getDb()->rollBack();
-                return "duplicate";
-            } else {
-
-                $validatename = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto <> ? AND nombre = ?");
-                $validatename->execute(array($body['idProducto'], $body['nombre']));
-
-                if ($validatename->rowCount() == 1) {
-                    Database::getInstance()->getDb()->rollBack();
-                    return "duplicatename";
-                } else {
-
-                    $sentencia = Database::getInstance()->getDb()->prepare($comando);
-                    $sentencia->execute(
-                            array(
-                                $body['clave'],
-                                $body['claveAlterna'],
-                                $body['nombre'],
-                                $body['categoria'],
-                                $body['impuesto'],
-                                $body['cantidad'],
-                                $body['costo'],
-                                $body['precio'],
-                                $body['estado'],
-                                $body['idProducto']
-                            )
-                    );
-
-
-                    Database::getInstance()->getDb()->commit();
-                    return "updated";
-                }
-            }
-        } catch (Exception $e) {
-            Database::getInstance()->getDb()->rollback();
-            return $e->getMessage();
-        }
-    }
-
-    public static function deleteProducto($body) {
+    public static function deleteProducto($body)
+    {
         try {
             Database::getInstance()->getDb()->beginTransaction();
 
@@ -160,7 +151,8 @@ class ProductoAdo {
         }
     }
 
-    public static function validateProductoId($idProducto) {
+    public static function validateProductoId($idProducto)
+    {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idProducto FROM productotb WHERE idProducto = ?");
         $validate->bindParam(1, $idProducto);
         $validate->execute();
@@ -171,42 +163,65 @@ class ProductoAdo {
         }
     }
 
-    public static function getAllProducto($x, $y) {      
+    public static function getAllProducto($search, $x, $y)
+    {
         try {
             $array = array();
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb LIMIT $x,$y");
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE clave LIKE concat(?,'%')  OR nombre LIKE concat(?,'%') LIMIT ?,?");
+            $comando->bindValue(1, $search, PDO::PARAM_STR);
+            $comando->bindValue(2, $search, PDO::PARAM_STR);
+            $comando->bindValue(3, $x, PDO::PARAM_INT);
+            $comando->bindValue(4, $y, PDO::PARAM_INT);
             $comando->execute();
             $arrayProductos = array();
-            while($row = $comando->fetch()){
-                array_push($arrayProductos,$row);
+            $count = 0;
+            while ($row = $comando->fetch()) {
+                $count++;
+                array_push($arrayProductos, array(
+                    "id" => $count + $x,
+                    "idProducto" => $row["idProducto"],
+                    "clave" => $row["clave"],
+                    "claveAlterna" => $row["claveAlterna"],
+                    "nombre" => $row["nombre"],
+                    "categoria" => $row["categoria"],
+                    "impuesto" => $row["impuesto"],
+                    "cantidad" => $row["cantidad"],
+                    "costo" => $row["costo"],
+                    "precio" => $row["precio"],
+                    "estado" => $row["estado"]
+                ));
             }
 
-            $comando = Database::getInstance()->getDb()->prepare( "SELECT COUNT(*) FROM productotb");
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM productotb WHERE clave LIKE concat(?,'%')  OR nombre LIKE concat(?,'%')");
+            $comando->bindValue(1, $search);
+            $comando->bindValue(2, $search);
             $comando->execute();
             $totalProducto = $comando->fetchColumn();
 
-            array_push($array,$arrayProductos,$totalProducto);
+            array_push($array, $arrayProductos, $totalProducto);
             return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
         }
     }
 
-    public static function getProductoById($idProducto) {
+    public static function getProductoById($idProducto)
+    {
         $consulta = "SELECT * FROM productotb WHERE idProducto = ?";
         try {
             // Preparar sentencia
             $comando = Database::getInstance()->getDb()->prepare($consulta);
             // Ejecutar sentencia preparada
             $comando->execute(array($idProducto['idProducto']));
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
+            return $comando->fetchObject();
         } catch (PDOException $e) {
             return false;
         }
     }
 
-    public static function getAllDatosSearchProducto($datos, $x, $y) {
+    public static function getAllDatosSearchProducto($datos, $x, $y)
+    {
         $consulta = "SELECT * FROM productotb WHERE (nombre LIKE ? OR clave LIKE ?) LIMIT ?,?";
         try {
             // Preparar sentencia
@@ -222,5 +237,4 @@ class ProductoAdo {
             return $e->getMessage();
         }
     }
-
 }

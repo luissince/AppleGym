@@ -40,7 +40,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="dni">DNI: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                        <input id="dni" type="number" name="dni" class="form-control"
+                                        <input id="dni" type="text" name="dni" class="form-control"
                                             placeholder="Ingrese el número DNI" required="" minlength="8">
                                     </div>
                                 </div>
@@ -106,7 +106,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <div class="form-group">
                                         <label for="celular">Celular: <i
                                                 class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                        <input id="celular" type="number" name="celular" class="form-control"
+                                        <input id="celular" type="text" name="celular" class="form-control"
                                             placeholder="Ingrese el número de celular" required="">
                                     </div>
                                 </div>
@@ -178,25 +178,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 59px;">#</th>
-                                        <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 107px;">Dni</th>
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 250px;">Apellidos y Nombres</th>
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 72px;">Celular</th>
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 72px;">Email</th>
-                                        <!-- <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 29px;">Dirección</th> -->
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 69px;">Membresia</th>
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 59px;">Estado</th>
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 59px;">Perfil</th>
-                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1"
-                                            style="width: 59px;">Opciones</th>
+                                        <th class="sorting" style="width: 5%;">#</th>
+                                        <th class="sorting" style="width: 10%;">Dni</th>
+                                        <th class="sorting" style="width: 25%;">Apellidos y Nombres</th>
+                                        <th class="sorting" style="width: 10%;">Celular</th>
+                                        <th class="sorting" style="width: 10%;">Email</th>
+                                        <th class="sorting" style="width: 15%;">Membresia</th>
+                                        <th class="sorting" style="width: 10%;">Estado</th>
+                                        <th class="sorting" style="width: 10%;">Perfil</th>
+                                        <th class="sorting" style="width: 10%;">Opciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbLista">
@@ -226,6 +216,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
     $(document).ready(function() {
 
         loadInitClientes();
+
+        $("#dni").bind('keypress', function(event) {
+            var key = window.Event ? event.which : event.keyCode;
+            var c = String.fromCharCode(key);
+            if ((c < '0' || c > '9') && (c != '\b')) {
+                event.preventDefault();
+            }
+        });
+
+        $("#celular").bind('keypress', function(event) {
+            var key = window.Event ? event.which : event.keyCode;
+            var c = String.fromCharCode(key);
+            if ((c < '0' || c > '9') && (c != '\b')) {
+                event.preventDefault();
+            }
+        });
 
         $('#modalCliente').on('shown.bs.modal', function() {
             $('#dni').trigger('focus')
@@ -332,7 +338,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             url: "../app/cliente/Obtener_Clientes.php",
             method: "",
             data: {
-                opcion: 2,
+                opcion: 1,
                 page: paginacion,
                 datos: buscar
             },
@@ -367,9 +373,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                             '<td>' + cliente.celular + '</td>' +
                             '<td>' + cliente.email + '</td>' +
-                            '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" :
-                                "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
-                                " deuda(s)" : "0 deudas") + '</td>' +
+                            '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") +  '</td>' +
                             '<td>Estado</td>' +
                             '<td>' + btnPerfil + '</td>' +
                             '<td>' + btnUpdate + '</td>' +
@@ -471,8 +475,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 "idCliente": idCliente
             }),
             beforeSend: function() {
-                // $("#btnGuardarModal").empty();
-                // $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
+                tools.AlertInfo("Mensaje", "Cargando datos..");
             },
             success: function(result) {
                 if (result.estado == 1) {
@@ -488,16 +491,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#celular").val(cliente.celular)
                     $("#direccion").val(cliente.direccion)
 
-                } else {
+                    tools.AlertSuccess("Mensaje", "Se cargo correctamente los datos.")
+                } else {    
                     tools.AlertWarning("Mensaje", result.mensaje)
-                    $("#btnGuardarModal").empty();
-                    $("#btnGuardarModal").append('<i class="fa fa-save"></i> Guardar')
                 }
             },
             error: function(error) {
                 tools.AlertError("Error", error.responseText);
-                $("#btnGuardarModal").empty();
-                $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')
             }
         });
     }

@@ -36,11 +36,12 @@ class VentaAdo
         $ingreso = "INSERT INTO  ingresotb(" .
             "idPrecedencia ," .
             "detalle," .
-            "tipo," .
+            "procedencia," .
+            "fecha," .
+            "hora," .
             "forma," .
-            "numero," .
             "monto)" .
-            " VALUES(?,?,?,?,?,?)";
+            " VALUES(?,?,?,?,?,?,?)";
 
         $membresia = "INSERT INTO membresiatb("
             . "idMembresia,"
@@ -185,24 +186,95 @@ class VentaAdo
                 }
             }
 
-            // $codigoIngresoNumerico = Database::getInstance()->getDb()->prepare($quey_codigo_ingreso_numerico);
-            // $codigoIngresoNumerico->execute();
-            // $numeracion = $codigoIngresoNumerico->fetchColumn();
-
-            $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
-            $executeIngreso->execute(array(
-                $idVenta,
-                "INGRESO EN EFECTIVO DEL COMPROBANTE " . $serie . "-" . $ResultNumeracion,
-                $body['tipo'],
-                $body['forma'],
-                $body['numero'],
-                $total_venta
-            ));
+            if ($total_venta > 0) {
+                $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
+                $executeIngreso->execute(array(
+                    $idVenta,
+                    "INGRESO DEL COMPROBANTE " . $serie . "-" . $ResultNumeracion,
+                    1,
+                    $body['fecha'],
+                    $body['hora'],
+                    $body['forma'],
+                    $total_venta
+                ));
+            }
 
             Database::getInstance()->getDb()->commit();
             return "true";
         } catch (Exception $e) {
-            //Database::getInstance()->getDb()->rollback();
+            Database::getInstance()->getDb()->rollback();
+            return $e->getMessage();
+        }
+    }
+
+    public static function insertarCredito($body)
+    {
+        try {
+            Database::getInstance()->getDb()->beginTransaction();
+
+            $cmdVenta = Database::getInstance()->getDb()->prepare("SELECT serie,numeracion FROM ventatb WHERE idVenta = ? AND estado <> 3");
+            $cmdVenta->bindParam(1, $body["idVenta"], PDO::PARAM_STR);
+            $cmdVenta->execute();
+            $venta = $cmdVenta->fetchObject();
+
+            if (is_object($venta)) {
+                $montoCobrado = 0;
+                $cmdCredito = Database::getInstance()->getDb()->prepare("UPDATE ventacreditotb SET fechaPago = ?,horaPago = ?,estado = ? WHERE idVentaCredito  = ?");
+                foreach ($body['arrayCredito'] as $result) {
+                    $montoCobrado += floatval($result["monto"]);
+                    $cmdCredito->execute(array(
+                        $result["fechaPago"],
+                        $result["horaPago"],
+                        $result["estado"],
+                        $result["idCredito"]
+                    ));
+                }
+
+                $cmdSumas = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta = ? ");
+                $cmdSumas->bindParam(1, $body["idVenta"], PDO::PARAM_STR);
+                $cmdSumas->execute();
+
+                $totalMonto = 0;
+                $totalCobrado = 0;
+                while ($row = $cmdSumas->fetch()) {
+                    $totalCobrado += $row["estado"] == 0 ? 0 : $row["monto"];
+                    $totalMonto += $row["monto"];
+                }
+
+                if ($totalMonto ==  $totalCobrado) {
+                    $cmdValidate = Database::getInstance()->getDb()->prepare("UPDATE ventatb SET estado = 1 WHERE idVenta = ?");
+                    $cmdValidate->bindParam(1, $body["idVenta"], PDO::PARAM_STR);
+                    $cmdValidate->execute();
+                }
+
+                $executeIngreso = Database::getInstance()->getDb()->prepare("INSERT INTO  ingresotb(" .
+                    "idPrecedencia ," .
+                    "detalle," .
+                    "procedencia," .
+                    "fecha," .
+                    "hora," .
+                    "forma," .
+                    "monto)" .
+                    " VALUES(?,?,?,?,?,?,?)");
+
+                $executeIngreso->execute(array(
+                    $body["idVenta"],
+                    "COBRO DEL COMPROBANTE " . $venta->serie . "-" . $venta->numeracion,
+                    2,
+                    $body['fecha'],
+                    $body['hora'],
+                    $body['forma'],
+                    $montoCobrado
+                ));
+
+                Database::getInstance()->getDb()->commit();
+                return "true";
+            } else {
+                Database::getInstance()->getDb()->rollback();
+                return "noid";
+            }
+        } catch (Exception $e) {
+            Database::getInstance()->getDb()->rollback();
             return $e->getMessage();
         }
     }
@@ -315,39 +387,50 @@ class VentaAdo
         }
     }
 
-    public static function getVentaDetalleBydVenta($idVenta)
+
+    public static function getVentaDetalleByd($idVenta)
     {
-        $array_venta_detalle = array();
         try {
+            $array = array();
 
-            $venta_productos = "SELECT p.nombre,d.cantidad,d.precio,d.subTotal,d.descuento,d.total
-            FROM detalleventatb AS d INNER JOIN productotb AS p ON d.idOrigen = p.idProducto WHERE d.idVenta = ?";
-
-            $venta_detalle = Database::getInstance()->getDb()->prepare($venta_productos);
-            $venta_detalle->execute(array($idVenta));
+            $cmdDetalleVenta = Database::getInstance()->getDb()->prepare("SELECT d.idVenta,
+            (case when pl.idPlan is null 
+            then UPPER(pr.nombre)
+            else UPPER(pl.nombre) END) as detalle,
+            d.cantidad,
+            d.precio,
+            d.descuento
+            FROM detalleventatb as d 
+            left JOIN plantb  as pl on d.idOrigen = pl.idPlan
+            left join productotb as pr on d.idOrigen = pr.idProducto
+            where d.idVenta = ?");
+            $cmdDetalleVenta->bindParam(1, $idVenta, PDO::PARAM_STR);
+            $cmdDetalleVenta->execute();
 
             $count = 0;
-            while ($rowvd = $venta_detalle->fetch()) {
+            while ($row = $cmdDetalleVenta->fetch()) {
                 $count++;
-                array_push($array_venta_detalle, array(
+                array_push($array, array(
                     "id" => $count,
-                    "nombre" => $rowvd["nombre"],
-                    "cantidad" => $rowvd["cantidad"],
-                    "precio" => $rowvd["precio"],
-                    "subTotal" => $rowvd["subTotal"],
-                    "descuento" => $rowvd["descuento"],
-                    "total" => $rowvd["total"]
+                    "idVenta" => $row["idVenta"],
+                    "detalle" => $row["detalle"],
+                    "cantidad" => $row["cantidad"],
+                    "precio" => $row["precio"],
+                    "descuento" => $row["descuento"]
                 ));
             }
+            return $array;
         } catch (Exception $ex) {
+            return $ex->getMessage();
         }
-        return $array_venta_detalle;
     }
+
 
     public static function getVentaCredito($idVenta)
     {
-        $array = array();
         try {
+            $array = array();
+
             $comando = Database::getInstance()->getDb()->prepare("SELECT idVentaCredito,
                      monto,
                      fechaRegistro,
@@ -356,12 +439,16 @@ class VentaAdo
                      horaPago,
                      estado
                      FROM ventacreditotb WHERE idVenta = ?");
-            $comando->execute(array($idVenta));
+            $comando->bindParam(1, $idVenta, PDO::PARAM_STR);
+            $comando->execute();
 
+            $count = 0;
             while ($row = $comando->fetch()) {
+                $count++;
                 array_push($array, array(
+                    "id" => $count,
                     "idVentaCredito" => $row["idVentaCredito"],
-                    "monto" => $row["monto"],
+                    "monto" => floatval($row["monto"]),
                     "fechaRegistro" => $row["fechaRegistro"],
                     "horaRegistro" => $row["horaRegistro"],
                     "fechaPago" => $row["fechaPago"],
@@ -369,9 +456,129 @@ class VentaAdo
                     "estado" => $row["estado"]
                 ));
             }
+            return $array;
         } catch (Exception $ex) {
+            return $ex->getMessage();
         }
-        return $array;
+    }
+
+    public static function getAsistemcias($idCliente)
+    {
+        try {
+            $array = array();
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT fechaApertura,
+                     fechaCierre,
+                     horaApertura,
+                     horaCierre,
+                     estado
+                     FROM asistenciatb WHERE idPersona = ?");
+            $comando->bindParam(1, $idCliente, PDO::PARAM_STR);
+            $comando->execute();
+
+            $count = 0;
+            while ($row = $comando->fetch()) {
+                $count++;
+                array_push($array, array(
+                    "id" => $count,
+                    "fechaApertura" => $row["fechaApertura"],
+                    "fechaCierre" => $row["fechaCierre"],
+                    "horaApertura" => $row["horaApertura"],
+                    "horaCierre" => $row["horaCierre"],
+                    "estado" => $row["estado"]
+                ));
+            }
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function getIngresos($fechaInicio, $FechaFin)
+    {
+        try {
+            $array = array();
+
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT idIngreso,
+            detalle,
+            procedencia,
+            fecha,
+            hora,
+            forma,
+            monto 
+            FROM ingresotb
+            WHERE fecha between ? and ?
+            ORDER BY fecha DESC,hora DESC");
+            $cmdIngresos->bindParam(1,$fechaInicio,PDO::PARAM_STR);
+            $cmdIngresos->bindParam(2,$FechaFin,PDO::PARAM_STR);
+            $cmdIngresos->execute();
+
+            $arrayIngresos = array();
+            $count = 0;
+            while ($row = $cmdIngresos->fetch()) {
+                $count++;
+                array_push($arrayIngresos, array(
+                    "id" => $count,
+                    "idIngreso" => $row["idIngreso"],
+                    "detalle" => $row["detalle"],
+                    "procedencia" => $row["procedencia"],
+                    "fecha" => $row["fecha"],
+                    "hora" => $row["hora"],
+                    "forma" => $row["forma"],
+                    "monto" => $row["monto"],
+                ));
+            }
+
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT count(*) FROM ingresotb
+            WHERE fecha between ? and ?");
+            $cmdIngresos->bindParam(1,$fechaInicio,PDO::PARAM_STR);
+            $cmdIngresos->bindParam(2,$FechaFin,PDO::PARAM_STR);
+            $cmdIngresos->execute();
+            $resultTotal = $cmdIngresos->fetchColumn();
+
+            array_push($array, $arrayIngresos, $resultTotal);
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function reportePorFechaIngresos($fechaInicio, $FechaFin)
+    {
+        try {
+            $array = array();
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT 
+            (case procedencia
+            when 1 then 'VENTAS'
+            else 'CUENTAS POR COBRAR' end) AS transaccion,
+            count(forma) as cantidad,
+            (case forma
+            when 1 then sum(monto) 
+            else 0 end)as efectivo,
+            (case forma
+            when 2 then sum(monto)
+            else 0 end)as tarjeta
+            from ingresotb
+            where fecha between ? and ?
+            group by forma,procedencia");
+            $cmdIngresos->bindParam(1,$fechaInicio,PDO::PARAM_STR);
+            $cmdIngresos->bindParam(2,$FechaFin,PDO::PARAM_STR);
+            $cmdIngresos->execute();
+            $count = 0;
+            while($row = $cmdIngresos->fetch()){
+                $count ++;
+                array_push($array,array(
+                    "id"=>$count,
+                    "transaccion"=>$row["transaccion"],
+                    "cantidad"=>floatval($row["cantidad"]),
+                    "efectivo"=>floatval($row["efectivo"]),
+                    "tarjeta"=>floatval($row["tarjeta"])
+                ));
+            }
+            return  $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
     }
 
     public static function getAllComprobante()
@@ -394,22 +601,4 @@ class VentaAdo
         }
     }
 
-    public static function ResumenIngresosPorFecha()
-    {
-        try {
-            $array = array();
-            $comando = Database::getInstance()->getDb()->prepare("");
-            $comando->execute();
-
-            while ($rowp = $comando->fetch()) {
-                array_push($array, array(
-                    "idTipoComprobante" => $rowp['idTipoComprobante'],
-                    "nombre" => $rowp['nombre']
-                ));
-            }
-            return $array;
-        } catch (Exception $ex) {
-            return $ex->getMessage();
-        }
-    }
 }
