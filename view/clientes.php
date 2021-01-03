@@ -176,6 +176,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <th class="sorting" style="width: 10%;">Estado</th>
                                             <th class="sorting" style="width: 10%;">Perfil</th>
                                             <th class="sorting" style="width: 10%;">Editar</th>
+                                            <th class="sorting" style="width: 10%;">Eliminar</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbLista">
@@ -345,15 +346,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tbLista.empty();
                             for (let cliente of data.clientes) {
 
-                                let btnUpdate =
-                                    '<button class="btn btn-warning btn-sm" onclick="loadUpdateCliente(\'' +
-                                    cliente.idCliente + '\')">' +
-                                    '<i class="fa fa-wrench"></i> Editar' +
-                                    '</button>';
                                 let btnPerfil =
                                     '<button class="btn btn-info btn-sm" onclick="loadDataPerfil(\'' +
                                     cliente.idCliente + '\')">' +
                                     '<i class="fa fa-user-circle"></i> Ver' +
+                                    '</button>';
+
+                                let btnUpdate =
+                                    '<button class="btn btn-warning btn-sm" onclick="loadUpdateCliente(\'' +
+                                    cliente.idCliente + '\')">' +
+                                    '<i class="fa fa-edit"></i> Editar' +
+                                    '</button>';
+
+                                let btnDelete =
+                                    '<button class="btn btn-danger btn-sm" onclick="deletedCliente(\'' +
+                                    cliente.idCliente + '\')">' +
+                                    '<i class="fa fa-trash"></i> Eliminar' +
                                     '</button>';
 
                                 tbLista.append('<tr role="row" class="odd">' +
@@ -366,6 +374,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>Estado</td>' +
                                     '<td>' + btnPerfil + '</td>' +
                                     '<td>' + btnUpdate + '</td>' +
+                                    '<td>' + btnDelete + '</td>' +
                                     '</tr>');
                             }
                             totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
@@ -490,6 +499,37 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
             }
+
+            function deletedCliente(idCliente) {
+                tools.ModalDialog('Cliente', '¿Está seguro de eliminar el cliente?', 'question', function(result) {
+                    if (result) {
+                        $.ajax({
+                            url: "../app/cliente/Eliminar_Clientes.php",
+                            method: "POST",
+                            accepts: "application/json",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                "idCliente": idCliente
+                            }),
+                            beforeSend: function() {
+                                tools.ModalAlertInfo('Cliente', 'Procesando petición...');
+                            },
+                            success: function(result) {
+                                if (result.estado == 1) {
+                                    tools.ModalAlertSuccess('Cliente', result.mensaje);
+                                    loadInitClientes();
+                                } else {
+                                    tools.ModalAlertWarning('Cliente', result.mensaje);
+                                }
+                            },
+                            error: function(error) {
+                                tools.ModalAlertError("Cliente", error.responseText);
+                            }
+                        });
+                    }
+                });
+            }
+            
         </script>
     </body>
 

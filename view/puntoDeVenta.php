@@ -583,7 +583,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 </div>
                                 <div class="form-group d-flex">
                                     <div class="input-group">
-                                        <input type="search" class="form-control" placeholder="Cliente..." id="txtCliente" disabled>
+                                        <input type="text" class="form-control" placeholder="Cliente..." id="clienteDatos" disabled>
                                         <div class="input-group-append">
                                             <button class="btn btn-warning" type="button" id="btnOpenModalCliente"><i class="fa fa-plus"></i></button>
                                         </div>
@@ -598,12 +598,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr role="row">
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Nombre</th>
-                                                <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1">Cantidad</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Precio</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Descuento</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Total</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Quitar</th>
+                                                <th class="sorting">Nombre</th>
+                                                <th class="sorting_asc">Cantidad</th>
+                                                <th class="sorting">Precio</th>
+                                                <th class="sorting">Descuento</th>
+                                                <th class="sorting">Total</th>
+                                                <th class="sorting">Quitar</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbLista">
@@ -1236,8 +1236,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function onSelectCliente(id, apellidos, nombres) {
                 idCliente = id;
-                $("#txtCliente").val(nombres + ' ' + apellidos);
-                $("#modalLista").modal("hide");
+                $("#clienteDatos").val(apellidos + " " + nombres)
+                $("#modalLista").modal("hide")
             }
 
             function listaPlanes() {
@@ -1397,7 +1397,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function clearComponents() {
                 idCliente = "";
-                $("#txtCliente").val("");
+                $("#clienteDatos").val("");
                 listaVenta = [];
                 listarPlanes = [];
                 listarDetalleVenta();

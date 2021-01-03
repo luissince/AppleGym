@@ -35,13 +35,14 @@ class VentaAdo
 
         $ingreso = "INSERT INTO  ingresotb(" .
             "idPrecedencia ," .
+            "vendedor,".
             "detalle," .
             "procedencia," .
             "fecha," .
             "hora," .
             "forma," .
             "monto)" .
-            " VALUES(?,?,?,?,?,?,?)";
+            " VALUES(?,?,?,?,?,?,?,?)";
 
         $membresia = "INSERT INTO membresiatb("
             . "idMembresia,"
@@ -190,6 +191,7 @@ class VentaAdo
                 $executeIngreso = Database::getInstance()->getDb()->prepare($ingreso);
                 $executeIngreso->execute(array(
                     $idVenta,
+                    $body['vendedor'],
                     "INGRESO DEL COMPROBANTE " . $serie . "-" . $ResultNumeracion,
                     1,
                     $body['fecha'],
@@ -248,17 +250,19 @@ class VentaAdo
                 }
 
                 $executeIngreso = Database::getInstance()->getDb()->prepare("INSERT INTO  ingresotb(" .
-                    "idPrecedencia ," .
+                    "idPrecedencia," .
+                    "vendedor,".
                     "detalle," .
                     "procedencia," .
                     "fecha," .
                     "hora," .
                     "forma," .
                     "monto)" .
-                    " VALUES(?,?,?,?,?,?,?)");
+                    " VALUES(?,?,?,?,?,?,?,?)");
 
                 $executeIngreso->execute(array(
                     $body["idVenta"],
+                    $body["vendedor"],
                     "COBRO DEL COMPROBANTE " . $venta->serie . "-" . $venta->numeracion,
                     2,
                     $body['fecha'],
@@ -499,15 +503,17 @@ class VentaAdo
         try {
             $array = array();
 
-            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT idIngreso,
-            detalle,
-            procedencia,
-            fecha,
-            hora,
-            forma,
-            monto 
-            FROM ingresotb
-            WHERE fecha between ? and ?
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT i.idIngreso,
+            i.detalle,
+            i.procedencia,
+            i.fecha,
+            i.hora,
+            i.forma,
+            i.monto,
+            e.apellidos,
+            e.nombres 
+            FROM ingresotb AS i INNER JOIN  empleadotb AS e ON i.vendedor = e.idEmpleado
+            WHERE fecha BETWEEN ? and ?
             ORDER BY fecha DESC,hora DESC");
             $cmdIngresos->bindParam(1,$fechaInicio,PDO::PARAM_STR);
             $cmdIngresos->bindParam(2,$FechaFin,PDO::PARAM_STR);
@@ -525,6 +531,8 @@ class VentaAdo
                     "fecha" => $row["fecha"],
                     "hora" => $row["hora"],
                     "forma" => $row["forma"],
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],
                     "monto" => $row["monto"],
                 ));
             }

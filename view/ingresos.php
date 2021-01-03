@@ -144,6 +144,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <th width="10%;">Fecha</th>
                                             <th width="25%;">Detalle</th>
                                             <th width="10%;">Forma</th>
+                                            <th width="10%;">Vendedor</th>
                                             <th width="10%;">Monto</th>
                                         </tr>
                                     </thead>
@@ -294,34 +295,45 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         state = true;
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                         );
+                        totalPaginacion = 0;
                     },
                     success: function(result) {
                         console.log(result)
                         if (result.estado == 1) {
                             tbLista.empty();
-                            for (let ingreso of result.ingresos) {
-                                let procedencia = ingreso.procedencia == 1 ? 'VENTAS' : 'CUENTAS POR COBRAR';
-                                let metodo = ingreso.forma == 1 ? '<i class="fa fa-money"></i> EFECTIVO' : '<i class="fa fa-credit-card-alt"></i> TARJETA';
-                                tbLista.append('<tr>' +
-                                    '<td>' + ingreso.id + '</td>' +
-                                    '<td>' + procedencia + '</td>' +
-                                    '<td>' + tools.getDateForma(ingreso.fecha) + '<br>' + tools.getTimeForma(ingreso.hora, true) + '</td>' +
-                                    '<td>' + ingreso.detalle + '</td>' +
-                                    '<td>' + metodo + '</td>' +
-                                    '<td>S/ ' + tools.formatMoney(ingreso.monto) + '</td>' +
-                                    '</tr>');
+                            if (result.ingresos.length == 0) {
+                                tbLista.append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>No hay datos para mostrar</p></td></tr>'
+                                );
+                                $("#lblPaginaActual").html(0);
+                                $("#lblPaginaSiguiente").html(0);
+                                state = false;
+                            } else {
+                                for (let ingreso of result.ingresos) {
+                                    let procedencia = ingreso.procedencia == 1 ? 'VENTAS' : 'CUENTAS POR COBRAR';
+                                    let metodo = ingreso.forma == 1 ? '<i class="fa fa-money"></i> EFECTIVO' : '<i class="fa fa-credit-card-alt"></i> TARJETA';
+                                    tbLista.append('<tr>' +
+                                        '<td>' + ingreso.id + '</td>' +
+                                        '<td>' + procedencia + '</td>' +
+                                        '<td>' + tools.getDateForma(ingreso.fecha) + '<br>' + tools.getTimeForma(ingreso.hora, true) + '</td>' +
+                                        '<td>' + ingreso.detalle + '</td>' +
+                                        '<td>' + metodo + '</td>' +
+                                        '<td>' + ingreso.nombres+" "+ingreso.apellidos + '</td>' +
+                                        '<td>S/ ' + tools.formatMoney(ingreso.monto) + '</td>' +
+                                        '</tr>');
+                                }
+                                totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
+                                    10))));
+                                $("#lblPaginaActual").html(paginacion);
+                                $("#lblPaginaSiguiente").html(totalPaginacion);
+                                state = false;
                             }
-                            totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
-                                10))));
-                            $("#lblPaginaActual").html(paginacion);
-                            $("#lblPaginaSiguiente").html(totalPaginacion);
-                            state = false;
                         } else {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' +
                                 result.mensaje + '</p></td></tr>');
                             state = false;
                         }
@@ -329,7 +341,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     error: function(error) {
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' +
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
                         state = false;
                     }

@@ -122,7 +122,7 @@ class ClienteAdo
                 $comando->execute();
                 $validate = $comando->fetchObject();
                 if ($validate) {
-                   $resultAsistencia = $validate;
+                    $resultAsistencia = $validate;
                 } else {
                     $resultAsistencia = "MARCAR ENTRADA";
                 }
@@ -373,7 +373,7 @@ class ClienteAdo
             $validateasistencia = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? ");
             $validateasistencia->execute(array($body['idCliente']));
 
-            if ($validateasistencia->rowCount() >= 1) {
+            if ($validateasistencia->fetch()) {
                 Database::getInstance()->getDb()->rollback();
                 return "asistencia";
             } else {
@@ -381,7 +381,7 @@ class ClienteAdo
                 $validateventa = Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb WHERE idCliente = ? ");
                 $validateventa->execute(array($body['idCliente']));
 
-                if ($validateventa->rowCount() >= 1) {
+                if ($validateventa->fetch()) {
                     Database::getInstance()->getDb()->rollback();
                     return "membresia";
                 } else {

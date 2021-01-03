@@ -356,6 +356,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
             let tbListaAsistencia = $("#tbListaAsistencia");
             let idCliente = "<?php echo  $_GET["idCliente"]; ?>";
 
+            let idEmpleado = "<?php echo $_SESSION["IdEmpleado"] ?>";
+
             let idVenta = "";
 
             $(document).ready(function() {
@@ -402,10 +404,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
             })
 
             function loadDataCliente(idCurrentClient) {
-                // $("#modalCliente").modal("show");
-                // $("#titulo-modal").append('<i class="fa fa-user"></i> Editar Cliente');
-                // idCliente = idCurrentClient;
-
                 $.ajax({
                     url: "../app/cliente/Obtener_Clientes_By_Id.php",
                     method: "POST",
@@ -719,6 +717,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             contentType: "application/json",
                             data: JSON.stringify({
                                 "idVenta": idVenta,
+                                "vendedor": idEmpleado,
                                 "fecha": tools.getCurrentDate(),
                                 "hora": tools.getCurrentTime(),
                                 "forma": $("#formapagocredito").val(),
