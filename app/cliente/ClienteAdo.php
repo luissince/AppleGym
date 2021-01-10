@@ -18,27 +18,51 @@ class ClienteAdo
 
         try {
             $array = array();
-            // Preparar sentencia
+
             $clientes = Database::getInstance()->getDb()->prepare("SELECT * 
             FROM clientetb 
-            WHERE (apellidos LIKE ?) OR (nombres LIKE ?) OR (dni LIKE ?) LIMIT ?,?");
-            $clientes->bindValue(1, "$datos%", PDO::PARAM_STR);
-            $clientes->bindValue(2, "$datos%", PDO::PARAM_STR);
-            $clientes->bindValue(3, "$datos%", PDO::PARAM_STR);
-            $clientes->bindValue(4, $x, PDO::PARAM_INT);
-            $clientes->bindValue(5, $y, PDO::PARAM_INT);
+            WHERE 
+            apellidos LIKE CONCAT(?,'%') 
+            OR 
+            nombres LIKE CONCAT(?,'%') 
+            OR
+            CONCAT(apellidos,' ',nombres) LIKE CONCAT(?,'%') 
+            OR
+            CONCAT(nombres,' ',apellidos) LIKE CONCAT(?,'%') 
+            OR
+            dni LIKE CONCAT(?,'%') 
+            LIMIT ?,?");
+            $clientes->bindValue(1, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(2, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(3, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(4, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(5, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(6, $x, PDO::PARAM_INT);
+            $clientes->bindValue(7, $y, PDO::PARAM_INT);
+            $clientes->execute();
 
             $membresias = Database::getInstance()->getDb()->prepare("SELECT * FROM  membresiatb WHERE idCliente = ? AND estado = 1");
-            $clientes->execute();
+
+            $membresiaActivas = Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb WHERE fechaFin > CURDATE()");
+            $membresiaVencidas = Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb WHERE fechaFin <= CURDATE()");
+
+            $deudas = Database::getInstance()->getDb()->prepare("SELECT * FROM ventatb as v INNER JOIN ventacreditotb as vc on v.idVenta = vc.idVenta
+            WHERE v.estado <> 3 AND vc.estado = 0 AND v.cliente = ?");
+
             $arrayClientes = array();
             $count = 0;
             while ($row = $clientes->fetch()) {
 
                 $total_membresias = 0;
+                $total_deudas = 0;
 
                 $membresias->execute(array($row["idCliente"]));
                 while ($rows = $membresias->fetch()) {
                     $total_membresias++;
+                }
+                $deudas->execute(array($row["idCliente"]));
+                while ($rows = $deudas->fetch()) {
+                    $total_deudas++;
                 }
 
                 $count++;
@@ -52,16 +76,28 @@ class ClienteAdo
                     "celular" => $row["celular"],
                     "direccion" => $row["direccion"],
                     "predeterminado" => $row["predeterminado"],
-                    "membresia" => $total_membresias
+                    "membresia" => $total_membresias,
+                    "deudas" => $total_deudas
                 ));
             }
 
             $clientes = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) 
             FROM clientetb 
-            WHERE (apellidos LIKE ?) OR (nombres LIKE ?) OR (dni LIKE ?)");
-            $clientes->bindValue(1, "$datos%", PDO::PARAM_STR);
-            $clientes->bindValue(2, "$datos%", PDO::PARAM_STR);
-            $clientes->bindValue(3, "$datos%", PDO::PARAM_STR);
+            WHERE  
+            apellidos LIKE CONCAT(?,'%') 
+            OR 
+            nombres LIKE CONCAT(?,'%') 
+            OR
+            CONCAT(apellidos,' ',nombres) LIKE CONCAT(?,'%') 
+            OR
+            CONCAT(nombres,' ',apellidos) LIKE CONCAT(?,'%') 
+            OR
+            dni LIKE CONCAT(?,'%')");
+            $clientes->bindValue(1, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(2, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(3, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(4, $datos, PDO::PARAM_STR);
+            $clientes->bindValue(5, $datos, PDO::PARAM_STR);
             $clientes->execute();
             $totalClientes =  $clientes->fetchColumn();
 

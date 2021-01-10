@@ -138,15 +138,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <table class="table table-hover table-bordered">
                                     <thead>
                                         <tr role="row">
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 20px;">#</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 75px;">Fecha</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 75px;">Comprobante</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 180px;">Cliente</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Tipo</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Estado</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 72px;">Total</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 100px;">Vendedor</th>
-                                            <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Detelle</th>
+                                            <th class="sorting" width="20px">#</th>
+                                            <th class="sorting" width="75px">Fecha</th>
+                                            <th class="sorting" width="75px">Comprobante</th>
+                                            <th class="sorting" width="180px">Cliente</th>
+                                            <th class="sorting" width="72px">Tipo</th>
+                                            <th class="sorting" width="72px">Estado</th>
+                                            <th class="sorting" width="72px">Total</th>
+                                            <th class="sorting" width="100px;">Vendedor</th>
+                                            <th class="sorting" width="59px">Detelle</th>
+                                            <th class="sorting" width="59px">Anular</th>
                                             <!-- <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th>  -->
 
                                         </tr>
@@ -193,8 +194,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             $(document).ready(function() {
 
-                document.getElementById("fechaInicio").value = tools.getCurrentDate();
-                document.getElementById("fechaFin").value = tools.getCurrentDate();
+                $("#fechaInicio").val(tools.getCurrentDate());
+                $("#fechaFin").val(tools.getCurrentDate());
 
                 $("#btnCloseModalDetalle").click(function() {
                     $("#modalDetalle").modal("hide");
@@ -230,11 +231,31 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
+                fechaInicio.on("change", function() {
+                    if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
+                        if (!state) {
+                            paginacion = 1;
+                            loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
+                            opcion = 0;
+                        }
+                    }
+                });
+
+                fechaFinal.on("change", function() {
+                    if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
+                        if (!state) {
+                            paginacion = 1;
+                            loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
+                            opcion = 0;
+                        }
+                    }
+                });
+
                 $("#txtSearch").keypress(function() {
                     if ($("#txtSearch").val().trim() != '') {
                         if (!state) {
                             paginacion = 1;
-                            loadTableIngresos($("#txtSearch").val().trim());
+                            loadTableIngresos(1, $("#txtSearch").val().trim(), "", "");
                             opcion = 1;
                         }
                     }
@@ -251,32 +272,37 @@ if (!isset($_SESSION["IdEmpleado"])) {
             function onEventPaginacion() {
                 switch (opcion) {
                     case 0:
-                        loadTableIngresos("");
+                        loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
                         break;
                     case 1:
-                        loadTableIngresos($("#txtSearch").val().trim());
+                        loadTableIngresos(1, $("#txtSearch").val().trim(), "", "");
                         break;
                 }
             }
 
 
             function loadInitIngresos() {
-                if (!state) {
-                    paginacion = 1;
-                    loadTableIngresos("");
-                    opcion = 0;
+                if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
+                    if (!state) {
+                        paginacion = 1;
+                        loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
+                        opcion = 0;
+                    }
                 }
             }
 
 
-            function loadTableIngresos(datos) {
+            function loadTableIngresos(tipo, datos, fechaInicio, fechaFinal) {
                 $.ajax({
                     url: "../app/venta/Listar_Venta.php",
                     method: "GET",
                     data: {
-                        opcion: 1,
-                        page: paginacion,
-                        datos: datos
+                        "opcion": 1,
+                        "tipo": tipo,
+                        "page": paginacion,
+                        "datos": datos,
+                        "fechaInicial": fechaInicio,
+                        "fechaFinal": fechaFinal
                     },
                     beforeSend: function() {
                         state = true;
@@ -284,30 +310,42 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         tbLista.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
+                        totalPaginacion = 0;
                     },
                     success: function(result) {
                         if (result.estado == 1) {
                             tbLista.empty();
-                            for (let venta of result.ventas) {
-                                let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR PAGAR</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
-                                let metodo = venta.forma == 1 ? '<i class="fa fa-money"></i> EFECTIVO' : '<i class="fa fa-credit-card-alt"></i> TARJETA';
-                                tbLista.append('<tr>' +
-                                    '<td>' + venta.id + '</td>' +
-                                    '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora, true) + '</td>' +
-                                    '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
-                                    '<td>' + venta.nombres + '<br>' + venta.apellidos + '</td>' +
-                                    '<td>' + (venta.tipo == 1 ? "CONTADO" : "CRÉDITO") + '</td>' +
-                                    '<td>' + estado + '</td>' +
-                                    '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
-                                    '<td>' + venta.empleadoNombres + '<br>' + venta.empleadoApellidos + '</td>' +
-                                    '<td><button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button></td>' +
-                                    '</tr>');
+                            if (result.ventas.length == 0) {
+                                tbLista.append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
+                                );
+                                $("#lblPaginaActual").html(paginacion);
+                                $("#lblPaginaSiguiente").html(totalPaginacion);
+                                state = false;
+                            } else {
+                                for (let venta of result.ventas) {
+                                    let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR PAGAR</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
+                                    let metodo = venta.forma == 1 ? '<i class="fa fa-money"></i> EFECTIVO' : '<i class="fa fa-credit-card-alt"></i> TARJETA';
+                                    tbLista.append('<tr>' +
+                                        '<td>' + venta.id + '</td>' +
+                                        '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora, true) + '</td>' +
+                                        '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
+                                        '<td>' + venta.nombres + '<br>' + venta.apellidos + '</td>' +
+                                        '<td>' + (venta.tipo == 1 ? "CONTADO" : "CRÉDITO") + '</td>' +
+                                        '<td>' + estado + '</td>' +
+                                        '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
+                                        '<td>' + venta.empleadoNombres + '<br>' + venta.empleadoApellidos + '</td>' +
+                                        '<td><button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button></td>' +
+                                        '<td><button class="btn btn-danger" onclick="anularVenta(\'' + venta.idVenta + '\')"><i class="fa fa-trash"></i></button></td>' +
+                                        '</tr>');
+                                }
+                                totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
+                                    10))));
+                                $("#lblPaginaActual").html(paginacion);
+                                $("#lblPaginaSiguiente").html(totalPaginacion);
+                                state = false;
                             }
-                            totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
-                                10))));
-                            $("#lblPaginaActual").html(paginacion);
-                            $("#lblPaginaSiguiente").html(totalPaginacion);
-                            state = false;
+
                         } else {
                             tbLista.empty();
                             tbLista.append(
@@ -359,6 +397,38 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     error: function(error) {
                         $("#tbDetalleVenta").empty();
                         $("#tbDetalleVenta").append('<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' + error.responseText + '</p></td></tr>');
+                    }
+                });
+            }
+
+            function anularVenta(idVenta) {
+                tools.ModalDialog('Venta', '¿Está seguro de enular la venta?', 'question', function(value) {
+                    if (value) {
+                        $.ajax({
+                            url: "../app/venta/Listar_Venta.php",
+                            method: "GET",
+                            data: {
+                                "opcion": 7,
+                                "idVenta": idVenta
+                            },
+                            beforeSend: function() {
+                                tools.ModalAlertInfo('Venta', 'Procesando petición...');
+                            },
+                            success: function(result) {
+                                if (result.estado == 1) {
+                                    tools.ModalAlertSuccess('Venta', result.mensaje);
+                                } else if (result.estado == 2) {
+                                    tools.ModalAlertWarning('Venta', result.mensaje);
+                                } else if (result.estado == 3) {
+                                    tools.ModalAlertWarning('Venta', result.mensaje);
+                                } else {
+                                    tools.ModalAlertWarning('Venta', result.mensaje);
+                                }
+                            },
+                            error: function(error) {
+                                tools.ModalAlertError('Venta', error.responseText);
+                            }
+                        });
                     }
                 });
             }

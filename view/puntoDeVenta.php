@@ -18,8 +18,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
 
-
-
         <main class="app-content">
             <div class="app-title">
                 <div>
@@ -644,6 +642,24 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <select id="comprobante" class="form-control">
                                     </select>
                                 </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Numeración</label>
+                                <div class="form-group d-flex">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="txtNumeracion" placeholder="Numeración Automatica" disabled>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="button" id="btnDesbloquear"><i class="fa fa-lock"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+
+                                </div>
+                            </div>
+                            <div class="col-md-12">
                                 <label class="text-danger" id="errorComprobante"></label>
                             </div>
                         </div>
@@ -702,6 +718,27 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
+                $("#txtNumeracion").keypress(function() {
+                    var key = window.Event ? event.which : event.keyCode;
+                    var c = String.fromCharCode(key);
+                    if ((c < '0' || c > '9') && (c != '\b')) {
+                        event.preventDefault();
+                    }
+                });
+
+                $("#btnDesbloquear").click(function() {
+                    if ($("#txtNumeracion").is(':disabled')) {
+                        $("#txtNumeracion").prop('disabled', false);
+                        $("#btnDesbloquear").empty();
+                        $("#btnDesbloquear").html('<i class="fa fa-unlock-alt"></i>');
+                    } else {
+                        $("#txtNumeracion").prop('disabled', true);
+                        $("#btnDesbloquear").empty();
+                        $("#btnDesbloquear").html('<i class="fa fa-lock"></i>');
+                        $("#txtNumeracion").val("");
+                    }
+                });
+
                 $("#modalLista").on('shown.bs.modal', function() {
                     listaClientes($("#txtSearchLista").val());
                 });
@@ -740,10 +777,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#titulo-modal").empty();
                     closeClearModal();
                 });
-
-                // btnCloseModalNewCliente
-                // btnGuardarModalNewCliente
-                // btnCancelModalNewCliente
 
                 $("#btnGuardarModalNewCliente").click(function() {
                     if ($("#dni").val() == '' || $("#dni").val().length < 8) {
@@ -893,6 +926,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     } else if ($("#comprobante").val() == '') {
                         tools.AlertWarning("Venta: ", "Seleccione un comprobante.");
                         $("#comprobante").focus();
+                    } else if (!$("#txtNumeracion").is(':disabled') && !tools.isNumeric($("#txtNumeracion").val())) {
+                        tools.AlertWarning("Venta: ", "La numeración del comprobante no es un valor numérico.");
+                        $("#txtNumeracion").focus();
                     } else {
                         $("#modalCobro").modal("show");
                         $("#vuelto").val(tools.formatMoney(total));
@@ -961,6 +997,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         contentType: "application/json",
                                         data: JSON.stringify({
                                             "tipoDocumento": $("#comprobante").val(),
+                                            "estadoNumeracion": $("#txtNumeracion").is(':disabled'),
+                                            "numracion": $("#txtNumeracion").val(),
                                             "cliente": idCliente,
                                             "vendedor": idEmpleado,
                                             "fecha": tools.getCurrentDate(),
@@ -971,7 +1009,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             "pago": $("#monto").val(),
                                             "vuelto": $("#vuelto").val(),
                                             "estado": 1,
-                                            "lista": listaVenta
+                                            "lista": listaVenta,
                                         }),
                                         beforeSend: function() {
                                             $("#modalCobro").modal("hide");
@@ -1010,6 +1048,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         contentType: "application/json",
                                         data: JSON.stringify({
                                             "tipoDocumento": $("#comprobante").val(),
+                                            "estadoNumeracion": $("#txtNumeracion").is(':disabled'),
+                                            "numracion": $("#txtNumeracion").val(),
                                             "cliente": idCliente,
                                             "vendedor": idEmpleado,
                                             "fecha": tools.getCurrentDate(),
@@ -1090,6 +1130,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         contentType: "application/json",
                                         data: JSON.stringify({
                                             "tipoDocumento": $("#comprobante").val(),
+                                            "estadoNumeracion": $("#txtNumeracion").is(':disabled'),
+                                            "numracion": $("#txtNumeracion").val(),
                                             "cliente": idCliente,
                                             "vendedor": idEmpleado,
                                             "fecha": tools.getCurrentDate(),

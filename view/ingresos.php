@@ -174,10 +174,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             $(document).ready(function() {
 
-
-                document.getElementById("fechaInicio").value = tools.getCurrentDate();
-                document.getElementById("fechaFin").value = tools.getCurrentDate();
-
+                $("#fechaInicio").val(tools.getCurrentDate());
+                $("#fechaFin").val(tools.getCurrentDate());
 
                 $("#btnCloseModalDetalle").click(function() {
                     $("#modalDetalle").modal("hide");
@@ -221,7 +219,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
                         if (!state) {
                             paginacion = 1;
-                            loadTableIngresos("", fechaInicio.val(), fechaFinal.val());
+                            loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
                             opcion = 0;
                         }
                     }
@@ -231,20 +229,18 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
                         if (!state) {
                             paginacion = 1;
-                            loadTableIngresos("", fechaInicio.val(), fechaFinal.val());
+                            loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
                             opcion = 0;
                         }
                     }
                 });
 
                 $("#txtSearch").keypress(function() {
-                    if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
-                        if ($("#txtSearch").val().trim() != '') {
-                            if (!state) {
-                                paginacion = 1;
-                                loadTableIngresos($("#txtSearch").val().trim(), fechaInicio.val(), fechaFinal.val());
-                                opcion = 1;
-                            }
+                    if ($("#txtSearch").val().trim() != '') {
+                        if (!state) {
+                            paginacion = 1;
+                            loadTableIngresos(1, $("#txtSearch").val().trim(), "", "");
+                            opcion = 1;
                         }
                     }
                 });
@@ -260,32 +256,31 @@ if (!isset($_SESSION["IdEmpleado"])) {
             function onEventPaginacion() {
                 switch (opcion) {
                     case 0:
-                        loadTableIngresos("", fechaInicio.val(), fechaFinal.val());
+                        loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
                         break;
                     case 1:
-                        loadTableIngresos($("#txtSearch").val().trim(), fechaInicio.val(), fechaFinal.val());
+                        loadTableIngresos(1, $("#txtSearch").val().trim(), "", "");
                         break;
                 }
             }
-
 
             function loadInitIngresos() {
                 if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
                     if (!state) {
                         paginacion = 1;
-                        loadTableIngresos("", fechaInicio.val(), fechaFinal.val());
+                        loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
                         opcion = 0;
                     }
                 }
             }
 
-
-            function loadTableIngresos(datos, fechaInicio, fechaFinal) {
+            function loadTableIngresos(tipo, datos, fechaInicio, fechaFinal) {
                 $.ajax({
                     url: "../app/venta/Listar_Venta.php",
                     method: "GET",
                     data: {
                         "opcion": 5,
+                        "tipo": tipo,
                         "page": paginacion,
                         "datos": datos,
                         "fechaInicial": fechaInicio,
@@ -320,7 +315,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         '<td>' + tools.getDateForma(ingreso.fecha) + '<br>' + tools.getTimeForma(ingreso.hora, true) + '</td>' +
                                         '<td>' + ingreso.detalle + '</td>' +
                                         '<td>' + metodo + '</td>' +
-                                        '<td>' + ingreso.nombres+" "+ingreso.apellidos + '</td>' +
+                                        '<td>' + ingreso.nombres + " " + ingreso.apellidos + '</td>' +
                                         '<td>S/ ' + tools.formatMoney(ingreso.monto) + '</td>' +
                                         '</tr>');
                                 }

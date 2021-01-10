@@ -2,11 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc5b9fe7-f080-4582-96b0-24b3a58f23b5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/productos/Obtener_Productos.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/productos/Obtener_Productos.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/productos/ProductoAdo.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/productos/ProductoAdo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/asistencias/AsistenciaAdo.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/asistencias/AsistenciaAdo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/cliente/ClienteAdo.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/cliente/ClienteAdo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/membresias/MembresiasAdo.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/reportes/resumeningresos.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/reportes/resumeningresos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/venta/Listar_Venta.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/venta/Listar_Venta.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/venta/VentaAdo.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/venta/VentaAdo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/clientes.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/clientes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/view/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/ingresos.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/ingresos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/js/tools.js" beforeDir="false" afterPath="$PROJECT_DIR$/view/js/tools.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/layout/footer.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/layout/footer.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/view/layout/menu.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/layout/menu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/view/productos.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/productos.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/marcarentrada.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/marcarentrada.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/view/puntoDeVenta.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/puntoDeVenta.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/ventas.php" beforeDir="false" afterPath="$PROJECT_DIR$/view/ventas.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +60,7 @@
       <workItem from="1609070063719" duration="2767000" />
       <workItem from="1609122177752" duration="1797000" />
       <workItem from="1609143194610" duration="4032000" />
+      <workItem from="1610241700275" duration="315000" />
     </task>
     <servers />
   </component>

@@ -115,6 +115,14 @@
                                         <p class="h6" id="lblFechaNacimiento">--</p>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
+                                        <p class="h6">Membresía:</p>
+                                    </div>
+                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
+                                        <p class="h6" id="lblMembresias">--</p>
+                                    </div>
+                                </div>
                                 <!--  -->
                                 <div class="row">
                                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">

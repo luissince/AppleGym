@@ -342,6 +342,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     },
                     success: function(result) {
                         let data = JSON.parse(result);
+
                         if (data.estado == 1) {
                             tbLista.empty();
                             for (let cliente of data.clientes) {
@@ -370,8 +371,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                                     '<td>' + cliente.celular + '</td>' +
                                     '<td>' + cliente.email + '</td>' +
-                                    '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") + '</td>' +
-                                    '<td>Estado</td>' +
+                                    '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") + '<br>' + (cliente.deudas >= 1 ? cliente.deudas + " DEUDA(S)" : "NINGUNA") + '</td>' +
+                                    '<td><span class="badge badge-pill badge-success">Activo</span></td>' +
                                     '<td>' + btnPerfil + '</td>' +
                                     '<td>' + btnUpdate + '</td>' +
                                     '<td>' + btnDelete + '</td>' +
@@ -529,7 +530,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
             }
-            
         </script>
     </body>
 

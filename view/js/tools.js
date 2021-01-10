@@ -98,6 +98,16 @@ function Tools() {
         return formatted_time;
     }
 
+    this.getCurrentMonth = function() {
+        let today = new Date();
+        return (today.getMonth() + 1);
+    }
+
+    this.getCurrentYear = function() {
+        let today = new Date();
+        return today.getFullYear();
+    }
+
     this.diasEnUnMes = function(mes, year) {
         mes = mes.toUpperCase();
         var meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];

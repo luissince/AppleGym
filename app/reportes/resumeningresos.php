@@ -8,7 +8,7 @@ include_once('../venta/VentaAdo.php');
 $rutaImage = __DIR__ . "/../../view/images/logo.jpeg";
 $title = "RESUMEN DE INGRESOS";
 $fechaIngreso =  date("d-m-Y", strtotime($_GET["fechaInicial"]))." al ".date("d-m-Y", strtotime($_GET["fechaFinal"]));
-$recibos = "RECIBOS DEL : B001-000001 al B001-000002";
+$recibos = "";
 $resumen = VentaAdo::reportePorFechaIngresos($_GET["fechaInicial"], $_GET["fechaFinal"]);
 if (!is_array($resumen)) {
     echo $resumen;
@@ -70,7 +70,7 @@ if (!is_array($resumen)) {
             </td>
             <td width="50%" style="color:#969696;text-align: right;">
                 <span style="font-weight: bold; font-size: 9pt;">
-                   ' . date("j-m-Y") . '
+                   ' . date("d-m-Y") . '
                 </span>
             </td>
         </tr>

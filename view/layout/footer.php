@@ -109,52 +109,56 @@
 
                             $("#btnMarcarEntrada").unbind();
                             $("#btnMarcarEntrada").bind("click", function() {
-                                tools.ModalDialog('Marcar Entrada', '¿Está seguro de continuar?', 'question', function(value) {
-                                    if (value) {
-                                        $.ajax({
-                                            url: "../app/asistencias/Registrar_Asistencias.php",
-                                            method: 'POST',
-                                            accepts: "application/json",
-                                            contentType: "application/json",
-                                            data: JSON.stringify({
-                                                'fechaApertura': tools.getCurrentDate(),
-                                                'fechaCierre': null,
-                                                'horaApertura': tools.getCurrentTime(),
-                                                'horaCierre': null,
-                                                'estado': 1,
-                                                'idPersona': result.cliente.idCliente,
-                                                'tipoPersona': 1,
-                                            }),
-                                            beforeSend: function() {
-                                                tools.ModalAlertInfo('Venta', 'Procesando petición...');
-                                            },
-                                            success: function(result) {
-                                                if (result.estado == 1) {
-                                                    tools.ModalAlertWarning('Venta', result.mensaje);
-                                                } else if (result.estado == 2) {
-                                                    $("#modalMarcarEntrada").modal("hide");
-                                                    $("#txtCliente").val("");
-                                                    $("#lblDatosCompletos").html("Bienvenido --");
-                                                    $("#lblCodigo").html("--");
-                                                    $("#lblDni").html("--");
-                                                    $("#lblEmail").html("--");
-                                                    $("#lblCelular").html("--");
-                                                    $("#lblFechaNacimiento").html("--");
-                                                    $("#lblMembresias").html("--");
-                                                    $("#lblAsistencia").html("")
-                                                    $("#btnMarcarEntrada").unbind();
-                                                    $("#btnCerrarEntrada").unbind();
-                                                    tools.ModalAlertSuccess('Venta', result.mensaje);
-                                                } else {
-                                                    tools.ModalAlertWarning('Venta', result.mensaje);
+                                if (result.membresias.length == 0) {
+                                    tools.ModalAlertWarning('Venta', "No tiene ningúna membresia activada para marcar ingreso.");
+                                } else {
+                                    tools.ModalDialog('Marcar Entrada', '¿Está seguro de continuar?', 'question', function(value) {
+                                        if (value) {
+                                            $.ajax({
+                                                url: "../app/asistencias/Registrar_Asistencias.php",
+                                                method: 'POST',
+                                                accepts: "application/json",
+                                                contentType: "application/json",
+                                                data: JSON.stringify({
+                                                    'fechaApertura': tools.getCurrentDate(),
+                                                    'fechaCierre': null,
+                                                    'horaApertura': tools.getCurrentTime(),
+                                                    'horaCierre': null,
+                                                    'estado': 1,
+                                                    'idPersona': result.cliente.idCliente,
+                                                    'tipoPersona': 1,
+                                                }),
+                                                beforeSend: function() {
+                                                    tools.ModalAlertInfo('Venta', 'Procesando petición...');
+                                                },
+                                                success: function(result) {
+                                                    if (result.estado == 1) {
+                                                        tools.ModalAlertWarning('Venta', result.mensaje);
+                                                    } else if (result.estado == 2) {
+                                                        $("#modalMarcarEntrada").modal("hide");
+                                                        $("#txtCliente").val("");
+                                                        $("#lblDatosCompletos").html("Bienvenido --");
+                                                        $("#lblCodigo").html("--");
+                                                        $("#lblDni").html("--");
+                                                        $("#lblEmail").html("--");
+                                                        $("#lblCelular").html("--");
+                                                        $("#lblFechaNacimiento").html("--");
+                                                        $("#lblMembresias").html("--");
+                                                        $("#lblAsistencia").html("")
+                                                        $("#btnMarcarEntrada").unbind();
+                                                        $("#btnCerrarEntrada").unbind();
+                                                        tools.ModalAlertSuccess('Venta', result.mensaje);
+                                                    } else {
+                                                        tools.ModalAlertWarning('Venta', result.mensaje);
+                                                    }
+                                                },
+                                                error: function(error) {
+                                                    tools.ModalAlertError('Venta', error.responseText);
                                                 }
-                                            },
-                                            error: function(error) {
-                                                tools.ModalAlertError('Venta', error.responseText);
-                                            }
-                                        });
-                                    }
-                                });
+                                            });
+                                        }
+                                    });
+                                }
                             });
 
                             $("#btnCerrarEntrada").unbind();

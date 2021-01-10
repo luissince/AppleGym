@@ -11,8 +11,6 @@ class VentaAdo
 
     public static function insertVenta($body)
     {
-
-        // Sentencia INSERT
         $quey_codigo_venta = "SELECT Fc_Venta_Codigo_Almanumerico();";
         $quey_codigo_membresia = "SELECT Fc_Membresia_Codigo_Almanumerico();";
 
@@ -35,7 +33,7 @@ class VentaAdo
 
         $ingreso = "INSERT INTO  ingresotb(" .
             "idPrecedencia ," .
-            "vendedor,".
+            "vendedor," .
             "detalle," .
             "procedencia," .
             "fecha," .
@@ -61,7 +59,6 @@ class VentaAdo
             . "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
-            // Preparar la sentencia
             Database::getInstance()->getDb()->beginTransaction();
 
             $cmdValidando = Database::getInstance()->getDb()->prepare('SELECT serie FROM tipocomprobantetb WHERE idTipoComprobante  = ?');
@@ -69,20 +66,39 @@ class VentaAdo
             $cmdValidando->execute();
             $serie = $cmdValidando->fetchColumn();
 
-            $cmdValidando = Database::getInstance()->getDb()->prepare('SELECT * FROM ventatb WHERE serie = ?');
-            $cmdValidando->bindValue(1, $serie, PDO::PARAM_STR);
-            $cmdValidando->execute();
-            if ($cmdValidando->fetch()) {
-                $AuxNumeracion = Database::getInstance()->getDb()->prepare('SELECT max(numeracion)  FROM ventatb WHERE serie = ?');
-                $AuxNumeracion->bindValue(1, $serie, PDO::PARAM_STR);
-                $AuxNumeracion->execute();
-                $Aumentado = $AuxNumeracion->fetchColumn() + 1;
-                $ResultNumeracion =  $Aumentado;
+            if ($body["estadoNumeracion"] == false) {
+                $cmdValidando = Database::getInstance()->getDb()->prepare('SELECT * FROM ventatb WHERE serie = ?');
+                $cmdValidando->bindValue(1, $serie, PDO::PARAM_STR);
+                $cmdValidando->execute();
+                if ($cmdValidando->fetch()) {
+                    $AuxNumeracion = Database::getInstance()->getDb()->prepare('SELECT *  FROM ventatb WHERE serie = ? AND numeracion = ?');
+                    $AuxNumeracion->bindValue(1, $serie, PDO::PARAM_STR);
+                    $AuxNumeracion->bindValue(2, $body["numracion"], PDO::PARAM_INT);
+                    $AuxNumeracion->execute();
+                    if ($AuxNumeracion->fetch()) {
+                        throw new Exception('La numeración del comprobante ' . $serie . ' ya existe.');
+                    } else {
+                        $ResultNumeracion = $body["numracion"];
+                    }
+                } else {
+                    $ResultNumeracion = $body["numracion"];
+                }
             } else {
-                $Numeracion = Database::getInstance()->getDb()->prepare('SELECT numeracion FROM tipocomprobantetb WHERE idTipoComprobante = ?');
-                $Numeracion->bindValue(1, $body["tipoDocumento"], PDO::PARAM_STR);
-                $Numeracion->execute();
-                $ResultNumeracion = $Numeracion->fetchColumn();
+                $cmdValidando = Database::getInstance()->getDb()->prepare('SELECT * FROM ventatb WHERE serie = ?');
+                $cmdValidando->bindValue(1, $serie, PDO::PARAM_STR);
+                $cmdValidando->execute();
+                if ($cmdValidando->fetch()) {
+                    $AuxNumeracion = Database::getInstance()->getDb()->prepare('SELECT max(numeracion) FROM ventatb WHERE serie = ?');
+                    $AuxNumeracion->bindValue(1, $serie, PDO::PARAM_STR);
+                    $AuxNumeracion->execute();
+                    $Aumentado = $AuxNumeracion->fetchColumn() + 1;
+                    $ResultNumeracion =  $Aumentado;
+                } else {
+                    $Numeracion = Database::getInstance()->getDb()->prepare('SELECT numeracion FROM tipocomprobantetb WHERE idTipoComprobante = ?');
+                    $Numeracion->bindValue(1, $body["tipoDocumento"], PDO::PARAM_STR);
+                    $Numeracion->execute();
+                    $ResultNumeracion = $Numeracion->fetchColumn();
+                }
             }
 
             $total_venta = 0;
@@ -251,7 +267,7 @@ class VentaAdo
 
                 $executeIngreso = Database::getInstance()->getDb()->prepare("INSERT INTO  ingresotb(" .
                     "idPrecedencia," .
-                    "vendedor,".
+                    "vendedor," .
                     "detalle," .
                     "procedencia," .
                     "fecha," .
@@ -283,7 +299,7 @@ class VentaAdo
         }
     }
 
-    public static function getAll($search, $x, $y)
+    public static function getAll($tipo, $search, $fechaInicio, $fechaFin, $x, $y)
     {
         $consulta = "SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,v.tipo,v.forma,v.numero,v.estado,
         c.apellidos,c.nombres,sum(d.cantidad*d.precio) as total,
@@ -294,7 +310,16 @@ class VentaAdo
         INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
         INNER JOIN detalleventatb as d on d.idVenta = v.idVenta
         LEFT JOIN empleadotb as e on e.idEmpleado = v.vendedor
-        WHERE c.apellidos LIKE ? OR c.nombres LIKE ?
+        WHERE 
+        ? = 0 AND v.fecha BETWEEN ? AND ?
+        OR
+        ? = 1 AND v.serie LIKE CONCAT(?,'%') 
+        OR
+        ? = 1 AND v.numeracion LIKE CONCAT(?,'%') 
+        OR
+        ? = 1 AND c.apellidos LIKE CONCAT(?,'%') 
+        OR 
+        ? = 1 AND c.nombres LIKE CONCAT(?,'%')
         GROUP BY v.idVenta
         ORDER BY v.fecha DESC,v.hora DESC LIMIT ?,?";
         try {
@@ -302,17 +327,31 @@ class VentaAdo
             $array = array();
 
             $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(2, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(3, $x, PDO::PARAM_INT);
-            $comando->bindValue(4, $y, PDO::PARAM_INT);
+            $comando->bindParam(1, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(2, $fechaInicio, PDO::PARAM_STR);
+            $comando->bindParam(3, $fechaFin, PDO::PARAM_STR);
+
+            $comando->bindParam(4, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(5, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(6, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(7, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(8, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(9, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(10, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(11, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(12, $x, PDO::PARAM_INT);
+            $comando->bindParam(13, $y, PDO::PARAM_INT);
             $comando->execute();
             $count = 0;
             $arrayVentas = array();
             while ($row = $comando->fetch()) {
                 $count++;
                 array_push($arrayVentas, array(
-                    "id" => $count,
+                    "id" => $count + $x,
                     "idVenta" => $row["idVenta"],
                     "fecha" => $row["fecha"],
                     "hora" => $row["hora"],
@@ -336,16 +375,38 @@ class VentaAdo
             INNER JOIN clientetb as c on c.idCliente = v.cliente
             INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
             LEFT JOIN empleadotb as e on e.idEmpleado = v.vendedor
-            WHERE c.apellidos LIKE ? OR c.nombres LIKE ?");
-            $comando->bindValue(1, "$search%", PDO::PARAM_STR);
-            $comando->bindValue(2, "$search%", PDO::PARAM_STR);
+            WHERE 
+            ? = 0 AND v.fecha BETWEEN ? AND ?
+            OR
+            ? = 1 AND v.serie LIKE CONCAT(?,'%') 
+            OR
+            ? = 1 AND v.numeracion LIKE CONCAT(?,'%') 
+            OR
+            ? = 1 AND c.apellidos LIKE CONCAT(?,'%') 
+            OR 
+            ? = 1 AND c.nombres LIKE CONCAT(?,'%')");
+            $comando->bindParam(1, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(2, $fechaInicio, PDO::PARAM_STR);
+            $comando->bindParam(3, $fechaFin, PDO::PARAM_STR);
+
+            $comando->bindParam(4, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(5, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(6, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(7, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(8, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(9, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(10, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(11, $search, PDO::PARAM_STR);
             $comando->execute();
             $totalVentas =  $comando->fetchColumn();
 
             array_push($array, $arrayVentas, $totalVentas);
 
             return $array;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -498,7 +559,7 @@ class VentaAdo
         }
     }
 
-    public static function getIngresos($fechaInicio, $FechaFin)
+    public static function getIngresos($tipo, $search, $fechaInicio, $fechaFin, $x, $y)
     {
         try {
             $array = array();
@@ -512,11 +573,13 @@ class VentaAdo
             i.monto,
             e.apellidos,
             e.nombres 
-            FROM ingresotb AS i INNER JOIN  empleadotb AS e ON i.vendedor = e.idEmpleado
-            WHERE fecha BETWEEN ? and ?
-            ORDER BY fecha DESC,hora DESC");
-            $cmdIngresos->bindParam(1,$fechaInicio,PDO::PARAM_STR);
-            $cmdIngresos->bindParam(2,$FechaFin,PDO::PARAM_STR);
+            FROM ingresotb AS i INNER JOIN empleadotb AS e ON i.vendedor = e.idEmpleado
+            WHERE i.fecha BETWEEN ? and ?
+            ORDER BY i.fecha DESC,i.hora DESC LIMIT ?,?");
+            $cmdIngresos->bindParam(1, $fechaInicio, PDO::PARAM_STR);
+            $cmdIngresos->bindParam(2, $fechaFin, PDO::PARAM_STR);
+            $cmdIngresos->bindParam(3, $x, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(4, $y, PDO::PARAM_INT);
             $cmdIngresos->execute();
 
             $arrayIngresos = array();
@@ -524,7 +587,7 @@ class VentaAdo
             while ($row = $cmdIngresos->fetch()) {
                 $count++;
                 array_push($arrayIngresos, array(
-                    "id" => $count,
+                    "id" => $count + $x,
                     "idIngreso" => $row["idIngreso"],
                     "detalle" => $row["detalle"],
                     "procedencia" => $row["procedencia"],
@@ -537,10 +600,11 @@ class VentaAdo
                 ));
             }
 
-            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT count(*) FROM ingresotb
-            WHERE fecha between ? and ?");
-            $cmdIngresos->bindParam(1,$fechaInicio,PDO::PARAM_STR);
-            $cmdIngresos->bindParam(2,$FechaFin,PDO::PARAM_STR);
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT count(*) FROM ingresotb AS i 
+            INNER JOIN empleadotb AS e ON i.vendedor = e.idEmpleado
+            WHERE i.fecha BETWEEN ? and ?");
+            $cmdIngresos->bindParam(1, $fechaInicio, PDO::PARAM_STR);
+            $cmdIngresos->bindParam(2, $fechaFin, PDO::PARAM_STR);
             $cmdIngresos->execute();
             $resultTotal = $cmdIngresos->fetchColumn();
 
@@ -569,18 +633,18 @@ class VentaAdo
             from ingresotb
             where fecha between ? and ?
             group by forma,procedencia");
-            $cmdIngresos->bindParam(1,$fechaInicio,PDO::PARAM_STR);
-            $cmdIngresos->bindParam(2,$FechaFin,PDO::PARAM_STR);
+            $cmdIngresos->bindParam(1, $fechaInicio, PDO::PARAM_STR);
+            $cmdIngresos->bindParam(2, $FechaFin, PDO::PARAM_STR);
             $cmdIngresos->execute();
             $count = 0;
-            while($row = $cmdIngresos->fetch()){
-                $count ++;
-                array_push($array,array(
-                    "id"=>$count,
-                    "transaccion"=>$row["transaccion"],
-                    "cantidad"=>floatval($row["cantidad"]),
-                    "efectivo"=>floatval($row["efectivo"]),
-                    "tarjeta"=>floatval($row["tarjeta"])
+            while ($row = $cmdIngresos->fetch()) {
+                $count++;
+                array_push($array, array(
+                    "id" => $count,
+                    "transaccion" => $row["transaccion"],
+                    "cantidad" => floatval($row["cantidad"]),
+                    "efectivo" => floatval($row["efectivo"]),
+                    "tarjeta" => floatval($row["tarjeta"])
                 ));
             }
             return  $array;
@@ -593,10 +657,8 @@ class VentaAdo
     {
         try {
             $array = array();
-            // Preparar sentencia
             $executecomprobante = Database::getInstance()->getDb()->prepare("SELECT idTipoComprobante,nombre FROM tipocomprobantetb");
             $executecomprobante->execute();
-
             while ($rowp = $executecomprobante->fetch()) {
                 array_push($array, array(
                     "idTipoComprobante" => $rowp['idTipoComprobante'],
@@ -609,4 +671,52 @@ class VentaAdo
         }
     }
 
+    public static function AnularVenta($idVenta)
+    {
+        try {
+            Database::getInstance()->getDb()->beginTransaction();
+            $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM ventatb WHERE idVenta = ? AND estado = 3");
+            $cmdValidate->bindParam(1, $idVenta, PDO::PARAM_STR);
+            $cmdValidate->execute();
+            if ($cmdValidate->fetch()) {
+                Database::getInstance()->getDb()->rollback();
+                return "anulado";
+            } else {
+                $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM ventatb WHERE idVenta = ? AND fecha < CURDATE()");
+                $cmdValidate->bindParam(1, $idVenta, PDO::PARAM_STR);
+                $cmdValidate->execute();
+                if ($cmdValidate->fetch()) {
+                    Database::getInstance()->getDb()->rollback();
+                    return "fecha";
+                } else {
+
+                    $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta  = ? AND estado = 1");
+                    $cmdValidate->bindParam(1, $idVenta, PDO::PARAM_STR);
+                    $cmdValidate->execute();
+                    if ($cmdValidate->fetch()) {
+                        Database::getInstance()->getDb()->rollback();
+                        return "pagos";
+                    } else {
+                        $cmdVenta = Database::getInstance()->getDb()->prepare("UPDATE ventatb SET estado = 3 WHERE idVenta = ?");
+                        $cmdVenta->bindParam(1, $idVenta, PDO::PARAM_STR);
+                        $cmdVenta->execute();
+
+                        $cmdIngreso = Database::getInstance()->getDb()->prepare("DELETE FROM ingresotb WHERE idPrecedencia = ?");
+                        $cmdIngreso->bindParam(1, $idVenta, PDO::PARAM_STR);
+                        $cmdIngreso->execute();
+
+                        $cmdMembresia = Database::getInstance()->getDb()->prepare("DELETE FROM membresiatb WHERE idVenta = ?");
+                        $cmdMembresia->bindParam(1, $idVenta, PDO::PARAM_STR);
+                        $cmdMembresia->execute();
+
+                        Database::getInstance()->getDb()->commit();
+                        return "deleted";
+                    }
+                }
+            }
+        } catch (Exception $ex) {
+            Database::getInstance()->getDb()->rollback();
+            return $ex->getMessage();
+        }
+    }
 }
