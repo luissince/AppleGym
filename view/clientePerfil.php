@@ -48,7 +48,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                             <th class="sorting" width="5%">#</th>
                                                             <th class="sorting" width="50%">Descripción</th>
                                                             <th class="sorting" width="15%">Cantidad</th>
-                                                            <th class="sorting" width="15%">Precio </th>
+                                                            <th class="sorting" width="15%">Precio</th>
+                                                            <th class="sorting" width="15%">Descuento</th>
                                                             <th class="sorting" width="15%">Importe</th>
                                                         </tr>
                                                     </thead>
@@ -223,6 +224,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 </div>
                                 <div class="col-md-9">
                                     <label class="form-text" id="direccion"></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-text">Descripción:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-text" id="descripcion"></label>
                                 </div>
                             </div>
                         </div>
@@ -426,7 +435,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             document.getElementById("nacimiento").innerHTML = tools.getDateForma(cliente
                                 .fechaNacimiento, 'yyyy-mm-dd')
                             $("#direccion").append(cliente.direccion)
-
+                            $("#descripcion").append(cliente.descripcion)
+                            
                             tools.AlertSuccess("Mensaje", 'Se cargaron correctamente los datos')
                             $("#loading").empty();
 
@@ -617,7 +627,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + det.detalle + '</td>' +
                                     '<td>' + tools.formatMoney(det.cantidad) + '</td>' +
                                     '<td>' + tools.formatMoney(det.precio) + '</td>' +
-                                    '<td>' + tools.formatMoney((det.cantidad * det.precio)) + '</td>' +
+                                    '<td>' + tools.formatMoney(det.descuento) + '</td>' +
+                                    '<td>' + tools.formatMoney((det.cantidad * (det.precio-det.descuento) )) + '</td>' +
                                     '</tr>');
                             }
                         } else {

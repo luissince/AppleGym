@@ -49,9 +49,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                     <thead>
                                                         <tr>
                                                             <th class="sorting" width="5%">#</th>
-                                                            <th class="sorting" width="50%">Descripción</th>
+                                                            <th class="sorting" width="35%">Descripción</th>
                                                             <th class="sorting" width="15%">Cantidad</th>
-                                                            <th class="sorting" width="15%">Precio </th>
+                                                            <th class="sorting" width="15%">Precio</th>
+                                                            <th class="sorting" width="15%">Descuento</th>
                                                             <th class="sorting" width="15%">Importe</th>
                                                         </tr>
                                                     </thead>
@@ -378,6 +379,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         $("#tbDetalleVenta").append('<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>');
                     },
                     success: function(result) {
+                        // console.log(result)
                         if (result.estado == 1) {
                             $("#tbDetalleVenta").empty();
                             for (let det of result.detalle) {
@@ -386,7 +388,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + det.detalle + '</td>' +
                                     '<td>' + tools.formatMoney(det.cantidad) + '</td>' +
                                     '<td>' + tools.formatMoney(det.precio) + '</td>' +
-                                    '<td>' + tools.formatMoney((det.cantidad * det.precio)) + '</td>' +
+                                    '<td>' + tools.formatMoney(det.descuento) + '</td>' +
+                                    '<td>' + tools.formatMoney((det.cantidad * (det.precio-det.descuento) )) + '</td>' +
                                     '</tr>');
                             }
                         } else {

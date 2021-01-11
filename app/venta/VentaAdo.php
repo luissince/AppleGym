@@ -199,7 +199,7 @@ class VentaAdo
                 }
             } else {
                 foreach ($body['lista'] as $result) {
-                    $total_venta += ($result['cantidad'] * $result['precio']);
+                    $total_venta += ($result['cantidad'] * ($result['precio']-$result['descuento']));
                 }
             }
 
@@ -302,7 +302,7 @@ class VentaAdo
     public static function getAll($tipo, $search, $fechaInicio, $fechaFin, $x, $y)
     {
         $consulta = "SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,v.tipo,v.forma,v.numero,v.estado,
-        c.apellidos,c.nombres,sum(d.cantidad*d.precio) as total,
+        c.apellidos,c.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total,
         CASE WHEN e.apellidos IS NULL or e.apellidos = '' THEN 'SIN DATOS' ELSE e.apellidos END AS 	empleadoApellidos,
         CASE WHEN e.nombres IS NULL OR e.nombres = '' THEN 'SIN DATOS' ELSE e.nombres END AS empleadoNombres
         from ventatb as v 
@@ -419,7 +419,7 @@ class VentaAdo
             $array = array();
             $venta = Database::getInstance()->getDb()->prepare("SELECT 
             v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,
-            v.tipo,v.forma,v.numero,v.estado, c.apellidos,c.nombres,sum(d.cantidad*d.precio) as total 
+            v.tipo,v.forma,v.numero,v.estado, c.apellidos,c.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total 
             from ventatb as v 
             INNER JOIN clientetb as c on c.idCliente = v.cliente 
             INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento 

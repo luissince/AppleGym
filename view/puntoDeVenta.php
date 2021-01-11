@@ -253,16 +253,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <table class="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
-                                                            <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 107px;">Dni
-                                                            </th>
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>                        
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">
-                                                                Apellidos y Nombres</th>
+                                                                Cliente</th>
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Celular
                                                             </th>
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Estado
                                                             </th>
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 69px;">Membresia
+                                                            </th>
+                                                            <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 107px;">Descripción
                                                             </th>
                                                         </tr>
                                                     </thead>
@@ -367,6 +367,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="descripcion">Descripción: </label>
+                                            <input id="descripcion" type="text" name="descripcion" class="form-control" placeholder="Ingrese una descripción" required="">
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="modal-footer">
@@ -456,6 +464,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <input id="fechainicio" type="date" class="form-control" disabled>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="descuento">Descuento: </label>
+                                            <input id="descuento" type="text" value="0" class="form-control" placeholder="Ingrese el descuento">
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <div class="row">
@@ -598,9 +614,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <tr role="row">
                                                 <th class="sorting">Nombre</th>
                                                 <th class="sorting_asc">Cantidad</th>
-                                                <th class="sorting">Precio</th>
-                                                <th class="sorting">Descuento</th>
-                                                <th class="sorting">Total</th>
+                                                <th class="sorting">Precio Plan ( - Descuento)</th>
+                                                <th class="sorting">Precio</th>                                  
+                                                <th class="sorting">Importe</th>
                                                 <th class="sorting">Quitar</th>
                                             </tr>
                                         </thead>
@@ -725,6 +741,17 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         event.preventDefault();
                     }
                 });
+                
+                $("#descuento").keypress(function() {
+                    var key = window.Event ? event.which : event.keyCode;
+                    var c = String.fromCharCode(key);
+                    if ((c < '0' || c > '9') && (c != '\b')&& (c != '.')) {
+                        event.preventDefault();
+                    }
+                    if (c == '.' && $("#descuento").val().includes(".")) {
+                        event.preventDefault();
+                    }
+                });
 
                 $("#btnDesbloquear").click(function() {
                     if ($("#txtNumeracion").is(':disabled')) {
@@ -802,7 +829,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     $("#codigo").val(),
                                     $("#email").val(),
                                     $("#celular").val(),
-                                    $("#direccion").val());
+                                    $("#direccion").val(),
+                                    $("#descripcion").val());
                             }
                         });
                     }
@@ -869,6 +897,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (!validateDatelleVenta($("#plan").val())) {
 
                             let cantidad = parseInt($("#cantidad").val());
+                            let descuento = !tools.isNumeric($("#descuento").val())?0:parseFloat($("#descuento").val());
 
                             let fechaInicio = $("#inicio").is(':checked') ? $("#fechainicio").val() : tools.getCurrentDate();
                             let fechaFin = fechaInicio;
@@ -888,7 +917,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 "membresia": $("#Membresia").val(),
                                 "cantidad": cantidad,
                                 "precio": precioPlan,
-                                "descuento": 0,
+                                "descuento": descuento,
                                 "fechaInico": fechaInicio,
                                 "horaInicio": tools.getCurrentTime(),
                                 "fechaFin": fechaFin,
@@ -1178,13 +1207,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 total = 0;
                 let suma = 0;
                 for (let detalle of listaVenta) {
-                    suma = detalle.precio * detalle.cantidad;
+                    suma = (detalle.precio-detalle.descuento) * detalle.cantidad;
                     $("#tbLista").append('<tr>' +
                         '<td>' + detalle.nombre + '</td>' +
                         '<td>' + detalle.cantidad + '</td>' +
-                        '<td>S/ ' + tools.formatMoney(detalle.precio) + '</td>' +
-                        '<td>0</td>' +
-                        '<td>S/ ' + tools.formatMoney(suma) + '</td>' +
+                        '<td>' + tools.formatMoney(detalle.precio) + " ( - " + tools.formatMoney(detalle.descuento) + ")" + '</td>' +
+                        '<td>' + tools.formatMoney(detalle.precio-detalle.descuento) + '</td>' +
+                        // '<td>'+ tools.formatMoney(detalle.descuento) +'</td>' +
+                        '<td>' + tools.formatMoney(suma) + '</td>' +
                         '<td>' +
                         '  <button onclick="removeDetalleVenta(\'' + detalle.idPlan + '\')" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i> Quitar</button>' +
                         '</td>' +
@@ -1235,18 +1265,20 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     },
                     success: function(result) {
                         let data = JSON.parse(result);
+                        console.log(data)
                         if (data.estado == 1) {
                             tbListaCliente.empty();
                             for (let cliente of data.clientes) {
                                 tbListaCliente.append('<tr ondblclick="onSelectCliente(\'' + cliente.idCliente + '\',\'' + cliente.apellidos + '\',\'' + cliente.nombres + '\')" role="row" >' +
                                     '<td class="sorting_1">' + cliente.id + '</td>' +
-                                    '<td>' + cliente.dni + '</td>' +
-                                    '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
+                                    // '<td>' + cliente.dni + '</td>' +
+                                    '<td>' + cliente.dni + '<br>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                                     '<td>' + cliente.celular + '</td>' +
-                                    '<td>Activo</td>' +
+                                    '<td><span class="badge badge-pill badge-success">Activo</span></td>' +
                                     '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" :
                                         "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
                                         " deuda(s)" : "0 deudas") + '</td>' +
+                                    '<td>' + cliente.descripcion + '</td>' +
                                     '</tr>');
                             }
                             // totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
@@ -1388,7 +1420,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
             }
 
-            function registrarCliente(dni, apellidos, nombres, genero, nacimiento, codigo, email, celular, direccion) {
+            function registrarCliente(dni, apellidos, nombres, genero, nacimiento, codigo, email, celular, direccion, descripcion) {
                 $.ajax({
                     url: "../app/cliente/Crud_Clientes.php",
                     method: "POST",
@@ -1404,7 +1436,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         "codigo": (codigo.toUpperCase()).trim(),
                         "email": email.trim(),
                         "celular": celular,
-                        "direccion": (direccion.toUpperCase()).trim()
+                        "direccion": (direccion.toUpperCase()).trim(),
+                        "descripcion": (descripcion.toUpperCase()).trim()
                     }),
                     beforeSend: function() {
                         closeClearModal();
@@ -1434,6 +1467,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#email").val("")
                 $("#celular").val("")
                 $("#direccion").val("")
+                $("#descripcion").val("")
             }
 
 
@@ -1456,6 +1490,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#plan").val("");
                 $("#Membresia").val("");
                 $("#cantidad").val("1");
+                $("#descuento").val("0");
+                
                 idPlan = "";
                 nombrePlan = "";
                 precioPlan = "";

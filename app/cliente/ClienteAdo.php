@@ -76,6 +76,7 @@ class ClienteAdo
                     "celular" => $row["celular"],
                     "direccion" => $row["direccion"],
                     "predeterminado" => $row["predeterminado"],
+                    "descripcion" => $row["descripcion"],
                     "membresia" => $total_membresias,
                     "deudas" => $total_deudas
                 ));
@@ -279,8 +280,9 @@ class ClienteAdo
             "email," .
             "celular," .
             "direccion," .
-            "predeterminado)" .
-            " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+            "predeterminado," .
+            "descripcion)" .
+            " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
         //        $movimiento = "INSERT INTO movimientostb(idMovimiento,idTabla,descripcion,fechaRegistro,horaRegistro,usuario)VALUES(?,?,?,?,?,?)";
 
@@ -309,7 +311,8 @@ class ClienteAdo
                     $body['email'],
                     $body['celular'],
                     $body['direccion'],
-                    false
+                    false,
+                    $body['descripcion']
                 )
             );
 
@@ -351,7 +354,8 @@ class ClienteAdo
             " codigo = ?," .
             " email = ?," .
             " celular = ?," .
-            " direccion = ?" .
+            " direccion = ?," .
+            " descripcion = ?" .
             "WHERE idCliente = ?";
 
         //        $queyMovimiento = "SELECT Fc_Movimiento_Codigo_Numerico();";
@@ -377,6 +381,7 @@ class ClienteAdo
                     $body['email'],
                     $body['celular'],
                     $body['direccion'],
+                    $body['descripcion'],
                     $body['idCliente']
                 )
             );

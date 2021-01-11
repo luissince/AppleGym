@@ -110,6 +110,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="descripcion">Descripción: </label>
+                                            <input id="descripcion" type="text" name="descripcion" class="form-control" placeholder="Ingrese una descripción" required="">
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="modal-footer">
                                 <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
@@ -169,14 +178,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <tr>
                                             <th class="sorting" style="width: 5%;">#</th>
                                             <th class="sorting" style="width: 10%;">Dni</th>
-                                            <th class="sorting" style="width: 25%;">Apellidos y Nombres</th>
+                                            <th class="sorting" style="width: 20%;">Apellidos y Nombres</th>
                                             <th class="sorting" style="width: 10%;">Celular</th>
                                             <th class="sorting" style="width: 10%;">Email</th>
                                             <th class="sorting" style="width: 15%;">Membresia</th>
-                                            <th class="sorting" style="width: 10%;">Estado</th>
-                                            <th class="sorting" style="width: 10%;">Perfil</th>
-                                            <th class="sorting" style="width: 10%;">Editar</th>
-                                            <th class="sorting" style="width: 10%;">Eliminar</th>
+                                            <th class="sorting" style="width: 7%;">Estado</th>
+                                            <th class="sorting" style="width: 10%;">Descripción</th>
+                                            <th class="sorting" style="width: 13%;">Operaciones</th>
+                                            <!-- <th class="sorting" style="width: 10%;">Eliminar</th> -->
                                         </tr>
                                     </thead>
                                     <tbody id="tbLista">
@@ -267,7 +276,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     $("#nacimiento").val(), $("#codigo").val(), $("#email").val(),
                                     $("#celular")
                                     .val(),
-                                    $("#direccion").val());
+                                    $("#direccion").val(), $("#descripcion").val());
                             }
                         });
                     }
@@ -348,21 +357,21 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             for (let cliente of data.clientes) {
 
                                 let btnPerfil =
-                                    '<button class="btn btn-info btn-sm" onclick="loadDataPerfil(\'' +
+                                    '<button class="btn btn-info btn-sm" title="Ver perfil" onclick="loadDataPerfil(\'' +
                                     cliente.idCliente + '\')">' +
-                                    '<i class="fa fa-user-circle"></i> Ver' +
+                                    '<i class="fa fa-user-circle"></i>' +
                                     '</button>';
 
                                 let btnUpdate =
-                                    '<button class="btn btn-warning btn-sm" onclick="loadUpdateCliente(\'' +
+                                    '<button class="btn btn-warning btn-sm" title="Editar datos" onclick="loadUpdateCliente(\'' +
                                     cliente.idCliente + '\')">' +
-                                    '<i class="fa fa-edit"></i> Editar' +
+                                    '<i class="fa fa-edit"></i>' +
                                     '</button>';
 
                                 let btnDelete =
-                                    '<button class="btn btn-danger btn-sm" onclick="deletedCliente(\'' +
+                                    '<button class="btn btn-danger btn-sm" title="Eliminar cliente" onclick="deletedCliente(\'' +
                                     cliente.idCliente + '\')">' +
-                                    '<i class="fa fa-trash"></i> Eliminar' +
+                                    '<i class="fa fa-trash"></i>' +
                                     '</button>';
 
                                 tbLista.append('<tr role="row" class="odd">' +
@@ -373,9 +382,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + cliente.email + '</td>' +
                                     '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") + '<br>' + (cliente.deudas >= 1 ? cliente.deudas + " DEUDA(S)" : "NINGUNA") + '</td>' +
                                     '<td><span class="badge badge-pill badge-success">Activo</span></td>' +
-                                    '<td>' + btnPerfil + '</td>' +
-                                    '<td>' + btnUpdate + '</td>' +
-                                    '<td>' + btnDelete + '</td>' +
+                                    '<td>' + cliente.descripcion + '</td>' +
+                                    '<td>' + btnPerfil + ' ' + btnUpdate + ' ' + btnDelete +  '</td>' +
+                                    // '<td>' + btnUpdate + '</td>' +
+                                    // '<td>' + btnDelete + '</td>' +
                                     '</tr>');
                             }
                             totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
@@ -409,7 +419,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 location.href = "clientePerfil.php?idCliente=" + idCliente
             }
 
-            function registrarCliente(dni, apellidos, nombres, genero, nacimiento, codigo, email, celular, direccion) {
+            function registrarCliente(dni, apellidos, nombres, genero, nacimiento, codigo, email, celular, direccion, descripcion) {
                 $.ajax({
                     url: "../app/cliente/Crud_Clientes.php",
                     method: "POST",
@@ -425,7 +435,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         "codigo": (codigo.toUpperCase()).trim(),
                         "email": email.trim(),
                         "celular": celular,
-                        "direccion": (direccion.toUpperCase()).trim()
+                        "direccion": (direccion.toUpperCase()).trim(),
+                        "descripcion": (descripcion.toUpperCase()).trim()
                     }),
                     beforeSend: function() {
                         closeClearModal();
@@ -458,6 +469,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#email").val("")
                 $("#celular").val("")
                 $("#direccion").val("")
+                $("#descripcion").val("")
                 idClienteUpdate = "";
             }
 
@@ -489,6 +501,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             $("#email").val(cliente.email)
                             $("#celular").val(cliente.celular)
                             $("#direccion").val(cliente.direccion)
+                            $("#descripcion").val(cliente.descripcion)
 
                             tools.AlertSuccess("Mensaje", "Se cargo correctamente los datos.")
                         } else {
