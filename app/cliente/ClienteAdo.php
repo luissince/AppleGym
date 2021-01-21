@@ -104,7 +104,7 @@ class ClienteAdo
 
             array_push($array, $arrayClientes, $totalClientes);
             return $array;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -119,7 +119,7 @@ class ClienteAdo
         } catch (Exception $e) {
             return $e->getMessage();
         }
-    }
+    } 
 
     public static function getMembresiaMarcarAsistencia($buscar)
     {
@@ -134,10 +134,17 @@ class ClienteAdo
                 throw new Exception("Datos no encontrados, intente nuevamente o consulte al encargado sobre su información");
             }
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT p.nombre,m.fechaInicio,m.fechaFin
+            $comando = Database::getInstance()->getDb()->prepare("SELECT p.nombre,m.fechaInicio,m.fechaFin,
+            CASE 
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 1
+            ELSE 0 END AS 'membresia'
             FROM membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan 
-            WHERE m.idCliente = ? AND m.estado = 1");
+            WHERE 
+            m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) > 10 
+            OR
+            m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10");
             $comando->bindValue(1, $cliente->idCliente, PDO::PARAM_STR);
+            $comando->bindValue(2, $cliente->idCliente, PDO::PARAM_STR);
             $comando->execute();
 
             $arrayMembresias = array();
@@ -145,16 +152,17 @@ class ClienteAdo
                 array_push($arrayMembresias, array(
                     "nombre" => $row["nombre"],
                     "fechaInicio" => $row["fechaInicio"],
-                    "fechaFin" => $row["fechaFin"]
+                    "fechaFin" => $row["fechaFin"],
+                    "membresia" => $row["membresia"],
                 ));
-            }
+            } 
 
             $resultAsistencia = "";
             $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1");
             $comando->bindValue(1, $cliente->idCliente, PDO::PARAM_STR);
             $comando->execute();
             if ($comando->fetch()) {
-                $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1 and fechaApertura  = CURDATE()");
+                $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1");
                 $comando->bindValue(1, $cliente->idCliente, PDO::PARAM_STR);
                 $comando->execute();
                 $validate = $comando->fetchObject();
@@ -250,24 +258,16 @@ class ClienteAdo
                 ));
             }
             return $array;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
-    }
+    }   
 
-    /**
-     * Insertar un nuevo cliente
-     *   
-     * @param $body Array que contiene la información del cliente
-     * @return string
-     */
     public static function insert($body)
     {
 
-        // Sentencia INSERT
-        $quey = "SELECT Fc_Cliente_Codigo_Almanumerico();";
 
-        //        $queyMovimiento = "SELECT Fc_Movimiento_Codigo_Numerico();";
+        $quey = "SELECT Fc_Cliente_Codigo_Almanumerico();";
 
         $cliente = "INSERT INTO clientetb ( " .
             "idCliente," .
@@ -284,19 +284,12 @@ class ClienteAdo
             "descripcion)" .
             " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
-        //        $movimiento = "INSERT INTO movimientostb(idMovimiento,idTabla,descripcion,fechaRegistro,horaRegistro,usuario)VALUES(?,?,?,?,?,?)";
-
         try {
-            // Preparar la sentencia
             Database::getInstance()->getDb()->beginTransaction();
 
             $codigoCliente = Database::getInstance()->getDb()->prepare($quey);
             $codigoCliente->execute();
             $idCliente = $codigoCliente->fetchColumn();
-
-            //            $codigoMovimiento = Database::getInstance()->getDb()->prepare($queyMovimiento);
-            //            $codigoMovimiento->execute();
-            //            $idMovimiento = $codigoMovimiento->fetchColumn();
 
             $executeCliente = Database::getInstance()->getDb()->prepare($cliente);
             $executeCliente->execute(
@@ -315,19 +308,6 @@ class ClienteAdo
                     $body['descripcion']
                 )
             );
-
-            //            $executeMovimiento = Database::getInstance()->getDb()->prepare($movimiento);
-            //            $executeMovimiento->execute(
-            //                    array(
-            //                        $idMovimiento,
-            //                        $idCliente,
-            //                        "creación del cliente",
-            //                        $body['fechaRegistro'],
-            //                        $body['horaRegistro'],
-            //                        $body['usuario']
-            //                    )
-            //            );
-
             Database::getInstance()->getDb()->commit();
             return "inserted";
         } catch (Exception $e) {
@@ -336,15 +316,8 @@ class ClienteAdo
         }
     }
 
-    /**
-     * Editar un nuevo cliente
-     *   
-     */
     public static function edit($body)
     {
-
-        // Sentencia UPDATE
-
         $comando = "UPDATE clientetb " .
             "SET dni = ?," .
             " apellidos = ?," .
@@ -357,18 +330,8 @@ class ClienteAdo
             " direccion = ?," .
             " descripcion = ?" .
             "WHERE idCliente = ?";
-
-        //        $queyMovimiento = "SELECT Fc_Movimiento_Codigo_Numerico();";
-        //        $movimiento = "INSERT INTO movimientostb(idMovimiento,idTabla,descripcion,fechaRegistro,horaRegistro,usuario)VALUES(?,?,?,?,?,?)";
-
         try {
-            // Preparar la sentencia         
             Database::getInstance()->getDb()->beginTransaction();
-
-            //            $codigoMovimiento = Database::getInstance()->getDb()->prepare($queyMovimiento);
-            //            $codigoMovimiento->execute();
-            //            $idMovimiento = $codigoMovimiento->fetchColumn();
-
             $sentencia = Database::getInstance()->getDb()->prepare($comando);
             $sentencia->execute(
                 array(
@@ -385,19 +348,6 @@ class ClienteAdo
                     $body['idCliente']
                 )
             );
-
-            //            $executeMovimiento = Database::getInstance()->getDb()->prepare($movimiento);
-            //            $executeMovimiento->execute(
-            //                    array(
-            //                        $idMovimiento,
-            //                        $body['idCliente'],
-            //                        "se editó dicha información:" . " " . $body['dni'] . ", " . $body['apellidos'] . ", " . $body['nombres'] . ", " . $body['sexo'] . ", " . $body['fechaNacimiento'] . ", " . $body['codigo'] . ", " . $body['email'] . ", " . $body['celular'] . ", " . $body['direccion'],
-            //                        $body['fechaRegistro'],
-            //                        $body['horaRegistro'],
-            //                        $body['usuario']
-            //                    )
-            //            );
-
             Database::getInstance()->getDb()->commit();
             return "updated";
         } catch (Exception $e) {
@@ -489,6 +439,35 @@ class ClienteAdo
             return "updated";
         } catch (Exception $ex) {
             Database::getInstance()->getDb()->rollBack();
+            return $ex->getMessage();
+        }
+    }
+
+    public static function actualizarHuella($body)
+    {
+        try {
+            Database::getInstance()->getDb()->beginTransaction();
+            $comando = Database::getInstance()->getDb()->prepare("UPDATE clientetb SET huella = ?, imageHuella = ? WHERE idCliente  = 'CL0001'");
+            $comando->execute(array($body["huella"], $body["imageHuella"]));
+            Database::getInstance()->getDb()->commit();
+            return "updated";
+        } catch (Exception $ex) {
+            Database::getInstance()->getDb()->rollBack();
+            return $ex->getMessage();
+        }
+    }
+
+    public static function obtenerHuella()
+    {
+        try {
+            $array = array();
+            $comando = Database::getInstance()->getDb()->prepare("SELECT dni,apellidos,nombres,huella,imageHuella FROM clientetb");
+            $comando->execute();
+            while ($row = $comando->fetch()) {
+                array_push($array, $row);
+            }
+            return $array;
+        } catch (Exception $ex) {
             return $ex->getMessage();
         }
     }

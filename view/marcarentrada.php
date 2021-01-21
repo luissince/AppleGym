@@ -75,52 +75,74 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
                                         <p class="h6">Codigo:</p>
                                     </div>
                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
                                         <p class="h6" id="lblCodigo">--</p>
                                     </div>
-                                </div>
-                                <div class="row">
+                                </div> -->
+                                <!-- <div class="row">
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
                                         <p class="h6">Dni:</p>
                                     </div>
                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
                                         <p class="h6" id="lblDni">--</p>
                                     </div>
-                                </div>
-                                <div class="row">
+                                </div> -->
+                                <!-- <div class="row">
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
                                         <p class="h6">Email:</p>
                                     </div>
                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
                                         <p class="h6" id="lblEmail">--</p>
                                     </div>
-                                </div>
-                                <div class="row">
+                                </div> -->
+                                <!-- <div class="row">
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
                                         <p class="h6">Celular:</p>
                                     </div>
                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
                                         <p class="h6" id="lblCelular">--</p>
                                     </div>
-                                </div>
-                                <div class="row">
+                                </div> -->
+                                <!-- <div class="row">
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
                                         <p class="h6">Fecha de Nacimiento:</p>
                                     </div>
                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
                                         <p class="h6" id="lblFechaNacimiento">--</p>
                                     </div>
+                                </div> -->
+                                <div class="row">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                                        <p class="h6">Membresía</p>
+                                    </div>
+                                    <!-- <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
+                                        <p class="h6" id="lblMembresias">--</p>
+                                    </div> -->
                                 </div>
                                 <div class="row">
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
-                                        <p class="h6">Membresía:</p>
-                                    </div>
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <p class="h6" id="lblMembresias">--</p>
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+                                        <div class="tile-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
+                                                        <tr role="row">
+                                                            <th class="sorting text-center" width="15%">Plan</th>
+                                                            <th class="sorting text-center" width="20%">Fecha</th>
+                                                            <th class="sorting text-center" width="15%">Estado</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbMembresiaMarcar">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                                 <!--  -->

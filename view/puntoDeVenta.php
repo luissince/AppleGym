@@ -766,7 +766,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#modalLista").on('shown.bs.modal', function() {
+                $("#modalLista").on('shown.bs.modal', function() {            
                     listaClientes($("#txtSearchLista").val());
                 });
 
@@ -786,6 +786,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 $("#btnCloseModalClientes").click(function() {
                     $("#modalLista").modal("hide");
+                    tbListaCliente.empty();
                 });
 
                 $("#btnOpenModalCliente").click(function() {

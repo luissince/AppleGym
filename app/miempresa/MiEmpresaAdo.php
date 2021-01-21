@@ -63,7 +63,7 @@ class MiEmpresaAdo {
             // Ejecutar sentencia preparada
             $comando->execute();
             return $comando->fetchColumn();
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return 0;
         }
     }
@@ -89,8 +89,36 @@ class MiEmpresaAdo {
                 ));
             }
             return $array;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
+        }
+    }
+
+    public static function ListarDashboard(){
+        try{
+            $array = array();
+
+            $cmdClientes = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  clientetb");
+            $cmdClientes->execute();
+            $resultCliente =  $cmdClientes->fetchColumn();
+
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT SUM(monto) FROM  ingresotb WHERE fecha = CURDATE()");
+            $cmdIngresos->execute();
+            $resultIngresos = $cmdIngresos->fetchColumn();
+
+            $cmdMembresias = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  membresiatb WHERE CAST(DATEDIFF(fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(fechaFin,CURDATE()) AS int) <=10");
+            $cmdMembresias->execute();
+            $resultMembresias = $cmdMembresias->fetchColumn();
+
+            $cmdCuentasPorCobrar = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  ventacreditotb WHERE estado = 0");
+            $cmdCuentasPorCobrar->execute();
+            $resultCuentasPorCobrar = $cmdCuentasPorCobrar->fetchColumn();
+
+            array_push($array,$resultCliente,$resultIngresos,$resultMembresias,$resultCuentasPorCobrar);
+
+            return $array;
+        }catch(Exception $ex){
+            return $ex->getMessage();
         }
     }
 

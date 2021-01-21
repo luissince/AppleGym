@@ -313,13 +313,16 @@ class VentaAdo
         WHERE 
         ? = 0 AND v.fecha BETWEEN ? AND ?
         OR
-        ? = 1 AND v.serie LIKE CONCAT(?,'%') 
+        ? = 1 AND v.serie = ?
         OR
-        ? = 1 AND v.numeracion LIKE CONCAT(?,'%') 
+        ? = 1 AND v.numeracion = ?
+        OR
+        ? = 1 AND CONCAT(v.serie,'-',v.numeracion) = ?
         OR
         ? = 1 AND c.apellidos LIKE CONCAT(?,'%') 
         OR 
         ? = 1 AND c.nombres LIKE CONCAT(?,'%')
+
         GROUP BY v.idVenta
         ORDER BY v.fecha DESC,v.hora DESC LIMIT ?,?";
         try {
@@ -328,6 +331,7 @@ class VentaAdo
 
             $comando = Database::getInstance()->getDb()->prepare($consulta);
             $comando->bindParam(1, $tipo, PDO::PARAM_INT);
+
             $comando->bindParam(2, $fechaInicio, PDO::PARAM_STR);
             $comando->bindParam(3, $fechaFin, PDO::PARAM_STR);
 
@@ -343,8 +347,11 @@ class VentaAdo
             $comando->bindParam(10, $tipo, PDO::PARAM_INT);
             $comando->bindParam(11, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(12, $x, PDO::PARAM_INT);
-            $comando->bindParam(13, $y, PDO::PARAM_INT);
+            $comando->bindParam(12, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(13, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(14, $x, PDO::PARAM_INT);
+            $comando->bindParam(15, $y, PDO::PARAM_INT);
             $comando->execute();
             $count = 0;
             $arrayVentas = array();
@@ -378,14 +385,17 @@ class VentaAdo
             WHERE 
             ? = 0 AND v.fecha BETWEEN ? AND ?
             OR
-            ? = 1 AND v.serie LIKE CONCAT(?,'%') 
+            ? = 1 AND v.serie = ?
             OR
-            ? = 1 AND v.numeracion LIKE CONCAT(?,'%') 
+            ? = 1 AND v.numeracion = ?
+            OR
+            ? = 1 AND CONCAT(v.serie,'-',v.numeracion) = ? 
             OR
             ? = 1 AND c.apellidos LIKE CONCAT(?,'%') 
             OR 
             ? = 1 AND c.nombres LIKE CONCAT(?,'%')");
             $comando->bindParam(1, $tipo, PDO::PARAM_INT);
+
             $comando->bindParam(2, $fechaInicio, PDO::PARAM_STR);
             $comando->bindParam(3, $fechaFin, PDO::PARAM_STR);
 
@@ -400,6 +410,10 @@ class VentaAdo
 
             $comando->bindParam(10, $tipo, PDO::PARAM_INT);
             $comando->bindParam(11, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(12, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(13, $search, PDO::PARAM_STR);
+
             $comando->execute();
             $totalVentas =  $comando->fetchColumn();
 

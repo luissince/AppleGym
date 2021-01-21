@@ -51,21 +51,11 @@ function Tools() {
     }
 
     this.getTimeForma24 = function(value) {
-        let ar = value.split(":");
-        let hr = ar[0];
-        let min = parseInt(ar[1]);
-        let arsec = ar[2].split(".");
-        let sec = parseInt(arsec[0]);
-        if (sec < 10) {
-            sec = "0" + sec;
-        }
-        if (min < 10) {
-            min = "0" + min;
-        }
-        if (hr > 0 && hr < 10) {
-            hr = "0" + hr;
-        }
-        return hr + ":" + min + ":" + sec;
+        var hourEnd = value.indexOf(":");
+        var H = +value.substr(0, hourEnd);
+        var h = H % 12 || 12;
+        var ampm = (H < 12 || H === 24) ? "AM" : "PM";
+        return h + value.substr(hourEnd, 3) + ":" + value.substr(6, 2) + " " + ampm;
     }
 
     this.formatMoney = function(amount, decimalCount = 2, decimal = ".", thousands = "") {

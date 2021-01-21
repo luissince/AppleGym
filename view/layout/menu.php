@@ -22,15 +22,15 @@
                 <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-address-book-o"></i><span class="app-menu__label">Personas</span><i class="treeview-indicator fa fa-angle-right"></i></a>
                         <ul class="treeview-menu">
                                 <li><a class="app-menu__item" href="clientes.php"><i class="app-menu__icon fa fa-users"></i><span class="app-menu__label">Clientes</span></a></li>
+                                <li><a class="app-menu__item" href="membresias.php"><i class="app-menu__icon fa fa-wpforms"></i><span class="app-menu__label">Membresias</span></a></li>
                                 <li><a class="app-menu__item" href="empleados.php"><i class="app-menu__icon fa fa-grav "></i><span class="app-menu__label">Empleados</span></a></li>
                         </ul>
                 </li>
 
                 <li><a class="app-menu__item" href="productos.php"><i class="app-menu__icon fa fa-shopping-bag"></i><span class="app-menu__label">Productos</span></a></li>
                 <li><a class="app-menu__item" href="reportes.php"><i class="app-menu__icon fa fa-bar-chart"></i><span class="app-menu__label">Reportes</span></a></li>
-                <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-calendar"></i><span class="app-menu__label">Citas</span></a></li>
+                <!-- <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-calendar"></i><span class="app-menu__label">Citas</span></a></li> -->
 
-                
 
                 <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-cog"></i><span class="app-menu__label">Configuración</span><i class="treeview-indicator fa fa-angle-right"></i></a>
                         <ul class="treeview-menu">

@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $body = json_decode(file_get_contents("php://input"), true);
     $validate = AsistenciaAdo::getAsistenciaByIdPersona($body['idPersona']);
     if ($validate == "1") {
-        $json_string = json_encode(array("estado" => 1, "mensaje" => "Tiene aperturado un ingreso, cierre su aperturar marcar nuevamente."));
+        $json_string = json_encode(array("estado" => 1, "mensaje" => "Tiene aperturado una asistencia, cierre y vuelta a marcar."));
         echo $json_string;
     } 
     else {

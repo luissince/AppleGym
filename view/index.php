@@ -34,41 +34,43 @@ if (!isset($_SESSION["IdEmpleado"])) {
       </div>
 
       <div class="row">
-        <div class="col-md-6 col-lg-3">
-          <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
-            <div class="info">
-              <h4>Clientes</h4>
-              <p><b>0</b></p>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+          <a href="javascript:void()">
+            <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
+              <div class="info">
+                <h4>Clientes</h4>
+                <p><b id="lblCliente">0</b></p>
+              </div>
             </div>
-          </div>
+          </a>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
           <div class="widget-small info coloured-icon"><i class="icon fa fa-money fa-3x"></i>
             <div class="info">
               <h4>Ingresos</h4>
-              <p><b>0</b></p>
+              <p><b id="lblIngresos">0</b></p>
             </div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12" id="btnMembesias">
           <div class="widget-small warning coloured-icon"><i class="icon fa fa-files-o fa-3x"></i>
             <div class="info">
-              <h4>Membresias por Caducar</h4>
-              <p><b>0</b></p>
+              <h4>Membresias por Vencer</h4>
+              <p><b id="lblPorVencer">0</b></p>
             </div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
           <div class="widget-small danger coloured-icon"><i class="icon fa fa-star fa-3x"></i>
             <div class="info">
               <h4>Cuentas por Cobrar</h4>
-              <p><b>0</b></p>
+              <p><b id="lblCuentas">0</b></p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-md-6">
           <div class="tile">
             <h3 class="tile-title">Progreso de Ingresos</h3>
@@ -85,7 +87,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </main>
     <!-- Essential javascripts for application to work-->
     <?php include "./layout/footer.php"; ?>
@@ -93,49 +95,87 @@ if (!isset($_SESSION["IdEmpleado"])) {
     <script type="text/javascript">
       let tools = new Tools();
 
-      var data = {
-        labels: ["January", "February", "March", "April", "May"],
-        datasets: [{
-            label: "My First dataset",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [65, 59, 80, 81, 56]
+      $(document).ready(function() {
+        loadDasboard();
+      });
+
+      function loadDasboard() {
+        $.ajax({
+          url: "../app/miempresa/LoadDashboard.php",
+          method: "GET",
+          data: {
+
           },
-          {
-            label: "My Second dataset",
-            fillColor: "rgba(151,187,205,0.2)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [28, 48, 40, 19, 86]
+          beforeSend: function() {
+            $("#lblCliente").html(0);
+            $("#lblIngresos").html(0);
+            $("#lblPorVencer").html(0);
+            $("#lblCuentas").html(0);
+          },
+          success: function(result) {
+            // console.log(result)
+            if (result.estado == 1) {
+              $("#lblCliente").html(result.clientes);
+              $("#lblIngresos").html("S/ " + tools.formatMoney(result.ingresos));
+              $("#lblPorVencer").html(result.membresias);
+              $("#lblCuentas").html(result.cuentas);
+            } else {
+
+            }
+          },
+          error: function(error) {
+            console.log(error)
           }
-        ]
-      };
-      var pdata = [{
-          value: 300,
-          color: "#46BFBD",
-          highlight: "#5AD3D1",
-          label: "Complete"
-        },
-        {
-          value: 50,
-          color: "#F7464A",
-          highlight: "#FF5A5E",
-          label: "In-Progress"
-        }
-      ]
+        });
+      }
 
-      var ctxl = $("#lineChartDemo").get(0).getContext("2d");
-      var lineChart = new Chart(ctxl).Line(data);
+      $("#btnMembesias").click(function() {
+        console.log("dentro..")
+      });
 
-      var ctxp = $("#pieChartDemo").get(0).getContext("2d");
-      var pieChart = new Chart(ctxp).Pie(pdata);
+      // var data = {
+      //   labels: ["January", "February", "March", "April", "May"],
+      //   datasets: [{
+      //       label: "My First dataset",
+      //       fillColor: "rgba(220,220,220,0.2)",
+      //       strokeColor: "rgba(220,220,220,1)",
+      //       pointColor: "rgba(220,220,220,1)",
+      //       pointStrokeColor: "#fff",
+      //       pointHighlightFill: "#fff",
+      //       pointHighlightStroke: "rgba(220,220,220,1)",
+      //       data: [65, 59, 80, 81, 56]
+      //     },
+      //     {
+      //       label: "My Second dataset",
+      //       fillColor: "rgba(151,187,205,0.2)",
+      //       strokeColor: "rgba(151,187,205,1)",
+      //       pointColor: "rgba(151,187,205,1)",
+      //       pointStrokeColor: "#fff",
+      //       pointHighlightFill: "#fff",
+      //       pointHighlightStroke: "rgba(151,187,205,1)",
+      //       data: [28, 48, 40, 19, 86]
+      //     }
+      //   ]
+      // };
+      // var pdata = [{
+      //     value: 300,
+      //     color: "#46BFBD",
+      //     highlight: "#5AD3D1",
+      //     label: "Complete"
+      //   },
+      //   {
+      //     value: 50,
+      //     color: "#F7464A",
+      //     highlight: "#FF5A5E",
+      //     label: "In-Progress"
+      //   }
+      // ]
+
+      // var ctxl = $("#lineChartDemo").get(0).getContext("2d");
+      // var lineChart = new Chart(ctxl).Line(data);
+
+      // var ctxp = $("#pieChartDemo").get(0).getContext("2d");
+      // var pieChart = new Chart(ctxp).Pie(pdata);
     </script>
   </body>
 

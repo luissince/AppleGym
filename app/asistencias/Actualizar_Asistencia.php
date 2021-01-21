@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     else{
         $retorno = AsistenciaAdo::editAsistencia($body);
         if ($retorno == "true") {
-            $json_string = json_encode(array("estado" => 2, "mensaje" => "Creacion correcta"));
+            $json_string = json_encode(array("estado" => 2, "mensaje" => "El turno se cerro correctamente"));
             echo $json_string;
         } else {
             $json_string = json_encode(array("estado" => 3, "mensaje" => $retorno));

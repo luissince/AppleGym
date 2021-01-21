@@ -19,14 +19,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <?php include "./layout/menu.php"; ?>
         <main class="app-content">
 
-            <!-- Sidebar menu-->
-            <?php include "./marcarentrada.php"; ?>
-
-            <div class="app-title">
-                <div>
-                    <h1><i class="fa fa-users"></i> Clientes</h1>
-                </div>
-            </div>
             <!-- modal nuevo/update Cliente  -->
             <div class="row">
                 <div class="modal fade" id="modalCliente" data-backdrop="static">
@@ -131,6 +123,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     </div>
                 </div>
             </div>
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
+
+            <div class="app-title">
+                <div>
+                    <h1><i class="fa fa-users"></i> Clientes</h1>
+                </div>
+            </div>
 
             <div class="tile mb-4">
                 <div class="row">
@@ -182,7 +182,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <th class="sorting" style="width: 10%;">Celular</th>
                                             <th class="sorting" style="width: 10%;">Email</th>
                                             <th class="sorting" style="width: 15%;">Membresia</th>
-                                            <th class="sorting" style="width: 7%;">Estado</th>
                                             <th class="sorting" style="width: 10%;">Descripción</th>
                                             <th class="sorting" style="width: 13%;">Operaciones</th>
                                             <!-- <th class="sorting" style="width: 10%;">Eliminar</th> -->
@@ -196,6 +195,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     </div>
                 </div>
             </div>
+
         </main>
         <!-- Essential javascripts for application to work-->
         <?php include "./layout/footer.php"; ?>
@@ -300,7 +300,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#txtSearch").keypress(function() {
+                $("#txtSearch").keyup(function() {
                     if ($("#txtSearch").val().trim() != '') {
                         if (!state) {
                             paginacion = 1;
@@ -345,7 +345,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         state = true;
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
                         totalPaginacion = 0;
                     },
@@ -354,49 +354,59 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                         if (data.estado == 1) {
                             tbLista.empty();
-                            for (let cliente of data.clientes) {
 
-                                let btnPerfil =
-                                    '<button class="btn btn-info btn-sm" title="Ver perfil" onclick="loadDataPerfil(\'' +
-                                    cliente.idCliente + '\')">' +
-                                    '<i class="fa fa-user-circle"></i>' +
-                                    '</button>';
+                            if (data.clientes.length == 0) {
+                                tbLista.append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>No hay información para mostrar.</p></td></tr>'
+                                );
+                                $("#lblPaginaActual").html(0);
+                                $("#lblPaginaSiguiente").html(0);
+                                state = false;
+                            } else {
 
-                                let btnUpdate =
-                                    '<button class="btn btn-warning btn-sm" title="Editar datos" onclick="loadUpdateCliente(\'' +
-                                    cliente.idCliente + '\')">' +
-                                    '<i class="fa fa-edit"></i>' +
-                                    '</button>';
+                                for (let cliente of data.clientes) {
 
-                                let btnDelete =
-                                    '<button class="btn btn-danger btn-sm" title="Eliminar cliente" onclick="deletedCliente(\'' +
-                                    cliente.idCliente + '\')">' +
-                                    '<i class="fa fa-trash"></i>' +
-                                    '</button>';
+                                    let btnPerfil =
+                                        '<button class="btn btn-info btn-sm" title="Ver perfil" onclick="loadDataPerfil(\'' +
+                                        cliente.idCliente + '\')">' +
+                                        '<i class="fa fa-user-circle"></i>' +
+                                        '</button>';
 
-                                tbLista.append('<tr role="row" class="odd">' +
-                                    '<td class="sorting_1">' + cliente.id + '</td>' +
-                                    '<td>' + cliente.dni + '</td>' +
-                                    '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
-                                    '<td>' + cliente.celular + '</td>' +
-                                    '<td>' + cliente.email + '</td>' +
-                                    '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") + '<br>' + (cliente.deudas >= 1 ? cliente.deudas + " DEUDA(S)" : "NINGUNA") + '</td>' +
-                                    '<td><span class="badge badge-pill badge-success">Activo</span></td>' +
-                                    '<td>' + cliente.descripcion + '</td>' +
-                                    '<td>' + btnPerfil + ' ' + btnUpdate + ' ' + btnDelete +  '</td>' +
-                                    // '<td>' + btnUpdate + '</td>' +
-                                    // '<td>' + btnDelete + '</td>' +
-                                    '</tr>');
+                                    let btnUpdate =
+                                        '<button class="btn btn-warning btn-sm" title="Editar datos" onclick="loadUpdateCliente(\'' +
+                                        cliente.idCliente + '\')">' +
+                                        '<i class="fa fa-edit"></i>' +
+                                        '</button>';
+
+                                    let btnDelete =
+                                        '<button class="btn btn-danger btn-sm" title="Eliminar cliente" onclick="deletedCliente(\'' +
+                                        cliente.idCliente + '\')">' +
+                                        '<i class="fa fa-trash"></i>' +
+                                        '</button>';
+
+                                    tbLista.append('<tr role="row" class="odd">' +
+                                        '<td class="sorting_1">' + cliente.id + '</td>' +
+                                        '<td>' + cliente.dni + '</td>' +
+                                        '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
+                                        '<td>' + cliente.celular + '</td>' +
+                                        '<td>' + cliente.email + '</td>' +
+                                        '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") + '<br>' + (cliente.deudas >= 1 ? cliente.deudas + " DEUDA(S)" : "NINGUNA") + '</td>' +
+                                        '<td>' + cliente.descripcion + '</td>' +
+                                        '<td>' + btnPerfil + ' ' + btnUpdate + ' ' + btnDelete + '</td>' +
+                                        // '<td>' + btnUpdate + '</td>' +
+                                        // '<td>' + btnDelete + '</td>' +
+                                        '</tr>');
+                                }
+                                totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
+                                    10))));
+                                $("#lblPaginaActual").html(paginacion);
+                                $("#lblPaginaSiguiente").html(totalPaginacion);
+                                state = false;
                             }
-                            totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
-                                10))));
-                            $("#lblPaginaActual").html(paginacion);
-                            $("#lblPaginaSiguiente").html(totalPaginacion);
-                            state = false;
                         } else {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                                 data.mensaje + '</p></td></tr>');
                             $("#lblPaginaActual").html(0);
                             $("#lblPaginaSiguiente").html(0);
@@ -406,7 +416,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     error: function(error) {
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
                         $("#lblPaginaActual").html(0);
                         $("#lblPaginaSiguiente").html(0);

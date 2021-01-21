@@ -252,7 +252,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#txtSearch").keypress(function() {
+                $("#txtSearch").keyup(function() {
                     if ($("#txtSearch").val().trim() != '') {
                         if (!state) {
                             paginacion = 1;

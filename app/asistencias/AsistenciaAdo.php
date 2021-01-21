@@ -52,11 +52,11 @@ class AsistenciaAdo
     public static function editAsistencia($body)
     {
 
-        $comando = "UPDATE asistenciatb " .
-            "SET fechaCierre = ?," .
-            " horaCierre = ?," .
-            " estado = ?" .
-            "WHERE idAsistencia = ?";
+        $comando = "UPDATE asistenciatb 
+            SET fechaCierre = ?,
+            horaCierre = ?,
+            estado = ?
+            WHERE idAsistencia = ?";
 
         try {
             // Preparar la sentencia         

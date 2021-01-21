@@ -418,7 +418,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#txtSearch").keypress(function() {
+                $("#txtSearch").keyup(function() {
                     if ($("#txtSearch").val().trim() != '') {
                         if (!state) {
                             paginacion = 1;
@@ -429,7 +429,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
 
                 $("#btnGuardarModal").click(function() {
-
                     if ($("#numeroDocumento").val() == '' || $("#numeroDocumento").val().length < 8) {
                         tools.AlertWarning("Advertencia", "Ingrese un número de documento valido")
                     } else if ($("#apellidos").val() == '' || $("#apellidos").val().length < 2) {

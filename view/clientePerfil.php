@@ -478,7 +478,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             let count = 0;
                             tbListaMembresia.empty();
                             for (let membresia of result.membresias) {
-                                let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
+                                let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' :  membresia.membresia == 2 ? '<span class="badge badge-pill badge-warning">Por Vencer</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
                                 let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">PAGADO</span>' : '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
                                 count++;
                                 tbListaMembresia.append('<tr role="row" class="odd">' +
