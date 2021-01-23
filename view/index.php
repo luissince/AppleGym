@@ -34,32 +34,34 @@ if (!isset($_SESSION["IdEmpleado"])) {
       </div>
 
       <div class="row">
+
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-          <a href="javascript:void()">
-            <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
-              <div class="info">
-                <h4>Clientes</h4>
-                <p><b id="lblCliente">0</b></p>
-              </div>
+          <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
+            <div class="info">
+              <h4>Clientes</h4>
+              <p><b id="lblCliente">0</b></p>
             </div>
-          </a>
+          </div>
         </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+          <div class="widget-small warning coloured-icon"><i class="icon fa fa-files-o fa-3x"></i>
+            <div class="info">
+              <h4>Empleados</h4>
+              <p><b id="lblEmpleados">0</b></p>
+            </div>
+          </div>
+        </div>
+
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
           <div class="widget-small info coloured-icon"><i class="icon fa fa-money fa-3x"></i>
             <div class="info">
-              <h4>Ingresos</h4>
+              <h4>Ingresos del Día</h4>
               <p><b id="lblIngresos">0</b></p>
             </div>
           </div>
         </div>
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12" id="btnMembesias">
-          <div class="widget-small warning coloured-icon"><i class="icon fa fa-files-o fa-3x"></i>
-            <div class="info">
-              <h4>Membresias por Vencer</h4>
-              <p><b id="lblPorVencer">0</b></p>
-            </div>
-          </div>
-        </div>
+
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
           <div class="widget-small danger coloured-icon"><i class="icon fa fa-star fa-3x"></i>
             <div class="info">
@@ -68,26 +70,56 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
           </div>
         </div>
+
       </div>
 
-      <!-- <div class="row">
+      <div class="row">
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Progreso de Ingresos</h3>
-            <div class="embed-responsive embed-responsive-16by9">
-              <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
+            <h5 class="tile-title" id="lblProximasRenovaciones">Próximas Renovaciones(0)</h5>
+            <span>Membresías que vencerán en los próximos 10 días</span>
+            <div class="tile-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Nombres</th>
+                      <th>Fecha Fin</th>
+                      <th>N° Celular</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbProximasRenovaciones">
+
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Clientes Matriculados</h3>
-            <div class="embed-responsive embed-responsive-16by9">
-              <canvas class="embed-responsive-item" id="pieChartDemo"></canvas>
+            <h5 class="tile-title" id="lblClientePorRecuperar">Clientes por Recuperar(0)</h5>
+            <span>Membresías que vencieron en los ultimos 30 días</span>
+            <div class="tile-body">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Nombres</th>
+                      <th>Fecha Fin</th>
+                      <th>N° Celular</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbClientesPorRecurar">
+
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
+
     </main>
     <!-- Essential javascripts for application to work-->
     <?php include "./layout/footer.php"; ?>
@@ -109,16 +141,39 @@ if (!isset($_SESSION["IdEmpleado"])) {
           beforeSend: function() {
             $("#lblCliente").html(0);
             $("#lblIngresos").html(0);
-            $("#lblPorVencer").html(0);
+            $("#lblEmpleados").html(0);
             $("#lblCuentas").html(0);
+            $("#tbProximasRenovaciones").empty();
+            $("#lblProximasRenovaciones").html("Próximas Renovaciones(0)");
+            $("#tbClientesPorRecurar").empty();
+            $("#lblClientePorRecuperar").html("Clientes por Recuperar(0)");
           },
           success: function(result) {
-            // console.log(result)
             if (result.estado == 1) {
               $("#lblCliente").html(result.clientes);
               $("#lblIngresos").html("S/ " + tools.formatMoney(result.ingresos));
-              $("#lblPorVencer").html(result.membresias);
+              $("#lblEmpleados").html(result.empleados);
               $("#lblCuentas").html(result.cuentas);
+
+              for (let value of result.memPorVencer) {
+                $("#tbProximasRenovaciones").append('<tr>' +
+                  '<td>' + value.apellidos + "<br>" + value.nombres + '</td>' +
+                  '<td>' + tools.getDateForma(value.fechaFin) + '</td>' +
+                  '<td>' + value.celular + '</td>' +
+                  '</tr>');
+              }
+
+              $("#lblProximasRenovaciones").html("Próximas Renovaciones(" + result.memPorVencerTotal + ")");
+
+              for (let value of result.memFinazalidas) {
+                $("#tbClientesPorRecurar").append('<tr>' +
+                  '<td>' + value.apellidos + "<br>" + value.nombres + '</td>' +
+                  '<td>' + tools.getDateForma(value.fechaFin) + '</td>' +
+                  '<td>' + value.celular + '</td>' +
+                  '</tr>');
+              }
+
+              $("#lblClientePorRecuperar").html("Clientes por Recuperar(" + result.memFinazalidasTotal + ")");
             } else {
 
             }
@@ -128,10 +183,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
           }
         });
       }
-
-      $("#btnMembesias").click(function() {
-        console.log("dentro..")
-      });
 
       // var data = {
       //   labels: ["January", "February", "March", "April", "May"],

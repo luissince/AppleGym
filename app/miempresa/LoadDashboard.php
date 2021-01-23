@@ -14,8 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             "estado" => 1,
             "clientes" => $result[0],
             "ingresos" => $result[1],
-            "membresias" => $result[2],
-            "cuentas" => $result[3]
+            "cuentas" => $result[2],
+            "empleados" => $result[3],
+
+            "memPorVencer" => $result[4],
+            "memPorVencerTotal" => $result[5],
+
+            "memFinazalidas" => $result[6],
+            "memFinazalidasTotal" => $result[7]
         ));   
     } else {
         print json_encode(array(

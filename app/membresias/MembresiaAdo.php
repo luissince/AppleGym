@@ -48,6 +48,8 @@ class MembresiaAdo
             OR
             ? = 1 AND c.nombres LIKE CONCAT(?,'%')
             OR
+            ? = 1 AND CONCAT(c.apellidos,' ', c.nombres) LIKE CONCAT(?,'%')
+            OR
             ? = 1 AND v.serie = ?
             OR
             ? = 1 AND v.numeracion = ?
@@ -62,28 +64,28 @@ class MembresiaAdo
             ? = 2 AND ? = 3 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0
             GROUP BY m.idMembresia
             LIMIT ?,?");
-            $membresia->bindParam(1, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(1, $opcion, PDO::PARAM_INT);//0
 
-            $membresia->bindParam(2, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(2, $opcion, PDO::PARAM_INT);//dni
             $membresia->bindParam(3, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(4, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(4, $opcion, PDO::PARAM_INT);//apellidos
             $membresia->bindParam(5, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(6, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(6, $opcion, PDO::PARAM_INT);//nombres
             $membresia->bindParam(7, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(8, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(8, $opcion, PDO::PARAM_INT);//apellidos y nombres
             $membresia->bindParam(9, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(10, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(10, $opcion, PDO::PARAM_INT);//serie
             $membresia->bindParam(11, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(12, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(12, $opcion, PDO::PARAM_INT);//numeracion
             $membresia->bindParam(13, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(14, $opcion, PDO::PARAM_INT);
-            $membresia->bindParam(15, $tipo, PDO::PARAM_INT);
+            $membresia->bindParam(14, $opcion, PDO::PARAM_INT);//serie y numeracion
+            $membresia->bindParam(15, $buscar, PDO::PARAM_STR);
 
             $membresia->bindParam(16, $opcion, PDO::PARAM_INT);
             $membresia->bindParam(17, $tipo, PDO::PARAM_INT);
@@ -91,8 +93,11 @@ class MembresiaAdo
             $membresia->bindParam(18, $opcion, PDO::PARAM_INT);
             $membresia->bindParam(19, $tipo, PDO::PARAM_INT);
 
-            $membresia->bindParam(20, $x, PDO::PARAM_INT);
-            $membresia->bindParam(21, $y, PDO::PARAM_INT);
+            $membresia->bindParam(20, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(21, $tipo, PDO::PARAM_INT);
+
+            $membresia->bindParam(22, $x, PDO::PARAM_INT);
+            $membresia->bindParam(23, $y, PDO::PARAM_INT);
             $membresia->execute();
 
             $count = 0;
@@ -129,6 +134,8 @@ class MembresiaAdo
             OR
             ? = 1 AND c.nombres LIKE CONCAT(?,'%')
             OR
+            ? = 1 AND CONCAT(c.apellidos,' ', c.nombres) LIKE CONCAT(?,'%')
+            OR
             ? = 1 AND v.serie = ?
             OR
             ? = 1 AND v.numeracion = ?
@@ -140,18 +147,18 @@ class MembresiaAdo
             ? = 2 AND ? = 2 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10
             OR
             ? = 2 AND ? = 3 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0");
-            $total->bindParam(1, $opcion, PDO::PARAM_INT);
+            $total->bindParam(1, $opcion, PDO::PARAM_INT);//0
 
-            $total->bindParam(2, $opcion, PDO::PARAM_INT);
+            $total->bindParam(2, $opcion, PDO::PARAM_INT);//
             $total->bindParam(3, $buscar, PDO::PARAM_STR);
 
-            $total->bindParam(4, $opcion, PDO::PARAM_INT);
+            $total->bindParam(4, $opcion, PDO::PARAM_INT);//
             $total->bindParam(5, $buscar, PDO::PARAM_STR);
 
-            $total->bindParam(6, $opcion, PDO::PARAM_INT);
+            $total->bindParam(6, $opcion, PDO::PARAM_INT);//
             $total->bindParam(7, $buscar, PDO::PARAM_STR);
 
-            $total->bindParam(8, $opcion, PDO::PARAM_INT);
+            $total->bindParam(8, $opcion, PDO::PARAM_INT);//
             $total->bindParam(9, $buscar, PDO::PARAM_STR);
 
             $total->bindParam(10, $opcion, PDO::PARAM_INT);
@@ -161,13 +168,16 @@ class MembresiaAdo
             $total->bindParam(13, $buscar, PDO::PARAM_STR);
 
             $total->bindParam(14, $opcion, PDO::PARAM_INT);
-            $total->bindParam(15, $tipo, PDO::PARAM_INT);
+            $total->bindParam(15, $buscar, PDO::PARAM_STR);
 
             $total->bindParam(16, $opcion, PDO::PARAM_INT);
             $total->bindParam(17, $tipo, PDO::PARAM_INT);
 
             $total->bindParam(18, $opcion, PDO::PARAM_INT);
             $total->bindParam(19, $tipo, PDO::PARAM_INT);
+
+            $total->bindParam(20, $opcion, PDO::PARAM_INT);
+            $total->bindParam(21, $tipo, PDO::PARAM_INT);
 
             $total->execute();
             $resultTotal = $total->fetchColumn();

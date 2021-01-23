@@ -16,5 +16,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }else{
         echo json_encode(array("estado" => 2, "message" => $result));
     }
-    
 } 

@@ -100,21 +100,72 @@ class MiEmpresaAdo {
 
             $cmdClientes = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  clientetb");
             $cmdClientes->execute();
-            $resultCliente =  $cmdClientes->fetchColumn();
+            $resultTotalCliente =  $cmdClientes->fetchColumn();
 
             $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT SUM(monto) FROM  ingresotb WHERE fecha = CURDATE()");
             $cmdIngresos->execute();
             $resultIngresos = $cmdIngresos->fetchColumn();
 
-            $cmdMembresias = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  membresiatb WHERE CAST(DATEDIFF(fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(fechaFin,CURDATE()) AS int) <=10");
-            $cmdMembresias->execute();
-            $resultMembresias = $cmdMembresias->fetchColumn();
-
             $cmdCuentasPorCobrar = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  ventacreditotb WHERE estado = 0");
             $cmdCuentasPorCobrar->execute();
             $resultCuentasPorCobrar = $cmdCuentasPorCobrar->fetchColumn();
 
-            array_push($array,$resultCliente,$resultIngresos,$resultMembresias,$resultCuentasPorCobrar);
+            $cmdEmpleados = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  empleadotb");
+            $cmdEmpleados->execute();
+            $resuktTotalEmpleados = $cmdEmpleados->fetchColumn();
+
+            $cmdMembresiasPorVencer = Database::getInstance()->getDb()->prepare("SELECT c.apellidos,c.nombres,c.celular,m.fechaFin  FROM  membresiatb as m
+            INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10");
+            $cmdMembresiasPorVencer->execute();
+            $arrayMembresiasPorVencer = array();
+            while($row = $cmdMembresiasPorVencer->fetch()){
+                array_push($arrayMembresiasPorVencer,array(
+                    "apellidos"=>$row["apellidos"],
+                    "nombres"=>$row["nombres"],
+                    "celular"=>$row["celular"],
+                    "fechaFin"=>$row["fechaFin"]
+                ));
+            }
+
+            $cmdMembresiasPorVencerCount = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  membresiatb as m
+            INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10");
+            $cmdMembresiasPorVencerCount->execute();
+            $resultMembresiasPorVencerTotal = $cmdMembresiasPorVencerCount->fetchColumn();
+
+            $cmdMembresiasFinalizadas = Database::getInstance()->getDb()->prepare("SELECT c.apellidos,c.nombres,c.celular,m.fechaFin  FROM  membresiatb as m 
+            INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0");
+            $cmdMembresiasFinalizadas->execute();
+
+            $arrayMembresiasFinalizadas = array();
+            while($row = $cmdMembresiasFinalizadas->fetch()){
+                array_push($arrayMembresiasFinalizadas,array(
+                    "apellidos"=>$row["apellidos"],
+                    "nombres"=>$row["nombres"],
+                    "celular"=>$row["celular"],
+                    "fechaFin"=>$row["fechaFin"]
+                ));
+            }
+
+            $cmdMembresiasFinalizadasCount = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  membresiatb as m 
+            INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0");
+            $cmdMembresiasFinalizadasCount->execute();
+            $resultMembresiasFinalizadasTotal = $cmdMembresiasFinalizadasCount->fetchColumn();
+
+            array_push($array,
+            $resultTotalCliente,
+            $resultIngresos,
+            $resultCuentasPorCobrar,
+            $resuktTotalEmpleados,
+
+            $arrayMembresiasPorVencer,
+            $resultMembresiasPorVencerTotal,
+
+            $arrayMembresiasFinalizadas,
+            $resultMembresiasFinalizadasTotal);
 
             return $array;
         }catch(Exception $ex){
