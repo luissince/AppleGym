@@ -312,10 +312,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <?php include "./layout/footer.php"; ?>
         <script>
             let tools = new Tools();        
+            let idEmpleado = "<?php echo $_GET["idEmpleado"]; ?>";
 
             $(document).ready(function() {
+               
+            });
 
-            })
+            
 
            
         </script>

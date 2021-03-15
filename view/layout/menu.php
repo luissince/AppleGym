@@ -18,7 +18,7 @@
                                 <li><a class="app-menu__item" href="ventas.php"><i class="app-menu__icon fa fa-folder"></i><span class="app-menu__label">Ventas</span></a></li>
                         </ul>
                 </li>
-                
+
                 <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-address-book-o"></i><span class="app-menu__label">Personas</span><i class="treeview-indicator fa fa-angle-right"></i></a>
                         <ul class="treeview-menu">
                                 <li><a class="app-menu__item" href="clientes.php"><i class="app-menu__icon fa fa-users"></i><span class="app-menu__label">Clientes</span></a></li>
@@ -27,15 +27,23 @@
                         </ul>
                 </li>
 
-                <li><a class="app-menu__item" href="productos.php"><i class="app-menu__icon fa fa-shopping-bag"></i><span class="app-menu__label">Productos</span></a></li>
+                <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-home"></i><span class="app-menu__label">Inventario</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+                        <ul class="treeview-menu">
+                                <li><a class="app-menu__item" href="productos.php"><i class="app-menu__icon fa fa-product-hunt"></i><span class="app-menu__label">Productos</span></a></li>
+                                <li><a class="app-menu__item" href="membresias.php"><i class="app-menu__icon fa fa-book "></i><span class="app-menu__label">Recepción de Mercadería</span></a></li>
+                        </ul>
+                </li>
+
+
                 <li><a class="app-menu__item" href="reportes.php"><i class="app-menu__icon fa fa-bar-chart"></i><span class="app-menu__label">Reportes</span></a></li>
-                <!-- <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-calendar"></i><span class="app-menu__label">Citas</span></a></li> -->
 
 
                 <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-cog"></i><span class="app-menu__label">Configuración</span><i class="treeview-indicator fa fa-angle-right"></i></a>
                         <ul class="treeview-menu">
                                 <li><a class="app-menu__item" href="planes.php"><i class="app-menu__icon fa fa-align-left"></i><span class="app-menu__label">Planes</span></a></li>
                                 <li><a class="app-menu__item" href="disciplinas.php"><i class="app-menu__icon fa fa-indent"></i><span class="app-menu__label">Disciplinas</span></a></li>
+                                <li><a class="app-menu__item" href="categoria.php"><i class="app-menu__icon fa fa-sitemap"></i><span class="app-menu__label">Categoría</span></a></li>
+                                <li><a class="app-menu__item" href="impuesto.php"><i class="app-menu__icon fa fa-percent"></i><span class="app-menu__label">Impuestos</span></a></li>
                                 <li><a class="app-menu__item" href="empresa.php"><i class="app-menu__icon fa fa-building"></i><span class="app-menu__label">Empresa</span></a></li>
                         </ul>
                 </li>

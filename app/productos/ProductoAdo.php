@@ -9,11 +9,10 @@ class ProductoAdo
     {
     }
 
-    public static function insertProducto($body)
+    public static function crudProducto($body)
     {
 
         try {
-            // Preparar la sentencia
             Database::getInstance()->getDb()->beginTransaction();
 
             $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto = ?");
@@ -208,11 +207,8 @@ class ProductoAdo
 
     public static function getProductoById($idProducto)
     {
-        $consulta = "SELECT * FROM productotb WHERE idProducto = ?";
         try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto = ?");
             $comando->execute(array($idProducto['idProducto']));
             return $comando->fetchObject();
         } catch (PDOException $e) {
@@ -220,21 +216,23 @@ class ProductoAdo
         }
     }
 
-    public static function getAllDatosSearchProducto($datos, $x, $y)
+    public static function getDataRegistroProducto()
     {
-        $consulta = "SELECT * FROM productotb WHERE (nombre LIKE ? OR clave LIKE ?) LIMIT ?,?";
         try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindValue(1, "$datos%", PDO::PARAM_STR);
-            $comando->bindValue(2, "$datos%", PDO::PARAM_STR);
-            $comando->bindValue(3, $x, PDO::PARAM_INT);
-            $comando->bindValue(4, $y, PDO::PARAM_INT);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return $e->getMessage();
+            $array = array();
+
+            $cmdCategoria = Database::getInstance()->getDb()->prepare("SELECT * FROM tabla_categoria");
+            $cmdCategoria->execute();
+            $arrayCategoria = array();
+
+            while ($row = $cmdCategoria->fetch()) {
+                array_push($arrayCategoria, $row);
+            }
+
+            array_push($array, $arrayCategoria);
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
     }
 }

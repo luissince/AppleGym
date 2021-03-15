@@ -233,12 +233,9 @@ class EmpleadoAdo
 
     public static function getEmpleadoById($idEmpleado)
     {
-        $consulta = "SELECT * FROM empleadotb WHERE idEmpleado = ?";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute(array($idEmpleado['idEmpleado']));
+        try {            
+            $comando = Database::getInstance()->getDb()->prepare( "SELECT * FROM empleadotb WHERE idEmpleado = ?");          
+            $comando->execute(array($idEmpleado));
             return $comando->fetchObject();
         } catch (PDOException $e) {
             return false;
@@ -472,4 +469,6 @@ class EmpleadoAdo
             return $e->getMessage();
         }
     }
+
+
 }

@@ -231,7 +231,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <label for="cbMonthAsistenciaPersonal">Mes: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
                                             <select id="cbMonthAsistenciaPersonal" class="form-control">
                                                 <option value="1">Enero</option>
-                                                <option value="2">Febreo</option>
+                                                <option value="2">Febrero</option>
                                                 <option value="3">Marzo</option>
                                                 <option value="4">Abril</option>
                                                 <option value="5">Mayo</option>

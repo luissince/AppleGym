@@ -372,11 +372,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             $(document).ready(function() {
 
-                loadInitEmpleados();
-
-                $("#btnVer").on('mouseover', function() {
-                    // console.log( $("#pass").val())
-                });
 
                 $('#modalEmpleado').on('shown.bs.modal', function(event) {
                     selectTab(event, 'basico')
@@ -456,6 +451,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 });
 
+                loadInitEmpleados();
+
             });
 
             function selectTab(evt, tabName) {
@@ -493,53 +490,64 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function loadTableEmpleados(text) {
                 $.ajax({
-                    url: "../app/empleados/Obtener_Empleados.php",
-                    method: "",
+                    url: "../app/empleados/EmpleadoController.php",
+                    method: "GET",
                     data: {
-                        opcion: 1,
-                        page: paginacion,
-                        datos: text
+                        "type": "lista",
+                        "opcion": 1,
+                        "page": paginacion,
+                        "datos": text
                     },
                     beforeSend: function() {
                         state = true;
+                        totalPaginacion = 0;
                         tbLista.empty();
                         tbLista.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                         );
                     },
                     success: function(result) {
+                        tbLista.empty();
                         if (result.estado == 1) {
-                            let count = 0;
-                            tbLista.empty();
-                            for (let empleado of result.empleados) {
-                                count++;
-                                let btnPerfil =
-                                    '<button class="btn btn-info btn-sm" onclick="loadDataPerfil(\'' +empleado.idEmpleado + '\')">' +
-                                    '<i class="fa fa-user-circle"></i> Ver' +
-                                    '</button>';
-                                let btnUpdate =
-                                    '<button class="btn btn-warning btn-sm" onclick="loadUpdateEmpleado(\'' +empleado.idEmpleado + '\')">' +
-                                    '<i class="fa fa-pencil"></i> Editar' +
-                                    '</button>';
+                            if (result.empleados.length == 0) {
+                                tbLista.append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><p>No datos para mostrar.</p></td></tr>'
+                                );
+                                $("#lblPaginaActual").html(0);
+                                $("#lblPaginaSiguiente").html(0);
+                                state = false;
+                            } else {
+                                let count = 0;
+                                for (let empleado of result.empleados) {
+                                    count++;
+                                    let btnPerfil =
+                                        '<button class="btn btn-info btn-sm" onclick="loadDataPerfil(\'' + empleado.idEmpleado + '\')">' +
+                                        '<i class="fa fa-user-circle"></i> Ver' +
+                                        '</button>';
+                                    let btnUpdate =
+                                        '<button class="btn btn-warning btn-sm" onclick="loadUpdateEmpleado(\'' + empleado.idEmpleado + '\')">' +
+                                        '<i class="fa fa-pencil"></i> Editar' +
+                                        '</button>';
 
-                                tbLista.append('<tr role="row" class="odd">' +
-                                    '<td>' + count + '</td>' +
-                                    '<td>' + empleado.numeroDocumento + '</td>' +
-                                    '<td>' + empleado.apellidos + " " + empleado.nombres + '</td>' +
-                                    '<td>' + empleado.celular + '</td>' +
-                                    '<td>' + empleado.ocupacion + '</td>' +
-                                    '<td>' + btnPerfil + '</td>' +
-                                    '<td>' + btnUpdate + '</td>' +
-                                    '</tr>');
+                                    tbLista.append('<tr role="row" class="odd">' +
+                                        '<td>' + count + '</td>' +
+                                        '<td>' + empleado.numeroDocumento + '</td>' +
+                                        '<td>' + empleado.apellidos + " " + empleado.nombres + '</td>' +
+                                        '<td>' + empleado.celular + '</td>' +
+                                        '<td>' + empleado.ocupacion + '</td>' +
+                                        '<td>' + btnPerfil + '</td>' +
+                                        '<td>' + btnUpdate + '</td>' +
+                                        '</tr>');
+                                }
+
+                                totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
+                                    10))));
+                                $("#lblPaginaActual").html(paginacion);
+                                $("#lblPaginaSiguiente").html(totalPaginacion);
+                                state = false;
                             }
 
-                            totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
-                                10))));
-                            $("#lblPaginaActual").html(paginacion);
-                            $("#lblPaginaSiguiente").html(totalPaginacion);
-                            state = false;
                         } else {
-                            tbLista.empty();
                             tbLista.append(
                                 '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><p>' +
                                 result.mensaje + '</p></td></tr>');
@@ -562,11 +570,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 codigo, rol, usuario, pass, estado) {
 
                 $.ajax({
-                    url: "../app/empleados/Crud_Empleados.php",
+                    url: "../app/empleados/EmpleadoController.php",
                     method: "POST",
                     accepts: "application/json",
                     contentType: "application/json",
                     data: JSON.stringify({
+                        "type":"crud",
                         "idEmpleado": idEmpleadoUpdate,
                         "tipoDocumento": tipoDocumento,
                         "numeroDocumento": numeroDocumento,
@@ -590,7 +599,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         "usuario": usuario,
                         "clave": pass,
                         "estado": estado,
-
                     }),
                     beforeSend: function() {
                         closeClearModal();
@@ -641,7 +649,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function loadDataPerfil(idEmpleado) {
-                location.href = "empleadoPerfil.php?idEmpleado=" + idEmpleado 
+                location.href = "empleadoPerfil.php?idEmpleado=" + idEmpleado
             }
 
             function loadUpdateEmpleado(idEmpleado) {
@@ -650,13 +658,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 idEmpleadoUpdate = idEmpleado;
 
                 $.ajax({
-                    url: "../app/empleados/Obtener_Empleados_By_Id.php",
-                    method: "POST",
-                    accepts: "application/json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
+                    url: "../app/empleados/EmpleadoController.php",
+                    method: "GET",                 
+                    data: {
+                        "type":"getbyid",
                         "idEmpleado": idEmpleado
-                    }),
+                    },
                     beforeSend: function() {
                         tools.AlertInfo("Producto", "Cargando datos..");
                     },
@@ -699,6 +706,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                     },
                     error: function(error) {
+                        console.log(error.responseText)
                         tools.AlertError("Error", error.responseText);
                         $("#btnGuardarModal").empty();
                         $("#btnGuardarModal").append('<img src="./images/loading.gif" width="25" height="25" />')

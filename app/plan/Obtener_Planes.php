@@ -7,9 +7,9 @@ require './PlanAdo.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Manejar petición GET
-    $body = $_GET['page'];
+    $page = $_GET['page'];
     $search = $_GET["datos"];
-    $planes = PlanAdo::getAllPlanes($search,($body-1)*10,10);
+    $planes = PlanAdo::getAllPlanes($search,($page-1)*10,10);
     if (is_array($planes) ){
         $datos["estado"] = 1;
         $datos["total"] = $planes[1];

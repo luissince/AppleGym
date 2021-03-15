@@ -336,13 +336,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#btnSiguiente").click(function() {
                     if (!state) {
                         if (paginacion < totalPaginacion) {
-                            paginacion++;
-                            onEventPaginacion();
+                            paginacion++;                         
+                            onEventPaginacion();                           
                         }
                     }
                 });
 
-                $("#txtSearch").keypress(function() {
+                $("#txtSearch").keyup(function() {
                     if ($("#txtSearch").val().trim() != '') {
                         if (!state) {
                             paginacion = 1;
@@ -359,10 +359,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
             function onEventPaginacion() {
                 switch (opcion) {
                     case 0:
-                        loadInitPlanes("");
+                        loadTablePlanes("");
                         break;
                     case 1:
-                        loadInitPlanes($("#txtSearch").val().trim());
+                        loadTablePlanes($("#txtSearch").val().trim());
                         break;
                 }
             }
@@ -377,13 +377,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
 
-            function loadTablePlanes(datos) {
+            function loadTablePlanes(datos) {             
                 $.ajax({
                     url: "../app/plan/Obtener_Planes.php",
-                    method: "",
+                    method: "GET",
                     data: {
-                        page: paginacion,
-                        datos: datos
+                        "page": paginacion,
+                        "datos": datos
                     },
                     beforeSend: function() {
                         state = true;

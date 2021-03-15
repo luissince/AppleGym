@@ -22,112 +22,117 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <!-- Sidebar menu-->
             <?php include "./marcarentrada.php"; ?>
 
-            <div class="app-title">
-                <div>
-                    <h1><i class="fa fa-shopping-bag"></i> Productos</h1>
-                </div>
-            </div>
-            <div class="tile mb-4">
+            <!-- modal nuevo/update Productos  -->
+            <div class="row">
+                <div class="modal fade" id="modalCliente" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="tile p-0">
 
-                <!-- modal nuevo/update Productos  -->
-                <div class="row">
-                    <div class="modal fade" id="modalCliente" data-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="titulo-modal">
-                                    </h4>
-                                    <button type="button" class="close" id="btnCloseModal">
-                                        <i class="fa fa-close"></i>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" href="#profile" role="tab" data-toggle="tab">Información</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#buzz" role="tab" data-toggle="tab">Detalle</a>
-                                        </li>
-                                    </ul>
-
-                                    <div class="tab-content">
-                                        <div role="tabpanel" class="tab-pane fade in active show" id="profile">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="clave">Clave: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                        <input id="clave" type="text" class="form-control" placeholder="Ingrese la clave">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="claveAlterna">Clave Alterna: </label>
-                                                        <input id="claveAlterna" type="text" class="form-control" placeholder="Ingrese la clave alterna">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="nombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                        <input id="nombre" type="text" class="form-control" placeholder="Ingrese el nombre del producto">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="categoria">Categoria: </label>
-                                                        <select id="categoria" class="form-control">
-                                                            <option value="Golosinas">Golosinas</option>
-                                                            <option value="Bebidas">Bebidas</option>
-                                                            <option value="Snacks">Snacks</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="overlay d-none" id="divOverlayCategoria">
+                                        <div class="m-loader mr-4">
+                                            <svg class="m-circular" viewBox="25 25 50 50">
+                                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"></circle>
+                                            </svg>
                                         </div>
-                                        <div role="tabpanel" class="tab-pane fade" id="buzz">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="impuesto">Impuesto: </label>
-                                                        <select id="impuesto" class="form-control">
-                                                            <option value="Ninguno">Ninguno</option>
-                                                            <option value="I.G.V.">I.G.V.</option>
-                                                            <option value="I.S.C.">I.S.C.</option>
-                                                        </select>
+                                        <h4 class="l-text" id="lblTextOverlayCategoria">Cargando información...</h4>
+                                    </div>
+
+                                    <div class="tile-body">
+                                        <ul class="nav nav-tabs mb-2" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" href="#profile" role="tab" data-toggle="tab">Información</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#buzz" role="tab" data-toggle="tab">Detalle</a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content">
+                                            <div role="tabpanel" class="tab-pane fade in active show" id="profile">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="clave">Clave: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="clave" type="text" class="form-control" placeholder="Ingrese la clave">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="claveAlterna">Clave Alterna: </label>
+                                                            <input id="claveAlterna" type="text" class="form-control" placeholder="Ingrese la clave alterna">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="nombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="nombre" type="text" class="form-control" placeholder="Ingrese el nombre del producto">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="categoria">Categoria: </label>
+                                                            <select id="categoria" class="form-control">
+                                                                <option value="Golosinas">Golosinas</option>
+                                                                <option value="Bebidas">Bebidas</option>
+                                                                <option value="Snacks">Snacks</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="costo">Costo: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                        <input id="costo" type="text" class="form-control" placeholder="Ingrese el costo del producto">
+                                            <div role="tabpanel" class="tab-pane fade" id="buzz">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="impuesto">Impuesto: </label>
+                                                            <select id="impuesto" class="form-control">
+                                                                <option value="Ninguno">Ninguno</option>
+                                                                <option value="I.G.V.">I.G.V.</option>
+                                                                <option value="I.S.C.">I.S.C.</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="precio">Precio: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                        <input id="precio" type="text" class="form-control" placeholder="Ingrese el precio del producto">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="costo">Costo: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="costo" type="text" class="form-control" placeholder="Ingrese el costo del producto">
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="estado">Estado: </label>
-                                                        <select id="estado" class="form-control">
-                                                            <option value="Activo">Activo</option>
-                                                            <option value="Inactivo">Inactivo</option>
-                                                        </select>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="precio">Precio: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="precio" type="text" class="form-control" placeholder="Ingrese el precio del producto">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="estado">Estado: </label>
+                                                            <select id="estado" class="form-control">
+                                                                <option value="Activo">Activo</option>
+                                                                <option value="Inactivo">Inactivo</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -135,18 +140,26 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     </div>
 
                                 </div>
+                            </div>
 
-                                <div class="modal-footer">
-                                    <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
-                                    <button type="button" class="btn btn-success" id="btnGuardarModal">
-                                        <i class="fa fa-save"></i> Guardar</button>
-                                    <button type="button" class="btn btn-danger" id="btnCancelModal">
-                                        <i class="fa fa-remove"></i> Cancelar</button>
-                                </div>
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
+                                <button type="button" class="btn btn-success" id="btnGuardarModal">
+                                    <i class="fa fa-save"></i> Guardar</button>
+                                <button type="button" class="btn btn-danger" id="btnCancelModal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="app-title">
+                <div>
+                    <h1><i class="fa fa-shopping-bag"></i> Productos</h1>
+                </div>
+            </div>
+            <div class="tile mb-4">
 
                 <div class="row">
                     <div class="col-lg-6">
@@ -228,23 +241,62 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             $(document).ready(function() {
 
+                $("#btnAdd").click(function() {
+                    addProducto();
+                });
+
+                $("#btnAdd").keypress(function(event) {
+                    if (event.keyCode == 13) {
+                        addProducto();
+                    }
+                    event.preventDefault();
+                });
+
+                $("#btnReload").click(function() {
+                    loadInitProductos();
+                });
+
+                $("#btnReload").keypress(function(event) {
+                    if (event.keyCode == 13) {
+                        loadInitProductos();
+                    }
+                    event.preventDefault();
+                });
+
+                $("#btnAnterior").click(function() {
+                    if (!state) {
+                        if (paginacion > 1) {
+                            paginacion--;
+                            onEventPaginacion();
+                        }
+                    }
+                });
+                $("#btnSiguiente").click(function() {
+                    if (!state) {
+                        if (paginacion < totalPaginacion) {
+                            paginacion++;
+                            onEventPaginacion();
+                        }
+                    }
+                });
+
+                $("#txtSearch").keypress(function() {
+                    if ($("#txtSearch").val().trim() != '') {
+                        if (!state) {
+                            paginacion = 1;
+                            loadTableProductos($("#txtSearch").val().trim());
+                            opcion = 1;
+                        }
+                    }
+                });
+
+                modalProductosEventos();
+
                 loadInitProductos();
 
-                $("#clave").keypress(function() {
-                    var key = window.Event ? event.which : event.keyCode;
-                    var c = String.fromCharCode(key);
-                    if ((c < '0' || c > '9') && (c != '\b') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
-                        event.preventDefault();
-                    }
-                });
+            });
 
-                $("#claveAlterna").keypress(function() {
-                    var key = window.Event ? event.which : event.keyCode;
-                    var c = String.fromCharCode(key);
-                    if ((c < '0' || c > '9') && (c != '\b') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
-                        event.preventDefault();
-                    }
-                });
+            function modalProductosEventos() {
 
                 $("#costo").keypress(function() {
                     var key = window.Event ? event.which : event.keyCode;
@@ -268,11 +320,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#btnAdd").click(function() {
-                    $("#titulo-modal").empty();
-                    $("#titulo-modal").append("Registrar Producto");
-                    $("#modalCliente").modal("show");
-                });
 
                 $("#btnGuardarModal").click(function() {
                     crudProducto()
@@ -286,75 +333,54 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
 
                 $("#btnCancelModal").click(function() {
-                    $("#modalCliente").modal("hide");
                     clearComponents();
+                });
+
+                $("#btnCancelModal").keypress(function(event) {
+                    if (event.keyCode === 13) {
+                        clearComponents();
+                    }
+                    event.preventDefault();
                 });
 
                 $("#btnCloseModal").click(function() {
-                    $("#modalCliente").modal("hide");
                     clearComponents();
                 });
 
-                $("#btnReload").click(function() {
-                    loadInitProductos();
-                });
-
-
-                $("#btnAnterior").click(function() {
-                    if (!state) {
-                        if (paginacion > 1) {
-                            paginacion--;
-                            onEventPaginacion();
-                        }
+                $("#btnCloseModal").keypress(function() {
+                    if (event.keyCode === 13) {
+                        clearComponents();
                     }
-                });
-                $("#btnSiguiente").click(function() {
-                    if (!state) {
-                        if (paginacion < totalPaginacion) {
-                            paginacion++;
-                            onEventPaginacion();
-                        }
-                    }
+                    event.preventDefault();
                 });
 
-                $("#txtSearch").keypress(function() {
-                    if ($("#txtSearch").val().trim() != '') {
-                        if (!state) {
-                            paginacion = 1;
-                            listaProductos($("#txtSearch").val().trim());
-                            opcion = 1;
-                        }
-                    }
-                });
-
-            });
+            }
 
             function onEventPaginacion() {
                 switch (opcion) {
                     case 0:
-                        listaProductos("");
+                        loadTableProductos("");
                         break;
                     case 1:
-                        listaProductos($("#txtSearch").val().trim());
+                        loadTableProductos($("#txtSearch").val().trim());
                         break;
                 }
             }
-
 
             function loadInitProductos() {
                 if (!state) {
                     paginacion = 1;
-                    listaProductos("");
+                    loadTableProductos("");
                     opcion = 0;
                 }
             }
 
-
-            function listaProductos(text) {
+            function loadTableProductos(text) {
                 $.ajax({
-                    url: "../app/productos/Obtener_Productos.php",
-                    method: "",
+                    url: "../app/productos/ProductoController.php",
+                    method: "GET",
                     data: {
+                        "type":"lista",
                         "page": paginacion,
                         "datos": text
                     },
@@ -362,35 +388,44 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         state = true;
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
+                        totalPaginacion = 0;
                     },
                     success: function(result) {
                         let data = result;
                         if (data.estado == 1) {
                             tbLista.empty();
-                            for (let producto of data.productos) {
-                                let estado = producto.estado == "Activo" ? '<span class="badge badge-pill badge-success">' + producto.estado + '</span>' : '<span class="badge badge-pill badge-danger">' + producto.estado + '</span>';
-                                tbLista.append('<tr role="row" class="odd">' +
-                                    '<td class="text-center">' + producto.id + '</td>' +
-                                    '<td>' + producto.clave + '<br>' + producto.nombre + '</td>' +
-                                    '<td class="text-right">' + tools.formatMoney(producto.cantidad) + '</td>' +
-                                    '<td class="text-right">' + tools.formatMoney(producto.precio) + '</td>' +
-                                    '<td>' + producto.categoria + '</td>' +
-                                    '<td class="text-center">' + estado + '</td>' +
-                                    '<td class="text-center"><button class="btn btn-warning btn-sm" onclick="loadUpdateProducto(\'' + producto.idProducto + '\')"><i class="fa fa-edit"></i> Editar</button></td>' +
-                                    '<td class="text-center"><button class="btn btn-danger btn-sm" onclick="eliminarProducto(\'' + producto.idProducto + '\')"><i class="fa fa-trash"></i> Eliminar</button></td>' +
-                                    '</tr>');
+                            if (data.productos.length == 0) {
+                                tbLista.append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>');
+                                $("#lblPaginaActual").html(0);
+                                $("#lblPaginaSiguiente").html(0);
+                                state = false;
+                            } else {
+                                for (let producto of data.productos) {
+                                    let estado = producto.estado == "Activo" ? '<span class="badge badge-pill badge-success">' + producto.estado + '</span>' : '<span class="badge badge-pill badge-danger">' + producto.estado + '</span>';
+                                    tbLista.append('<tr role="row" class="odd">' +
+                                        '<td class="text-center">' + producto.id + '</td>' +
+                                        '<td>' + producto.clave + '<br>' + producto.nombre + '</td>' +
+                                        '<td class="text-right">' + tools.formatMoney(producto.cantidad) + '</td>' +
+                                        '<td class="text-right">' + tools.formatMoney(producto.precio) + '</td>' +
+                                        '<td>' + producto.categoria + '</td>' +
+                                        '<td class="text-center">' + estado + '</td>' +
+                                        '<td class="text-center"><button class="btn btn-warning btn-sm" onclick="updateProducto(\'' + producto.idProducto + '\')"><i class="fa fa-edit"></i> Editar</button></td>' +
+                                        '<td class="text-center"><button class="btn btn-danger btn-sm" onclick="deleteProducto(\'' + producto.idProducto + '\')"><i class="fa fa-trash"></i> Eliminar</button></td>' +
+                                        '</tr>');
+                                }
+                                totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
+                                    5))));
+                                $("#lblPaginaActual").html(paginacion);
+                                $("#lblPaginaSiguiente").html(totalPaginacion);
+                                state = false;
                             }
-                            totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
-                                5))));
-                            $("#lblPaginaActual").html(paginacion);
-                            $("#lblPaginaSiguiente").html(totalPaginacion);
-                            state = false;
                         } else {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                                 data.mensaje + '</p></td></tr>');
                             $("#lblPaginaActual").html(0);
                             $("#lblPaginaSiguiente").html(0);
@@ -400,11 +435,34 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     error: function(error) {
                         tbLista.empty();
                         tbLista.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' +
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
                         $("#lblPaginaActual").html(0);
                         $("#lblPaginaSiguiente").html(0);
                         state = false;
+                    }
+                });
+            }
+
+            function addProducto() {
+                $("#titulo-modal").empty();
+                $("#titulo-modal").append("Registrar Producto");
+                $("#modalCliente").modal("show");
+                $.ajax({
+                    url: "../app/productos/ProductoController.php",
+                    method: "GET",
+                    data: {
+                        "type":"getregistro"
+                    },
+                    beforeSend: function() {
+                        $("#lblTextOverlayCategoria").html("Cargando información...");
+                        $("#divOverlayCategoria").removeClass("d-none");
+                    },
+                    success: function(result) {
+                        console.log(result)
+                    },
+                    error: function(error) {
+                        console.log(error.responseText)
                     }
                 });
             }
@@ -422,11 +480,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     tools.ModalDialog('Producto', '¿Está seguro de continuar?', 'question', function(result) {
                         if (result) {
                             $.ajax({
-                                url: "../app/productos/Crud_Productos.php",
+                                url: "../app/productos/ProductoController.php",
                                 method: "POST",
                                 accepts: "application/json",
                                 contentType: "application/json",
                                 data: JSON.stringify({
+                                    "type":"crud",
                                     "idProducto": idProducto,
                                     "clave": $("#clave").val().trim(),
                                     "claveAlterna": $("#claveAlterna").val().trim(),
@@ -439,7 +498,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     "estado": $("#estado").val(),
                                 }),
                                 beforeSend: function() {
-                                    $("#modalCliente").modal("hide")
                                     clearComponents()
                                     tools.ModalAlertInfo('Producto', 'Procesando petición...');
                                 },
@@ -464,18 +522,17 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 }
             }
 
-            function loadUpdateProducto(id) {
+            function updateProducto(id) {
                 $("#titulo-modal").empty();
                 $("#titulo-modal").append("Editar Producto");
                 $("#modalCliente").modal("show");
                 $.ajax({
-                    url: "../app/productos/Obtener_Productos_By_Id.php",
-                    method: "POST",
-                    accepts: "application/json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
+                    url: "../app/productos/ProductoController.php",
+                    method: "GET",
+                    data: {
+                        "type":"getbyid",
                         "idProducto": id
-                    }),
+                    },
                     beforeSend: function() {
                         tools.AlertInfo("Producto", "Cargando datos..");
                     },
@@ -501,19 +558,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
             }
 
-            function eliminarProducto(idProducto) {
+            function deleteProducto(idProducto) {
                 tools.ModalDialog('Producto', '¿Está seguro de eliminar el producto?', 'question', function(result) {
                     if (result) {
                         $.ajax({
-                            url: "../app/productos/Eliminar_Producto.php",
+                            url: "../app/productos/ProductoController.php",
                             method: "POST",
                             accepts: "application/json",
                             contentType: "application/json",
                             data: JSON.stringify({
+                                "type":"delete",
                                 "idProducto": idProducto
                             }),
                             beforeSend: function() {
-                                $("#modalCliente").modal("hide")
                                 clearComponents()
                                 tools.ModalAlertInfo('Producto', 'Procesando petición...');
                             },
@@ -534,6 +591,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             }
 
             function clearComponents() {
+                $("#modalCliente").modal("hide");
                 $("#titulo-modal").empty();
                 $("#clave").val("")
                 $("#claveAlterna").val("")
