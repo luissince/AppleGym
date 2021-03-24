@@ -7,11 +7,13 @@
 <script src="js/plugins/sweetalert.min.js"></script>
 <script src="js/plugins/chart.js"></script>
 <script src="js/tools.js"></script>
+<linl href="js/plugins/select2.min.js">
 
 <!-- Page specific javascripts-->
 <script src="js/plugins/moment.min.js"></script>
 <script src="js/plugins/jquery-ui.custom.min.js"></script>
 <script src="js/plugins/fullcalendar.min.js"></script>
+<script src="js/plugins/select2.min.js"></script>
 
 <script>
     function openMarcarEntrada() {

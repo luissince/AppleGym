@@ -253,7 +253,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <table class="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>                        
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">
                                                                 Cliente</th>
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Celular
@@ -584,6 +584,85 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 </div>
             </div>
 
+            <!-- modal clientes traspaso -->
+            <div class="row">
+                <div class="modal fade" id="modalTraspaso" data-backdrop="static">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    <i class="fa  fa-sign-in"></i> Clientes Hábidos Para Traspaso
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModalTraspaso">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="tile p-0">
+                                    <div class="overlay d-none" id="divOverlayTraspaso">
+                                        <div class="m-loader mr-4">
+                                            <svg class="m-circular" viewBox="25 25 50 50">
+                                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"></circle>
+                                            </svg>
+                                        </div>
+                                        <h4 class="l-text" id="lblTextOverlayTraspaso">Cargando información...</h4>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                            <div class="form-group">
+                                                <label>Seleccionar Cliente</label>
+                                                <select class="form-control select2" style="width: 100%;" id="cbClienteTraspaso">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12 col-12">
+                                            <div class="tile-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20px;">#</th>
+                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">
+                                                                    Plan</th>
+                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Fecha Inicio
+                                                                </th>
+                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Fecha Fin
+                                                                </th>
+                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Dias activo
+                                                                </th>
+                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20px;">Costo/Traspaso
+                                                                </th>
+                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Opciones
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbMembresiaTraspaso">
+                                                            <!-- tbLista -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-md-12 ">
+                                        <label class="text-danger">Para seleccione un cliente hacer doble click en la lista.</label>
+                                    </div> -->
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+
             <div class="tile">
                 <div class="row">
                     <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
@@ -592,8 +671,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <div class="form-group text-left">
                                     <button class="btn btn-success" type="button" id="btnPlan"><i class="fa fa-file"></i>
                                         Planes</button>
-                                    <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-plus"></i>
-                                        Productos</button>
+                                    <!-- <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-plus" ></i>
+                                        Productos</button> -->
+                                    <button class="btn btn-success" type="button" id="btnTraspaso"><i class="fa fa-sign-in"></i>
+                                        Traspaso</button>
                                 </div>
                                 <div class="form-group d-flex">
                                     <div class="input-group">
@@ -615,7 +696,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th class="sorting">Nombre</th>
                                                 <th class="sorting_asc">Cantidad</th>
                                                 <th class="sorting">Precio Plan ( - Descuento)</th>
-                                                <th class="sorting">Precio</th>                                  
+                                                <th class="sorting">Precio</th>
                                                 <th class="sorting">Importe</th>
                                                 <th class="sorting">Quitar</th>
                                             </tr>
@@ -695,6 +776,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             let tbListaProductos = $("#tbListaProductos");
 
+            let tbMembresiaTraspaso = $("#tbMembresiaTraspaso");
+
             let listarPlanes = [];
             let idPlan = "";
             let nombrePlan = "";
@@ -709,6 +792,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
             let montoCambio = 0;
 
             let idEmpleado = "<?php echo $_SESSION["IdEmpleado"] ?>";
+
+            let totalPaginacion = 0;
+            let paginacion = 0;
+            let opcion = 0;
 
             $(document).ready(function() {
 
@@ -741,11 +828,11 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         event.preventDefault();
                     }
                 });
-                
+
                 $("#descuento").keypress(function() {
                     var key = window.Event ? event.which : event.keyCode;
                     var c = String.fromCharCode(key);
-                    if ((c < '0' || c > '9') && (c != '\b')&& (c != '.')) {
+                    if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
                         event.preventDefault();
                     }
                     if (c == '.' && $("#descuento").val().includes(".")) {
@@ -766,7 +853,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#modalLista").on('shown.bs.modal', function() {            
+                $("#modalLista").on('shown.bs.modal', function() {
                     listaClientes($("#txtSearchLista").val());
                 });
 
@@ -898,7 +985,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (!validateDatelleVenta($("#plan").val())) {
 
                             let cantidad = parseInt($("#cantidad").val());
-                            let descuento = !tools.isNumeric($("#descuento").val())?0:parseFloat($("#descuento").val());
+                            let descuento = !tools.isNumeric($("#descuento").val()) ? 0 : parseFloat($("#descuento").val());
 
                             let fechaInicio = $("#inicio").is(':checked') ? $("#fechainicio").val() : tools.getCurrentDate();
                             let fechaFin = fechaInicio;
@@ -1006,6 +1093,28 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 listaComprobantes();
 
+                // -------------------------------------------------------------------------------------------
+
+                listaClientesTraspaso();
+
+                $("#btnCloseModalTraspaso").click(function() {
+                    $("#modalTraspaso").modal("hide")
+                });
+
+                $("#btnTraspaso").click(function() {
+                    $("#modalTraspaso").modal("show");
+                    paginacion = 1;
+                });
+
+                // -------------------------------------------------------------------------------------------
+
+                $("#cbClienteTraspaso").append('<option value="">- Seleccione un Cliente-</option>');
+
+                $('#cbClienteTraspaso').on('select2:select', function(e) {
+                    var data = e.params.data;
+                    // console.log(data.id);
+                    tablaCLienteTraspaso(data.id);
+                });
             });
 
             function registrarVenta() {
@@ -1208,12 +1317,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 total = 0;
                 let suma = 0;
                 for (let detalle of listaVenta) {
-                    suma = (detalle.precio-detalle.descuento) * detalle.cantidad;
+                    suma = (detalle.precio - detalle.descuento) * detalle.cantidad;
                     $("#tbLista").append('<tr>' +
                         '<td>' + detalle.nombre + '</td>' +
                         '<td>' + detalle.cantidad + '</td>' +
                         '<td>' + tools.formatMoney(detalle.precio) + " ( - " + tools.formatMoney(detalle.descuento) + ")" + '</td>' +
-                        '<td>' + tools.formatMoney(detalle.precio-detalle.descuento) + '</td>' +
+                        '<td>' + tools.formatMoney(detalle.precio - detalle.descuento) + '</td>' +
                         // '<td>'+ tools.formatMoney(detalle.descuento) +'</td>' +
                         '<td>' + tools.formatMoney(suma) + '</td>' +
                         '<td>' +
@@ -1492,7 +1601,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#Membresia").val("");
                 $("#cantidad").val("1");
                 $("#descuento").val("0");
-                
+
                 idPlan = "";
                 nombrePlan = "";
                 precioPlan = "";
@@ -1508,6 +1617,131 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#inicio").prop('checked', false)
                 $("#fechainicio").val("");
                 $("#fechainicio").prop('disabled', true);
+            }
+
+            /*---------------------------------------------------------------------------------------*/
+            function onEventPaginacion() {
+                switch (opcion) {
+                    case 0:
+                        listaClientesTraspaso("");
+                        break;
+                    case 1:
+                        listaClientesTraspaso($("#txtSearch").val().trim());
+                        break;
+                }
+            }
+
+            function listaClientesTraspaso() {
+                $.ajax({
+                    url: "../app/cliente/Obtener_Clientes.php",
+                    method: "GET",
+                    data: {
+                        "opcion": 2
+                    },
+                    beforeSend: function() {
+                        $("#lblTextOverlayTraspaso").html("Cargando información...");
+                        $("#divOverlayTraspaso").removeClass("d-none");
+                    },
+                    success: function(result) {
+                        let data = JSON.parse(result);
+                        console.log(data)
+                        if (data.estado == 1) {
+
+                            for (let cliente of data.clientes) {
+                                $("#cbClienteTraspaso").append('<option value="' + cliente.idCliente + '">' + cliente.apellidos + ', ' + cliente.nombres + '</option>');
+                            }
+                            $('#cbClienteTraspaso').select2();
+
+                            $("#divOverlayTraspaso").addClass("d-none");
+                        } else {
+                            $("#lblTextOverlayTraspaso").html(result.mensaje);
+                        }
+                    },
+                    error: function(error) {
+                        $("#lblTextOverlayTraspaso").html(error.responseText);
+                    }
+                });
+            }
+
+            function tablaCLienteTraspaso(dni) {
+                // console.log(dni)
+                $.ajax({
+                    url: "../app/cliente/Obtener_Clientes.php",
+                    method: "GET",
+                    data: {
+                        "opcion": 3,
+                        "dni": dni
+                    },
+                    beforeSend: function() {
+                        tbMembresiaTraspaso.empty();
+                        tbMembresiaTraspaso.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
+                        );
+                    },
+                    success: function(result) {
+                        let data = JSON.parse(result);
+                        console.log(data)
+                        tbMembresiaTraspaso.empty();
+                        if (data.estado == 1) {
+                            if (data.membresias.length == 0) {
+                                tbMembresiaTraspaso.append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
+                                );
+                            } else {
+                                for (let value of data.membresias) {
+
+                                    let Costo = '<input class= "form-control" type="number" placeholder="Costo S/." id="txtCostoTraspaso">';
+                                    let traspaso = '<button class="btn btn-success" type="button" onclick="addTraspaso()"><i class="fa fa-sign-in"></i>Traspaso</button>';
+
+                                    tbMembresiaTraspaso.append('<tr role="row" class="odd">' +
+                                        '<td>' + value.id + '</td>' +
+                                        '<td>' + value.plan + '</td>' +
+                                        '<td>' + value.fechaInicio + '</td>' +
+                                        '<td>' + value.fechaFin + '</td>' +
+                                        '<td>' + value.dias + '</td>' +
+                                        '<td>' + Costo + '</td>' +
+                                        '<td>' + traspaso + '</td>' +
+                                        '</tr>');
+                                }
+                            }
+                        } else {
+                            tbMembresiaTraspaso.append(
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' + result.mensaje + '</p></td></tr>'
+                            );
+                        }
+                    },
+                    error: function(error) {
+                        tbMembresiaTraspaso.empty();
+                        tbMembresiaTraspaso.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' + error.responseText + '</p></td></tr>'
+                        );
+                    }
+                });
+            }
+
+            function addTraspaso() {
+                if (!tools.isNumeric($("#txtCostoTraspaso").val())) {
+                    tools.AlertWarning("Traspaso: ", "Ingrese un Costo.")
+                    $("#txtCostoTraspaso").focus();
+                } else {
+
+                    listaVenta.push({
+                        "idPlan": 0,
+                        "nombre": "Traspaso",
+                        "membresia": "",
+                        "cantidad": 1,
+                        "precio": $("#txtCostoTraspaso").val(),
+                        "descuento": 0,
+                        "fechaInico": tools.getCurrentDate(),
+                        "horaInicio": tools.getCurrentTime(),
+                        "fechaFin": tools.getCurrentDate(),
+                        "horaFin": tools.getCurrentTime(),
+                        "procedencia": 2,
+                    });
+
+                    listarDetalleVenta();
+                }
+
             }
         </script>
     </body>

@@ -128,6 +128,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "mensaje" => $venta
             ));
         }
+    } else if ($opcion == 8){
+        $ventas = VentaAdo::getVentaByEmpleado($_GET["idEmpleado"]);
+        if (is_array($ventas)) {
+            $datos["estado"] = 1;
+            $datos["ventas"] = $ventas;
+            print json_encode($datos);
+        } else {
+            print json_encode(array(
+                "estado" => 2,
+                "mensaje" => $ventas
+            ));
+        }
+    } else if($opcion == 9){
+        $asistencias = VentaAdo::getAsistenciaByEmpleado($_GET["idEmpleado"]);
+        if (is_array($asistencias)) {
+            $datos["estado"] = 1;
+            $datos["asistencias"] = $asistencias;
+            print json_encode($datos);
+        } else {
+            print json_encode(array(
+                "estado" => 2,
+                "mensaje" => $asistencias
+            ));
+        }
     }
     exit();
 }

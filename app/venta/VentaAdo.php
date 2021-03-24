@@ -199,7 +199,7 @@ class VentaAdo
                 }
             } else {
                 foreach ($body['lista'] as $result) {
-                    $total_venta += ($result['cantidad'] * ($result['precio']-$result['descuento']));
+                    $total_venta += ($result['cantidad'] * ($result['precio'] - $result['descuento']));
                 }
             }
 
@@ -730,6 +730,77 @@ class VentaAdo
             }
         } catch (Exception $ex) {
             Database::getInstance()->getDb()->rollback();
+            return $ex->getMessage();
+        }
+    }
+
+    public static function getVentaByEmpleado($idEmpleado)
+    {
+
+        try {
+            $array = array();
+            $venta = Database::getInstance()->getDb()->prepare("SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,
+            v.tipo,v.forma,v.numero,v.estado, e.apellidos,e.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total 
+            from ventatb as v 
+            INNER JOIN empleadotb as e on e.idEmpleado = v.vendedor 
+            INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento 
+            INNER JOIN detalleventatb as d on d.idVenta = v.idVenta 
+            WHERE v.vendedor = ?
+            GROUP BY v.idVenta ORDER BY v.fecha DESC,v.hora");
+            $venta->bindValue(1, $idEmpleado, PDO::PARAM_STR);
+            $venta->execute();
+            $count = 0;
+            while ($rowv = $venta->fetch()) {
+                $count++;
+                array_push($array, array(
+                    "id" => $count,
+                    "idVenta" => $rowv["idVenta"],
+                    "fecha" => $rowv["fecha"],
+                    "hora" => $rowv["hora"],
+                    "nombre" => $rowv["nombre"],
+                    "serie" => $rowv["serie"],
+                    "numeracion" => $rowv["numeracion"],
+                    "tipo" => $rowv["tipo"],
+                    "forma" => $rowv["forma"],
+                    "numero" => $rowv["numero"],
+                    "estado" => $rowv["estado"],
+                    "total" => $rowv["total"]
+                ));
+            }
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function getAsistenciaByEmpleado($idEmpleado)
+    {
+        try {
+            $array = array();
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT fechaApertura,
+                     fechaCierre,
+                     horaApertura,
+                     horaCierre,
+                     estado
+                     FROM asistenciatb WHERE idPersona = ?");
+            $comando->bindParam(1, $idEmpleado, PDO::PARAM_STR);
+            $comando->execute();
+
+            $count = 0;
+            while ($row = $comando->fetch()) {
+                $count++;
+                array_push($array, array(
+                    "id" => $count,
+                    "fechaApertura" => $row["fechaApertura"],
+                    "fechaCierre" => $row["fechaCierre"],
+                    "horaApertura" => $row["horaApertura"],
+                    "horaCierre" => $row["horaCierre"],
+                    "estado" => $row["estado"]
+                ));
+            }
+            return $array;
+        } catch (Exception $ex) {
             return $ex->getMessage();
         }
     }

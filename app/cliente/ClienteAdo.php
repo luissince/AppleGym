@@ -109,6 +109,89 @@ class ClienteAdo
         }
     }
 
+    public static function getClientesTraspaso()
+    {
+
+        try {
+            $array = array();
+
+            $clientes = Database::getInstance()->getDb()->prepare("SELECT * 
+            FROM clientetb AS c
+            INNER JOIN membresiatb AS m ON m.idCliente = c.idCliente
+            WHERE m.fechafin > NOW()");
+            $clientes->execute();
+
+            $membresias = Database::getInstance()->getDb()->prepare("SELECT * FROM  membresiatb WHERE idCliente = ? AND estado = 1");
+
+            // $deudas = Database::getInstance()->getDb()->prepare("SELECT * FROM ventatb as v INNER JOIN ventacreditotb as vc on v.idVenta = vc.idVenta
+            //  WHERE v.estado <> 3 AND vc.estado = 0 AND v.cliente = ?");
+
+            $arrayClientes = array();
+            $count = 0;
+            while ($row = $clientes->fetch()) {
+
+                $count++;
+                array_push($arrayClientes, array(
+                    "id" => $count,
+                    "idCliente" => $row["idCliente"],
+                    "dni" => $row["dni"],
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],
+                    "email" => $row["email"],
+                    "celular" => $row["celular"],
+                    "direccion" => $row["direccion"],
+                    "predeterminado" => $row["predeterminado"],
+                    "descripcion" => $row["descripcion"]
+                    // "membresia" => $total_membresias,
+                    // "deudas" => $total_deudas
+                ));
+            }
+
+            array_push($array, $arrayClientes);
+            return $array;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public static function getDataCLientesTraspaso($dni)
+    {
+        try {
+            $arrayMembresias = array();
+
+            $membresias = Database::getInstance()->getDb()->prepare("SELECT m.idMembresia, p.nombre, m.idCliente, m.idVenta, m.fechaInicio, m.fechaFin, DATEDIFF(m.fechaFin,CURDATE()) AS Dias, m.tipoMembresia, m.cantidad, m.precio 
+            FROM  membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan
+            WHERE idCliente = ? ");
+            $membresias->bindValue(1, $dni, PDO::PARAM_STR);
+            $membresias->execute();
+
+            $count = 0;
+            while ($row = $membresias->fetch()) {
+
+                $count++;
+                array_push($arrayMembresias, array(
+                    "id" => $count,
+                    "idMembresia" => $row["idMembresia"],
+                    "plan" => $row["nombre"],
+                    "idCliente" => $row["idCliente"],
+                    "idVenta" => $row["idVenta"],
+                    "fechaInicio" => $row["fechaInicio"],
+                    "fechaFin" => $row["fechaFin"],
+                    "dias" => $row["Dias"],
+                    "tipoMembresia" => $row["tipoMembresia"],
+                    "cantidad" => $row["cantidad"],
+                    "precio" => $row["precio"]
+                    // "membresia" => $total_membresias,
+                    // "deudas" => $total_deudas
+                ));
+            }
+
+            return $arrayMembresias;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public static function getClientById($idCliente)
     {
         $consulta = "SELECT * FROM clientetb WHERE idCliente = ?";
@@ -119,7 +202,7 @@ class ClienteAdo
         } catch (Exception $e) {
             return $e->getMessage();
         }
-    } 
+    }
 
     public static function getMembresiaMarcarAsistencia($buscar)
     {
@@ -155,7 +238,7 @@ class ClienteAdo
                     "fechaFin" => $row["fechaFin"],
                     "membresia" => $row["membresia"],
                 ));
-            } 
+            }
 
             $resultAsistencia = "";
             $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1");
@@ -261,7 +344,7 @@ class ClienteAdo
         } catch (Exception $e) {
             return $e->getMessage();
         }
-    }   
+    }
 
     public static function insert($body)
     {

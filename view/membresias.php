@@ -218,6 +218,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 for (let membresia of result.membresias) {
                                     let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : membresia.membresia == 2 ? '<span class="badge badge-pill badge-warning">Por Vencer</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
                                     let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">PAGADO</span>' : '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
+                                    let btnOpcionTraspaso =
+                                        '<button class="btn btn-success id="opciones" >' +
+                                        '<i class="fa fa-sign-in"></i> Traspaso' +
+                                        '</button>';
 
                                     tbLista.append('<tr role="row" class="odd">' +
                                         '<td>' + membresia.id + '</td>' +
