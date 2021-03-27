@@ -61,35 +61,33 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="clave">Clave: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                            <input id="clave" type="text" class="form-control" placeholder="Ingrese la clave">
+                                                            <label for="txtClave">Clave: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="txtClave" type="text" class="form-control" placeholder="Ingrese la clave">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="claveAlterna">Clave Alterna: </label>
-                                                            <input id="claveAlterna" type="text" class="form-control" placeholder="Ingrese la clave alterna">
+                                                            <label for="txtClaveAlterna">Clave Alterna: </label>
+                                                            <input id="txtClaveAlterna" type="text" class="form-control" placeholder="Ingrese la clave alterna">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="nombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                            <input id="nombre" type="text" class="form-control" placeholder="Ingrese el nombre del producto">
+                                                            <label for="txtNombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="txtNombre" type="text" class="form-control" placeholder="Ingrese el nombre del producto">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="categoria">Categoria: </label>
-                                                            <select id="categoria" class="form-control">
-                                                                <option value="Golosinas">Golosinas</option>
-                                                                <option value="Bebidas">Bebidas</option>
-                                                                <option value="Snacks">Snacks</option>
+                                                            <label for="cbCategoria">Categoria: </label>
+                                                            <select id="cbCategoria" class="form-control">
+                                                                <option value="">- Selecciona -</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -111,24 +109,24 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="costo">Costo: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                            <input id="costo" type="text" class="form-control" placeholder="Ingrese el costo del producto">
+                                                            <label for="txtCosto">Costo: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="txtCosto" type="text" class="form-control" placeholder="Ingrese el costo del producto">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="precio">Precio: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                            <input id="precio" type="text" class="form-control" placeholder="Ingrese el precio del producto">
+                                                            <label for="txtPrecio">Precio: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                            <input id="txtPrecio" type="text" class="form-control" placeholder="Ingrese el precio del producto">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label for="estado">Estado: </label>
-                                                            <select id="estado" class="form-control">
+                                                            <label for="cbEstado">Estado: </label>
+                                                            <select id="cbEstado" class="form-control">
                                                                 <option value="Activo">Activo</option>
                                                                 <option value="Inactivo">Inactivo</option>
                                                             </select>
@@ -298,24 +296,24 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function modalProductosEventos() {
 
-                $("#costo").keypress(function() {
+                $("#txtCosto").keypress(function() {
                     var key = window.Event ? event.which : event.keyCode;
                     var c = String.fromCharCode(key);
                     if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
                         event.preventDefault();
                     }
-                    if (c == '.' && $("#costo").val().includes(".")) {
+                    if (c == '.' && $("#txtCosto").val().includes(".")) {
                         event.preventDefault();
                     }
                 });
 
-                $("#precio").keypress(function() {
+                $("#txtPrecio").keypress(function() {
                     var key = window.Event ? event.which : event.keyCode;
                     var c = String.fromCharCode(key);
                     if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
                         event.preventDefault();
                     }
-                    if (c == '.' && $("#precio").val().includes(".")) {
+                    if (c == '.' && $("#txtPrecio").val().includes(".")) {
                         event.preventDefault();
                     }
                 });
@@ -380,7 +378,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     url: "../app/productos/ProductoController.php",
                     method: "GET",
                     data: {
-                        "type":"lista",
+                        "type": "lista",
                         "page": paginacion,
                         "datos": text
                     },
@@ -452,30 +450,41 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     url: "../app/productos/ProductoController.php",
                     method: "GET",
                     data: {
-                        "type":"getregistro"
+                        "type": "getregistro"
                     },
                     beforeSend: function() {
                         $("#lblTextOverlayCategoria").html("Cargando información...");
                         $("#divOverlayCategoria").removeClass("d-none");
+                        $("#cbCategoria").empty();
                     },
                     success: function(result) {
-                        console.log(result)
+                        if (result.estado == 1) {
+                            $("#cbCategoria").append('<option value="">- Seleccione -</option>');
+                            for (let categoria of result.categorias) {
+                                $("#cbCategoria").append('<option value="' + categoria.idCategoria + '">' + categoria.nombre + '</option>');
+                            }
+                            $("#divOverlayCategoria").addClass("d-none");
+                        } else {
+                            $("#lblTextOverlayCategoria").html(result.mensaje);
+                        }
                     },
                     error: function(error) {
-                        console.log(error.responseText)
+                        $("#lblTextOverlayCategoria").html(error.responseText);
                     }
                 });
             }
 
             function crudProducto() {
-                if ($("#clave").val().trim() == '') {
-                    $("#clave").focus();
-                } else if ($("#nombre").val().trim() == '') {
-                    $("#nombre").focus();
-                } else if (!tools.isNumeric($("#costo").val().trim())) {
-                    $("#costo").focus();
-                } else if (!tools.isNumeric($("#precio").val().trim())) {
-                    $("#precio").focus();
+                if ($("#txtClave").val().trim() == '') {
+                    $("#txtClave").focus();
+                } else if ($("#txtNombre").val().trim() == '') {
+                    $("#txtNombre").focus();
+                } else if ($("#cbCategoria").val() == '') {
+                    $("#cbCategoria").focus();
+                } else if (!tools.isNumeric($("#txtCosto").val().trim())) {
+                    $("#txtCosto").focus();
+                } else if (!tools.isNumeric($("#txtPrecio").val().trim())) {
+                    $("#txtPrecio").focus();
                 } else {
                     tools.ModalDialog('Producto', '¿Está seguro de continuar?', 'question', function(result) {
                         if (result) {
@@ -485,17 +494,17 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 accepts: "application/json",
                                 contentType: "application/json",
                                 data: JSON.stringify({
-                                    "type":"crud",
+                                    "type": "crud",
                                     "idProducto": idProducto,
-                                    "clave": $("#clave").val().trim(),
-                                    "claveAlterna": $("#claveAlterna").val().trim(),
-                                    "nombre": $("#nombre").val().trim(),
-                                    "categoria": $("#categoria").val(),
+                                    "clave": $("#txtClave").val().trim(),
+                                    "claveAlterna": $("#txtClaveAlterna").val().trim(),
+                                    "nombre": $("#txtNombre").val().trim(),
+                                    "categoria": $("#cbCategoria").val(),
                                     "impuesto": $("#impuesto").val(),
                                     "cantidad": 0,
-                                    "costo": parseFloat($("#costo").val()),
-                                    "precio": parseFloat($("#precio").val()),
-                                    "estado": $("#estado").val(),
+                                    "costo": parseFloat($("#txtCosto").val()),
+                                    "precio": parseFloat($("#txtPrecio").val()),
+                                    "estado": $("#cbEstado").val(),
                                 }),
                                 beforeSend: function() {
                                     clearComponents()
@@ -530,30 +539,39 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     url: "../app/productos/ProductoController.php",
                     method: "GET",
                     data: {
-                        "type":"getbyid",
+                        "type": "getbyid",
                         "idProducto": id
                     },
                     beforeSend: function() {
-                        tools.AlertInfo("Producto", "Cargando datos..");
+                        $("#lblTextOverlayCategoria").html("Cargando información...");
+                        $("#divOverlayCategoria").removeClass("d-none");
+                        $("#cbCategoria").empty();
                     },
                     success: function(result) {
                         if (result.estado == 1) {
+                            $("#cbCategoria").append('<option value="">- Seleccione -</option>');
+                            for (let categoria of result.categorias) {
+                                $("#cbCategoria").append('<option value="' + categoria.idCategoria + '">' + categoria.nombre + '</option>');
+                            }
+
                             idProducto = id;
-                            $("#clave").val(result.producto.clave)
-                            $("#claveAlterna").val(result.producto.claveAlterna)
-                            $("#nombre").val(result.producto.nombre)
-                            $("#categoria").val(result.producto.categoria)
+                            $("#txtClave").val(result.producto.clave)
+                            $("#txtClaveAlterna").val(result.producto.claveAlterna)
+                            $("#txtNombre").val(result.producto.nombre)
+                            $("#cbCategoria").val(result.producto.idCategoria)
                             $("#impuesto").val(result.producto.impuesto)
-                            $("#costo").val(result.producto.costo)
-                            $("#precio").val(result.producto.precio)
-                            $("#estado").val(result.producto.estado)
-                            tools.AlertSuccess("Producto", "Se cargo correctamento los datos.");
+                            $("#txtCosto").val(result.producto.costo)
+                            $("#txtPrecio").val(result.producto.precio)
+                            $("#cbEstado").val(result.producto.estado)
+                            $("#divOverlayCategoria").addClass("d-none");
                         } else {
-                            tools.AlertWarning("Producto", result.mensaje);
+                            $("#cbCategoria").append('<option value="">- Seleccione -</option>');
+                            $("#lblTextOverlayCategoria").html(result.mensaje);
                         }
                     },
                     error: function(error) {
-                        tools.AlertError("Producto", error.responseText);
+                        $("#cbCategoria").append('<option value="">- Seleccione -</option>');
+                        $("#lblTextOverlayCategoria").html(error.responseText);
                     }
                 });
             }
@@ -567,7 +585,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             accepts: "application/json",
                             contentType: "application/json",
                             data: JSON.stringify({
-                                "type":"delete",
+                                "type": "delete",
                                 "idProducto": idProducto
                             }),
                             beforeSend: function() {
@@ -593,14 +611,15 @@ if (!isset($_SESSION["IdEmpleado"])) {
             function clearComponents() {
                 $("#modalCliente").modal("hide");
                 $("#titulo-modal").empty();
-                $("#clave").val("")
-                $("#claveAlterna").val("")
-                $("#nombre").val("")
-                $("#categoria").val("Golosinas")
+                $("#txtClave").val("")
+                $("#txtClaveAlterna").val("")
+                $("#txtNombre").val("")
                 $("#impuesto").val("Ninguno")
-                $("#costo").val("")
-                $("#precio").val("")
-                $("#estado").val("Activo")
+                $("#txtCosto").val("")
+                $("#txtPrecio").val("")
+                $("#cbEstado").val("Activo")
+                $("#cbCategoria").empty();
+                $("#cbCategoria").append('<option value="">- Seleccione -</option>');
                 idProducto = 0;
             }
         </script>

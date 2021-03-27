@@ -139,11 +139,11 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#btnSiguiente").click(function() {
+                $("#btnSiguiente").click(function() {                  
                     if (!state) {
                         if (paginacion < totalPaginacion) {
                             paginacion++;
-                            onEventPaginacion();
+                            onEventPaginacion();                         
                         }
                     }
                 });
@@ -170,7 +170,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     case 1:
                         loadTableMembresias(1, $("#txtSearch").val().trim(), 0);
                         break;
-                    case 1:
+                    case 2:
                         loadTableMembresias(2, "", $("#cbMembresia").val());
                         break;
                 }
@@ -184,7 +184,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 }
             }
 
-            function loadTableMembresias(opcion, buscar, membresia) {
+            function loadTableMembresias(opcion, buscar, membresia) {               
                 $.ajax({
                     url: "../app/membresias/Obtener_Membresias.php",
                     method: "GET",
@@ -241,6 +241,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             tbLista.append(
                                 '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                                 result.mensaje + '</p></td></tr>');
+                            $("#lblPaginaActual").html(0);
+                            $("#lblPaginaSiguiente").html(0);
                             state = false;
                         }
                     },
@@ -249,6 +251,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         tbLista.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
+                        $("#lblPaginaActual").html(0);
+                        $("#lblPaginaSiguiente").html(0);
                         state = false;
                     }
                 });

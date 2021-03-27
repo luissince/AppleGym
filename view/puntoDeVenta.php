@@ -253,7 +253,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <table class="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>                        
+                                                            <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">
                                                                 Cliente</th>
                                                             <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Celular
@@ -592,8 +592,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <div class="form-group text-left">
                                     <button class="btn btn-success" type="button" id="btnPlan"><i class="fa fa-file"></i>
                                         Planes</button>
-                                    <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-plus"></i>
-                                        Productos</button>
+                                    <!-- <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-plus"></i>
+                                        Productos</button> -->
                                 </div>
                                 <div class="form-group d-flex">
                                     <div class="input-group">
@@ -615,7 +615,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th class="sorting">Nombre</th>
                                                 <th class="sorting_asc">Cantidad</th>
                                                 <th class="sorting">Precio Plan ( - Descuento)</th>
-                                                <th class="sorting">Precio</th>                                  
+                                                <th class="sorting">Precio</th>
                                                 <th class="sorting">Importe</th>
                                                 <th class="sorting">Quitar</th>
                                             </tr>
@@ -741,11 +741,11 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         event.preventDefault();
                     }
                 });
-                
+
                 $("#descuento").keypress(function() {
                     var key = window.Event ? event.which : event.keyCode;
                     var c = String.fromCharCode(key);
-                    if ((c < '0' || c > '9') && (c != '\b')&& (c != '.')) {
+                    if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
                         event.preventDefault();
                     }
                     if (c == '.' && $("#descuento").val().includes(".")) {
@@ -766,7 +766,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 });
 
-                $("#modalLista").on('shown.bs.modal', function() {            
+                $("#modalLista").on('shown.bs.modal', function() {
                     listaClientes($("#txtSearchLista").val());
                 });
 
@@ -898,7 +898,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (!validateDatelleVenta($("#plan").val())) {
 
                             let cantidad = parseInt($("#cantidad").val());
-                            let descuento = !tools.isNumeric($("#descuento").val())?0:parseFloat($("#descuento").val());
+                            let descuento = !tools.isNumeric($("#descuento").val()) ? 0 : parseFloat($("#descuento").val());
 
                             let fechaInicio = $("#inicio").is(':checked') ? $("#fechainicio").val() : tools.getCurrentDate();
                             let fechaFin = fechaInicio;
@@ -937,7 +937,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 //-----------------------------------
                 $("#modalProductos").on('shown.bs.modal', function() {
                     listaProductos($("#txtSearProducto").val())
-                })
+                });
+
+                $("#txtSearProducto").keyup(function() {
+                    if ($("#txtSearProducto").val().trim() != '') {
+                        listaProductos($("#txtSearProducto").val().trim());
+                    }
+                });
 
                 $("#btnProductos").click(function() {
                     $("#modalProductos").modal("show")
@@ -1208,12 +1214,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 total = 0;
                 let suma = 0;
                 for (let detalle of listaVenta) {
-                    suma = (detalle.precio-detalle.descuento) * detalle.cantidad;
+                    suma = (detalle.precio - detalle.descuento) * detalle.cantidad;
                     $("#tbLista").append('<tr>' +
                         '<td>' + detalle.nombre + '</td>' +
                         '<td>' + detalle.cantidad + '</td>' +
                         '<td>' + tools.formatMoney(detalle.precio) + " ( - " + tools.formatMoney(detalle.descuento) + ")" + '</td>' +
-                        '<td>' + tools.formatMoney(detalle.precio-detalle.descuento) + '</td>' +
+                        '<td>' + tools.formatMoney(detalle.precio - detalle.descuento) + '</td>' +
                         // '<td>'+ tools.formatMoney(detalle.descuento) +'</td>' +
                         '<td>' + tools.formatMoney(suma) + '</td>' +
                         '<td>' +
@@ -1367,40 +1373,47 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function listaProductos(text) {
                 $.ajax({
-                    url: "../app/productos/Obtener_Productos.php",
-                    method: "",
+                    url: "../app/productos/ProductoController.php",
+                    method: "GET",
                     data: {
-                        opcion: 2,
-                        page: 1,
-                        datos: text
+                        "type": "lista",
+                        "page": 1,
+                        "datos": text
                     },
                     beforeSend: function() {
                         // state = true;
                         tbListaProductos.empty();
                         tbListaProductos.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><img src="./images/loading.gif" width="100"/>p>Cargando información...</p></td></tr>'
                         );
                     },
                     success: function(result) {
+                        tbListaProductos.empty();
                         let data = result;
                         if (data.estado == 1) {
-                            tbListaProductos.empty();
-                            for (let producto of data.productos) {
-                                tbListaProductos.append('<tr role="row" class="odd">' +
-                                    '<td class="text-center">' + producto.id + '</td>' +
-                                    '<td>' + producto.clave + '<br>' + producto.nombre + '</td>' +
-                                    '<td>' + producto.categoria + '</td>' +
-                                    '<td class="text-right">' + tools.formatMoney(producto.cantidad) + '</td>' +
-                                    '<td class="text-right">' + tools.formatMoney(producto.precio) + '</td>' +
-                                    '</tr>');
+
+                            if (data.productos.length == 0) {
+                                tbListaProductos.append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center">No datos para mostrar.<p></p></td></tr>'
+                                );
+                            } else {
+                                for (let producto of data.productos) {
+                                    tbListaProductos.append('<tr role="row" class="odd">' +
+                                        '<td class="text-center">' + producto.id + '</td>' +
+                                        '<td>' + producto.clave + '<br>' + producto.nombre + '</td>' +
+                                        '<td>' + producto.categoria + '</td>' +
+                                        '<td class="text-right">' + tools.formatMoney(producto.cantidad) + '</td>' +
+                                        '<td class="text-right">' + tools.formatMoney(producto.precio) + '</td>' +
+                                        '</tr>');
+                                }
+                                // totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
+                                //     10))));
+                                // $("#lblPaginaActual").html(paginacion);
+                                // $("#lblPaginaSiguiente").html(totalPaginacion);
+                                // state = false;
                             }
-                            // totalPaginacion = parseInt(Math.ceil((parseFloat(data.total) / parseInt(
-                            //     10))));
-                            // $("#lblPaginaActual").html(paginacion);
-                            // $("#lblPaginaSiguiente").html(totalPaginacion);
-                            // state = false;
+
                         } else {
-                            tbListaProductos.empty();
                             tbListaProductos.append(
                                 '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' +
                                 data.mensaje + '</p></td></tr>');
@@ -1492,7 +1505,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#Membresia").val("");
                 $("#cantidad").val("1");
                 $("#descuento").val("0");
-                
+
                 idPlan = "";
                 nombrePlan = "";
                 precioPlan = "";

@@ -114,11 +114,21 @@ class CategoriaAdo
     {
         try {
             Database::getInstance()->getDb()->beginTransaction();
-            $cmdValidate = Database::getInstance()->getDb()->prepare("DELETE FROM tabla_categoria WHERE idCategoria = ?");
-            $cmdValidate->bindValue(1, $idCategoria, PDO::PARAM_STR);
-            $cmdValidate->execute();
-            Database::getInstance()->getDb()->commit();
-            return "deleted";
+
+            $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idCategoria  = ?");
+            $cmdValidate->bindValue(1, $idCategoria, PDO::PARAM_INT);
+            if($cmdValidate->fetch()){
+                Database::getInstance()->getDb()->rollback();
+                return "producto";
+            }else{
+                $cmdValidate = Database::getInstance()->getDb()->prepare("DELETE FROM tabla_categoria WHERE idCategoria = ?");
+                $cmdValidate->bindValue(1, $idCategoria, PDO::PARAM_INT);
+                $cmdValidate->execute();
+                Database::getInstance()->getDb()->commit();
+                return "deleted";
+            }
+
+            
         } catch (Exception $ex) {
             Database::getInstance()->getDb()->rollback();
             return $ex->getMessage();

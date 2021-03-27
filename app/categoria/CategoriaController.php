@@ -76,6 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "estado" => 1,
                 "mensaje" => "Se eliminó correctamente la categoría.",
             ));
+        } else if ($result == "producto") {
+            print json_encode(array(
+                "estado" => 2,
+                "mensaje" => "No se puede eliminar la categoría porque esta ligada a un producto.",
+            ));
         } else {
             print json_encode(array(
                 "estado" => 0,

@@ -97,7 +97,7 @@ class ProductoAdo
                         clave,
                         claveAlterna,
                         nombre,
-                        categoria,
+                        idCategoria,
                         impuesto,
                         cantidad,
                         costo,
@@ -108,7 +108,7 @@ class ProductoAdo
                         $sentencia->bindParam(2, $body['clave'], PDO::PARAM_STR);
                         $sentencia->bindParam(3, $body['claveAlterna'], PDO::PARAM_STR);
                         $sentencia->bindParam(4, $body['nombre'], PDO::PARAM_STR);
-                        $sentencia->bindParam(5, $body['categoria'], PDO::PARAM_STR);
+                        $sentencia->bindParam(5, $body['categoria'], PDO::PARAM_INT);
                         $sentencia->bindParam(6, $body['impuesto'], PDO::PARAM_STR);
                         $sentencia->bindParam(7, $body['cantidad'], PDO::PARAM_STR);
                         $sentencia->bindParam(8, $body['costo'], PDO::PARAM_STR);
@@ -167,7 +167,10 @@ class ProductoAdo
         try {
             $array = array();
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE clave LIKE concat(?,'%')  OR nombre LIKE concat(?,'%') LIMIT ?,?");
+            $comando = Database::getInstance()->getDb()->prepare("SELECT p.idProducto ,p.clave,p.claveAlterna,p.nombre,p.impuesto,p.cantidad,p.costo,p.precio,p.estado,t.nombre as categoria FROM productotb as p
+            LEFT JOIN tabla_categoria AS t ON t.idCategoria = p.idCategoria
+            WHERE p.clave LIKE concat(?,'%') OR p.nombre LIKE concat(?,'%') 
+            LIMIT ?,?");
             $comando->bindValue(1, $search, PDO::PARAM_STR);
             $comando->bindValue(2, $search, PDO::PARAM_STR);
             $comando->bindValue(3, $x, PDO::PARAM_INT);
@@ -192,7 +195,9 @@ class ProductoAdo
                 ));
             }
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM productotb WHERE clave LIKE concat(?,'%')  OR nombre LIKE concat(?,'%')");
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM productotb as p
+            LEFT JOIN tabla_categoria AS t ON t.idCategoria = p.idCategoria
+            WHERE p.clave LIKE concat(?,'%')  OR p.nombre LIKE concat(?,'%')");
             $comando->bindValue(1, $search);
             $comando->bindValue(2, $search);
             $comando->execute();
@@ -208,11 +213,27 @@ class ProductoAdo
     public static function getProductoById($idProducto)
     {
         try {
-            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto = ?");
-            $comando->execute(array($idProducto['idProducto']));
-            return $comando->fetchObject();
-        } catch (PDOException $e) {
-            return false;
+            $array = array();
+
+            $cmdProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto = ?");
+            $cmdProducto->execute(array($idProducto));
+            $producto = $cmdProducto->fetchObject();
+            if (!$producto) {
+                throw new Exception("Producto no encontrado, intente nuevamente.");
+            }
+
+            $cmdCategoria = Database::getInstance()->getDb()->prepare("SELECT * FROM tabla_categoria");
+            $cmdCategoria->execute();
+            $arrayCategoria = array();
+            while ($row = $cmdCategoria->fetch()) {
+                array_push($arrayCategoria, $row);
+            }
+
+            array_push($array, $producto, $arrayCategoria);
+
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
     }
 

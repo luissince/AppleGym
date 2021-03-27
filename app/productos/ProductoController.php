@@ -25,11 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             ));
         }
     } else if ($_GET["type"] == "getbyid") {
-        $producto = ProductoAdo::getProductoById($_GET["idProducto"]);
-        if (is_object($producto)) {
+        $result = ProductoAdo::getProductoById($_GET["idProducto"]);
+        if (is_array($result)) {
             print json_encode(array(
                 "estado" => 1,
-                "producto" => $producto
+                "producto" => $result[0],
+                "categorias"=>$result[1]
             ));
         } else {
             print json_encode(array(
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         if (is_array($result)) {
             print json_encode(array(
                 "estado" => 1,
-                "data" => $result
+                "categorias" => $result[0]
             ));
         } else {
             print json_encode(array(
@@ -55,26 +56,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $body = json_decode(file_get_contents("php://input"), true);
 
     if ($body["type"] == "crud") {
-        $retorno = ProductoAdo::crudProducto($body);
-        if ($retorno == "inserted") {
+        $result = ProductoAdo::crudProducto($body);
+        if ($result == "inserted") {
             echo json_encode(array("estado" => 1, "mensaje" => "Se registró correctamente el producto"));
-        } else if ($retorno == "updated") {
+        } else if ($result == "updated") {
             echo json_encode(array("estado" => 1, "mensaje" => "Se actualizó correctamente el producto"));
-        } else if ($retorno == "duplicate") {
+        } else if ($result == "duplicate") {
             echo json_encode(array("estado" => 3, "mensaje" => "Ya existe un producto con la misma clave"));
-        } else if ($retorno == "duplicatename") {
+        } else if ($result == "duplicatename") {
             echo json_encode(array("estado" => 4, "mensaje" => "Ya existe un producto con el mismo nombre"));
         } else {
-            echo json_encode(array("estado" => 0, "mensaje" => $retorno));
+            echo json_encode(array("estado" => 0, "mensaje" => $result));
         }
     } else if ($body["type"] == "delete") {
-        $retorno = ProductoAdo::deleteProducto($body);
-        if ($retorno == "deleted") {
+        $result = ProductoAdo::deleteProducto($body);
+        if ($result == "deleted") {
             print json_encode(array("estado" => 1, "mensaje" => "Se eliminó correctamente"));
-        } elseif ($retorno == "registrado") {
+        } elseif ($result == "registrado") {
             print json_encode(array("estado" => 2, "mensaje" => "No se puede eliminar el producto porque está ligada a una venta"));
         } else {
-            print json_encode(array("estado" => 3, "mensaje" => $retorno));
+            print json_encode(array("estado" => 3, "mensaje" => $result));
         }
     }
 }
