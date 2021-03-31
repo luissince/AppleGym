@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         } else   if ($result == "name") {
             print json_encode(array(
                 "estado" => 2,
-                "mensaje" => "Hay un categoría con el mismo nombre.",
+                "mensaje" => "Hay una categoría con el mismo nombre.",
             ));
         } else {
             print json_encode(array(
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         } else if ($result == "producto") {
             print json_encode(array(
                 "estado" => 2,
-                "mensaje" => "No se puede eliminar la categoría porque esta ligada a un producto.",
+                "mensaje" => "No se puede eliminar la categoría porque esta ligado a un producto.",
             ));
         } else {
             print json_encode(array(

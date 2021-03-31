@@ -29,6 +29,7 @@ class MembresiaAdo
             m.fechaFin, 
             CASE 
             /*WHEN CAST(PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM NOW()), EXTRACT(YEAR_MONTH FROM m.fechaFin)) AS INT) < 0 THEN 1*/
+            WHEN m.estado = 0 THEN 3
             WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 1
             WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 THEN 2
             ELSE 0 END AS 'membresia', 
@@ -57,34 +58,36 @@ class MembresiaAdo
             ? = 1 AND CONCAT(v.serie,'-',v.numeracion) = ?
             OR
            /* ? = 2 AND ? = 1 AND CAST(PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM NOW()), EXTRACT(YEAR_MONTH FROM m.fechaFin)) AS INT) < 0*/
-            ? = 2 AND ? = 1 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 
+            ? = 2 AND ? = 1 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 AND m.estado = 1
             OR
-            ? = 2 AND ? = 2 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10
+            ? = 2 AND ? = 2 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10 AND m.estado = 1
             OR
-            ? = 2 AND ? = 3 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0
+            ? = 2 AND ? = 3 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 AND m.estado = 1
+            OR
+            ? = 2 AND ? = 4 AND m.estado = 0
             GROUP BY m.idMembresia
             LIMIT ?,?");
-            $membresia->bindParam(1, $opcion, PDO::PARAM_INT);//0
+            $membresia->bindParam(1, $opcion, PDO::PARAM_INT); //0
 
-            $membresia->bindParam(2, $opcion, PDO::PARAM_INT);//dni
+            $membresia->bindParam(2, $opcion, PDO::PARAM_INT); //dni
             $membresia->bindParam(3, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(4, $opcion, PDO::PARAM_INT);//apellidos
+            $membresia->bindParam(4, $opcion, PDO::PARAM_INT); //apellidos
             $membresia->bindParam(5, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(6, $opcion, PDO::PARAM_INT);//nombres
+            $membresia->bindParam(6, $opcion, PDO::PARAM_INT); //nombres
             $membresia->bindParam(7, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(8, $opcion, PDO::PARAM_INT);//apellidos y nombres
+            $membresia->bindParam(8, $opcion, PDO::PARAM_INT); //apellidos y nombres
             $membresia->bindParam(9, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(10, $opcion, PDO::PARAM_INT);//serie
+            $membresia->bindParam(10, $opcion, PDO::PARAM_INT); //serie
             $membresia->bindParam(11, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(12, $opcion, PDO::PARAM_INT);//numeracion
+            $membresia->bindParam(12, $opcion, PDO::PARAM_INT); //numeracion
             $membresia->bindParam(13, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(14, $opcion, PDO::PARAM_INT);//serie y numeracion
+            $membresia->bindParam(14, $opcion, PDO::PARAM_INT); //serie y numeracion
             $membresia->bindParam(15, $buscar, PDO::PARAM_STR);
 
             $membresia->bindParam(16, $opcion, PDO::PARAM_INT);
@@ -96,8 +99,11 @@ class MembresiaAdo
             $membresia->bindParam(20, $opcion, PDO::PARAM_INT);
             $membresia->bindParam(21, $tipo, PDO::PARAM_INT);
 
-            $membresia->bindParam(22, $x, PDO::PARAM_INT);
-            $membresia->bindParam(23, $y, PDO::PARAM_INT);
+            $membresia->bindParam(22, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(23, $tipo, PDO::PARAM_INT);
+
+            $membresia->bindParam(24, $x, PDO::PARAM_INT);
+            $membresia->bindParam(25, $y, PDO::PARAM_INT);
             $membresia->execute();
 
             $count = 0;
@@ -106,6 +112,7 @@ class MembresiaAdo
                 $count++;
                 array_push($array_membresias, array(
                     "id" => $count,
+                    "idMembresia" => $row["idMembresia"],
                     "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
@@ -142,23 +149,25 @@ class MembresiaAdo
             OR
             ? = 1 AND CONCAT(v.serie,'-',v.numeracion) = ?
             OR
-            ? = 2 AND ? = 1 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 
+            ? = 2 AND ? = 1 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 AND m.estado = 1
             OR
-            ? = 2 AND ? = 2 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10
+            ? = 2 AND ? = 2 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10 AND m.estado = 1
             OR
-            ? = 2 AND ? = 3 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0");
-            $total->bindParam(1, $opcion, PDO::PARAM_INT);//0
+            ? = 2 AND ? = 3 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 AND m.estado = 1
+            OR
+            ? = 2 AND ? = 4 AND m.estado = 0");
+            $total->bindParam(1, $opcion, PDO::PARAM_INT); //0
 
-            $total->bindParam(2, $opcion, PDO::PARAM_INT);//
+            $total->bindParam(2, $opcion, PDO::PARAM_INT); //
             $total->bindParam(3, $buscar, PDO::PARAM_STR);
 
-            $total->bindParam(4, $opcion, PDO::PARAM_INT);//
+            $total->bindParam(4, $opcion, PDO::PARAM_INT); //
             $total->bindParam(5, $buscar, PDO::PARAM_STR);
 
-            $total->bindParam(6, $opcion, PDO::PARAM_INT);//
+            $total->bindParam(6, $opcion, PDO::PARAM_INT); //
             $total->bindParam(7, $buscar, PDO::PARAM_STR);
 
-            $total->bindParam(8, $opcion, PDO::PARAM_INT);//
+            $total->bindParam(8, $opcion, PDO::PARAM_INT); //
             $total->bindParam(9, $buscar, PDO::PARAM_STR);
 
             $total->bindParam(10, $opcion, PDO::PARAM_INT);
@@ -178,6 +187,9 @@ class MembresiaAdo
 
             $total->bindParam(20, $opcion, PDO::PARAM_INT);
             $total->bindParam(21, $tipo, PDO::PARAM_INT);
+
+            $total->bindParam(22, $opcion, PDO::PARAM_INT);
+            $total->bindParam(23, $tipo, PDO::PARAM_INT);
 
             $total->execute();
             $resultTotal = $total->fetchColumn();
@@ -208,6 +220,7 @@ class MembresiaAdo
             m.fechaInicio, 
             m.fechaFin, 
             CASE 
+            WHEN m.estado = 0 THEN 3
             WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 1
             WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 THEN 2
             ELSE 0 END AS 'membresia', 
@@ -238,6 +251,97 @@ class MembresiaAdo
             return $array;
         } catch (PDOException $e) {
             return $e->getMessage();
+        }
+    }
+
+
+    public static function GetByIdMembresia($idMembresia)
+    {
+        try {
+            $cmdMembresia = Database::getInstance()->getDb()->prepare("SELECT 
+            m.idMembresia ,
+            m.idPlan,
+            m.idCliente,
+            m.idVenta,
+            m.fechaInicio,
+            m.horaInicio,
+            m.fechaFin,
+            m.horaFin,
+            m.tipoMembresia,
+            m.estado,
+            m.cantidad,
+            m.precio,
+            m.descuento,
+            m.congelar,
+            p.freeze
+            FROM membresiatb AS m
+            INNER JOIN plantb AS p ON p.idPlan = m.idPlan
+            WHERE idMembresia = ?");
+            $cmdMembresia->bindValue(1, $idMembresia, PDO::PARAM_STR);
+            $cmdMembresia->execute();
+            $membresia = $cmdMembresia->fetchObject();
+            if (!$membresia) {
+                throw new Exception("Producto no encontrado, intente nuevamente.");
+            }
+            return $membresia;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function AjustarMembresiaFecha($body)
+    {
+        try {
+            Database::getInstance()->getDb()->beginTransaction();
+
+            $validate =  Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb  WHERE idMembresia = ? AND estado = 0");
+            $validate->bindValue(1, $body["idMembresia"], PDO::PARAM_STR);
+            $validate->execute();
+            if ($validate->fetch()) {
+                Database::getInstance()->getDb()->rollback();
+                return 'inactivo';
+            } else {
+                $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaFin = ? WHERE idMembresia = ?");
+                $cmdMembresia->bindValue(1, $body["fechaFin"], PDO::PARAM_STR);
+                $cmdMembresia->bindValue(2, $body["idMembresia"], PDO::PARAM_STR);
+                $cmdMembresia->execute();
+
+                Database::getInstance()->getDb()->commit();
+                return "updated";
+            }
+        } catch (Exception $ex) {
+            Database::getInstance()->getDb()->rollback();
+            return $ex->getMessage();
+        }
+    }
+
+    public static function AjustarMembresiaFreeze($body)
+    {
+        try {
+            Database::getInstance()->getDb()->beginTransaction();
+
+            $validate =  Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb  WHERE idMembresia = ? AND estado = 0");
+            $validate->bindValue(1, $body["idMembresia"], PDO::PARAM_STR);
+            $validate->execute();
+            if ($validate->fetch()) {
+                Database::getInstance()->getDb()->rollback();
+                return 'inactivo';
+            } else {
+                $date = new DateTime($body["fechaFin"]);
+                $date->modify("+" . $body["dias"] . " day");
+
+                $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaFin = ?,congelar = congelar+ ? WHERE idMembresia = ?");
+                $cmdMembresia->bindValue(1, $date->format('Y-m-d'), PDO::PARAM_STR);
+                $cmdMembresia->bindValue(2, $body["dias"], PDO::PARAM_INT);
+                $cmdMembresia->bindValue(3, $body["idMembresia"], PDO::PARAM_STR);
+                $cmdMembresia->execute();
+
+                Database::getInstance()->getDb()->commit();
+                return "updated";
+            }
+        } catch (Exception $ex) {
+            Database::getInstance()->getDb()->rollback();
+            return $ex->getMessage();
         }
     }
 }

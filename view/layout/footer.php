@@ -7,11 +7,11 @@
 <script src="js/plugins/sweetalert.min.js"></script>
 <script src="js/plugins/chart.js"></script>
 <script src="js/tools.js"></script>
-
 <!-- Page specific javascripts-->
 <script src="js/plugins/moment.min.js"></script>
 <script src="js/plugins/jquery-ui.custom.min.js"></script>
 <script src="js/plugins/fullcalendar.min.js"></script>
+<script src="js/plugins/select2.min.js"></script>
 
 <script>
     function openMarcarEntrada() {
@@ -82,9 +82,10 @@
         if ($("#rbCliente").is(":checked")) {
             if ($("#txtCliente").val().trim() != '') {
                 $.ajax({
-                    url: "../app/cliente/Obtener_Cliente_Membresia.php",
+                    url: "../app/cliente/ClienteController.php",
                     method: "GET",
                     data: {
+                        "type": "climem",
                         "buscar": $("#txtCliente").val().trim()
                     },
                     beforeSend: function() {
@@ -92,7 +93,6 @@
                         $("#tbMembresiaMarcar").empty();
                     },
                     success: function(result) {
-                        console.log(result)
                         if (result.estado == 1) {
                             $("#divOverlay").addClass("d-none");
                             $("#lblDatosCompletos").html("Bienvenido " + result.cliente.apellidos + " " + result.cliente.nombres);
@@ -108,7 +108,7 @@
                                     '</tr>');
                             } else {
                                 for (let mem of result.membresias) {
-                                    let estadoMembresia = mem.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : '<span class="badge badge-pill badge-warning">Por Vencer</span>';
+                                    let estadoMembresia = mem.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : mem.membresia == 2 ? 'Por Vencer' : '<span class="badge badge-pill badge-warning">Por Vencer</span>';
                                     $("#tbMembresiaMarcar").append('<tr>' +
                                         '<td>' + mem.nombre + '</td>' +
                                         '<td>' + 'Del ' + tools.getDateForma(mem.fechaInicio) + ' al ' + tools.getDateForma(mem.fechaFin) + '</td>' +
@@ -241,9 +241,10 @@
         } else {
             if ($("#txtCliente").val().trim() != '') {
                 $.ajax({
-                    url: "../app/empleados/Obtener_Empleado_Membresia.php",
+                    url: "../app/empleados/EmpleadoController.php",
                     method: "GET",
                     data: {
+                        "type": "getmembresia",
                         "buscar": $("#txtCliente").val().trim()
                     },
                     beforeSend: function() {

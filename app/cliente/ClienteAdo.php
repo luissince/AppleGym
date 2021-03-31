@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Representa el la estructura de las Clientes
- * almacenadas en la base de datos
- */
 require '../database/DataBaseConexion.php';
 
 class ClienteAdo
@@ -22,13 +18,13 @@ class ClienteAdo
             $clientes = Database::getInstance()->getDb()->prepare("SELECT * 
             FROM clientetb 
             WHERE 
-            apellidos LIKE CONCAT(?,'%') 
+            apellidos LIKE CONCAT('%',?,'%') 
             OR 
-            nombres LIKE CONCAT(?,'%') 
+            nombres LIKE CONCAT('%',?,'%') 
             OR
-            CONCAT(apellidos,' ',nombres) LIKE CONCAT(?,'%') 
+            CONCAT(apellidos,' ',nombres) LIKE CONCAT('%',?,'%') 
             OR
-            CONCAT(nombres,' ',apellidos) LIKE CONCAT(?,'%') 
+            CONCAT(nombres,' ',apellidos) LIKE CONCAT('%',?,'%') 
             OR
             dni LIKE CONCAT(?,'%') 
             LIMIT ?,?");
@@ -109,6 +105,130 @@ class ClienteAdo
         }
     }
 
+    public static function getClientesTraspaso($idCliente)
+    {
+
+        try {
+            $array = array();
+
+            $clientes = Database::getInstance()->getDb()->prepare("SELECT * 
+            FROM clientetb AS c
+            INNER JOIN membresiatb AS m ON m.idCliente = c.idCliente
+            WHERE m.fechafin > NOW() AND c.idCliente <> ? AND m.estado = 1");
+            $clientes->bindValue(1, $idCliente, PDO::PARAM_STR);
+            $clientes->execute();
+
+            $arrayClientes = array();
+            $count = 0;
+            while ($row = $clientes->fetch()) {
+                $count++;
+                array_push($arrayClientes, array(
+                    "id" => $count,
+                    "idCliente" => $row["idCliente"],
+                    "dni" => $row["dni"],
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],
+                    "email" => $row["email"],
+                    "celular" => $row["celular"],
+                    "direccion" => $row["direccion"],
+                    "predeterminado" => $row["predeterminado"],
+                    "descripcion" => $row["descripcion"]
+                ));
+            }
+
+            array_push($array, $arrayClientes);
+            return $array;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public static function getDataCLientesTraspaso($dni, $idCliente)
+    {
+        try {
+            $array = array();
+
+            $traspaso = Database::getInstance()->getDb()->prepare("SELECT m.idMembresia,
+            p.idPlan ,
+            p.nombre,
+            m.idCliente,
+            m.idVenta,
+            m.fechaInicio,
+            m.fechaFin,
+            DATEDIFF(m.fechaFin,CURDATE()) AS Dias,
+            m.tipoMembresia, 
+            m.cantidad, 
+            m.precio 
+            FROM  membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan
+            WHERE idCliente = ?");
+            $traspaso->bindValue(1, $dni, PDO::PARAM_STR);
+            $traspaso->execute();
+
+            $count = 0;
+            $arrayTraspaso = array();
+            while ($row = $traspaso->fetch()) {
+                $count++;
+                array_push($arrayTraspaso, array(
+                    "id" => $count,
+                    "idMembresia" => $row["idMembresia"],
+                    "idPlan" => $row["idPlan"],
+                    "plan" => $row["nombre"],
+                    "idCliente" => $row["idCliente"],
+                    "idVenta" => $row["idVenta"],
+                    "fechaInicio" => $row["fechaInicio"],
+                    "fechaFin" => $row["fechaFin"],
+                    "dias" => $row["Dias"],
+                    "tipoMembresia" => $row["tipoMembresia"],
+                    "cantidad" => $row["cantidad"],
+                    "precio" => $row["precio"]
+                ));
+            }
+
+            $membresia = Database::getInstance()->getDb()->prepare("SELECT m.idMembresia,
+            p.idPlan ,
+            p.nombre,
+            m.idCliente,
+            m.idVenta,
+            m.fechaInicio,
+            m.fechaFin,
+            DATEDIFF(m.fechaFin,CURDATE()) AS Dias,
+            m.tipoMembresia, 
+            m.cantidad, 
+            m.precio 
+            FROM  membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan
+            WHERE idCliente = ? AND m.fechafin > NOW()");
+            $membresia->bindValue(1, $idCliente, PDO::PARAM_STR);
+            $membresia->execute();
+
+            $count = 0;
+            $arrayMembresias = array();
+            while ($row = $membresia->fetch()) {
+                $count++;
+                $count++;
+                array_push($arrayMembresias, array(
+                    "id" => $count,
+                    "idMembresia" => $row["idMembresia"],
+                    "idPlan" => $row["idPlan"],
+                    "plan" => $row["nombre"],
+                    "idCliente" => $row["idCliente"],
+                    "idVenta" => $row["idVenta"],
+                    "fechaInicio" => $row["fechaInicio"],
+                    "fechaFin" => $row["fechaFin"],
+                    "dias" => $row["Dias"],
+                    "tipoMembresia" => $row["tipoMembresia"],
+                    "cantidad" => $row["cantidad"],
+                    "precio" => $row["precio"]
+                ));
+            }
+
+            array_push($array, $arrayTraspaso, $arrayMembresias);
+
+            return $array;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public static function getClientById($idCliente)
     {
         $consulta = "SELECT * FROM clientetb WHERE idCliente = ?";
@@ -140,9 +260,9 @@ class ClienteAdo
             ELSE 0 END AS 'membresia'
             FROM membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan 
             WHERE 
-            m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) > 10 
+            m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) > 10 AND m.estado = 1
             OR
-            m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10");
+            m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 AND m.estado = 1");
             $comando->bindValue(1, $cliente->idCliente, PDO::PARAM_STR);
             $comando->bindValue(2, $cliente->idCliente, PDO::PARAM_STR);
             $comando->execute();
@@ -446,18 +566,34 @@ class ClienteAdo
     public static function actualizarHuella($body)
     {
         try {
-            Database::getInstance()->getDb()->beginTransaction();
-            $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM clientetb WHERE dni  = ?");
-            $cmdValidate->bindValue(1, $body["dni"], PDO::PARAM_STR);
-            $cmdValidate->execute();
-            if (!$cmdValidate->fetch()) {
-                Database::getInstance()->getDb()->rollBack();
-                return "nocliente";
+            if ($body["tipo"] == "personal") {
+                Database::getInstance()->getDb()->beginTransaction();
+                $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE numeroDocumento  = ?");
+                $cmdValidate->bindValue(1, $body["dni"], PDO::PARAM_STR);
+                $cmdValidate->execute();
+                if (!$cmdValidate->fetch()) {
+                    Database::getInstance()->getDb()->rollBack();
+                    return "nocliente";
+                } else {
+                    $cmdHuella = Database::getInstance()->getDb()->prepare("UPDATE empleadotb SET huella = ?, imageHuella = ? WHERE numeroDocumento  = ?");
+                    $cmdHuella->execute(array($body["huella"], $body["imageHuella"], $body["dni"]));
+                    Database::getInstance()->getDb()->commit();
+                    return "updated";
+                }
             } else {
-                $cmdHuella = Database::getInstance()->getDb()->prepare("UPDATE clientetb SET huella = ?, imageHuella = ? WHERE dni  = ?");
-                $cmdHuella->execute(array($body["huella"], $body["imageHuella"], $body["dni"]));
-                Database::getInstance()->getDb()->commit();
-                return "updated";
+                Database::getInstance()->getDb()->beginTransaction();
+                $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM clientetb WHERE dni  = ?");
+                $cmdValidate->bindValue(1, $body["dni"], PDO::PARAM_STR);
+                $cmdValidate->execute();
+                if (!$cmdValidate->fetch()) {
+                    Database::getInstance()->getDb()->rollBack();
+                    return "nocliente";
+                } else {
+                    $cmdHuella = Database::getInstance()->getDb()->prepare("UPDATE clientetb SET huella = ?, imageHuella = ? WHERE dni  = ?");
+                    $cmdHuella->execute(array($body["huella"], $body["imageHuella"], $body["dni"]));
+                    Database::getInstance()->getDb()->commit();
+                    return "updated";
+                }
             }
         } catch (Exception $ex) {
             Database::getInstance()->getDb()->rollBack();
@@ -465,7 +601,7 @@ class ClienteAdo
         }
     }
 
-    public static function obtenerHuella()
+    public static function obtenerHuellaClientes()
     {
         try {
             $array = array();
@@ -479,9 +615,9 @@ class ClienteAdo
                 ELSE 0 END AS 'membresia'
                 FROM membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan 
                 WHERE 
-                m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) > 10 
+                m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) > 10 AND m.estado = 1
                 OR
-                m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10");
+                m.idCliente = ? AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 AND m.estado = 1");
                 $cmdMembresias->bindValue(1, $row["idCliente"], PDO::PARAM_STR);
                 $cmdMembresias->bindValue(2, $row["idCliente"], PDO::PARAM_STR);
                 $cmdMembresias->execute();
@@ -504,6 +640,31 @@ class ClienteAdo
                     "huella" => $row["huella"],
                     "imageHuella" => $row["imageHuella"],
                     "membresias" => $arrayMembresias
+                ));
+            }
+
+
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function obtenerHuellaEmpleados()
+    {
+        try {
+            $array = array();
+            $comando = Database::getInstance()->getDb()->prepare("SELECT idEmpleado,numeroDocumento,apellidos,nombres,huella,imageHuella FROM empleadotb");
+            $comando->execute();
+            while ($row = $comando->fetch()) {
+
+                array_push($array, array(
+                    "idCliente" => $row["idEmpleado"],
+                    "dni" => $row["numeroDocumento"],
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],
+                    "huella" => $row["huella"],
+                    "imageHuella" => $row["imageHuella"]
                 ));
             }
 

@@ -23,13 +23,17 @@ class VentaAdo
                 procedencia)
                 VALUES(?,?,?,?,?,?)";
 
+        $update_producto = "UPDATE productotb SET cantidad = cantidad - ? WHERE idProducto  = ?";
+
         $venta_credito = "INSERT INTO ventacreditotb(" .
             "idVenta," .
             "monto," .
             "fechaRegistro," .
             "horaRegistro," .
+            "fechaPago,".
+            "horaPago,".
             "estado)" .
-            " VALUES(?,?,?,?,?)";
+            " VALUES(?,?,?,?,?,?,?)";
 
         $ingreso = "INSERT INTO  ingresotb(" .
             "idPrecedencia ," .
@@ -143,6 +147,8 @@ class VentaAdo
             );
 
             $executeDetalleVenta = Database::getInstance()->getDb()->prepare($detalle_venta);
+            $executeProducto = Database::getInstance()->getDb()->prepare($update_producto);
+
             foreach ($body['lista'] as $result) {
                 $executeDetalleVenta->execute(
                     array(
@@ -178,6 +184,49 @@ class VentaAdo
                             $result['descuento'],
                         )
                     );
+                } else if ($result["procedencia"] == 2) {
+                    $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto  = ?");
+                    $validateProducto->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
+                    $validateProducto->execute();
+                    if ($row = $validateProducto->fetch()) {
+                        if ($row["inventario"] == 1) {
+                            $executeProducto->execute(array($result['cantidad'], $result['idPlan']));
+                        }
+                    }
+                } else if ($result["procedencia"] == 3) {
+                    $trasValidate = Database::getInstance()->getDb()->prepare("SELECT fechaFin FROM membresiatb WHERE idMembresia  = ?");
+                    $trasValidate->bindValue(1, $result['membresia'], PDO::PARAM_STR);
+                    $trasValidate->execute();
+                    if ($rowm = $trasValidate->fetch()) {
+                        $fechaFin = $rowm["fechaFin"];
+
+                        $trasValidate = Database::getInstance()->getDb()->prepare("SELECT DATEDIFF(fechaFin,CURDATE()) AS Dias
+                        FROM membresiatb 
+                        WHERE idMembresia = ?");
+                        $trasValidate->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
+                        $trasValidate->execute();
+                        if ($rowt =  $trasValidate->fetch()) {
+                            $dias = $rowt["Dias"];
+
+                            $date = new DateTime($fechaFin);
+                            $date->modify("+" .  $dias . " day");
+
+                            $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaFin = ? WHERE idMembresia = ?");
+                            $cmdMembresia->bindValue(1, $date->format('Y-m-d'), PDO::PARAM_STR);
+                            $cmdMembresia->bindValue(2, $result['membresia'], PDO::PARAM_STR);
+                            $cmdMembresia->execute();
+
+
+                            $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
+                            $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
+                            $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
+                            $cmdTraspaso->execute();
+                        }else{
+                            throw new Exception("No se pudo obtener los días a trapasar.");
+                        }
+                    }else{
+                        throw new Exception("No se pudo obtener la membrecia a traspasar.");
+                    }
                 }
             }
 
@@ -193,13 +242,15 @@ class VentaAdo
                             $credito['monto'],
                             $credito['fecha'],
                             $credito['hora'],
+                            $credito['fecha'],
+                            $credito['hora'],
                             $credito['inicial']
                         )
                     );
                 }
             } else {
                 foreach ($body['lista'] as $result) {
-                    $total_venta += ($result['cantidad'] * ($result['precio']-$result['descuento']));
+                    $total_venta += ($result['cantidad'] * ($result['precio'] - $result['descuento']));
                 }
             }
 
@@ -229,6 +280,7 @@ class VentaAdo
     {
         try {
             Database::getInstance()->getDb()->beginTransaction();
+
 
             $cmdVenta = Database::getInstance()->getDb()->prepare("SELECT serie,numeracion FROM ventatb WHERE idVenta = ? AND estado <> 3");
             $cmdVenta->bindParam(1, $body["idVenta"], PDO::PARAM_STR);
@@ -473,15 +525,17 @@ class VentaAdo
             $array = array();
 
             $cmdDetalleVenta = Database::getInstance()->getDb()->prepare("SELECT d.idVenta,
-            (case when pl.idPlan is null 
-            then UPPER(pr.nombre)
-            else UPPER(pl.nombre) END) as detalle,
+            (case 
+            when not pl.idPlan is null then UPPER(pl.nombre)
+            when not pr.idProducto is null then UPPER(pr.nombre)
+            else (select concat('TRASPASO DEL ',' ',pmm.nombre) from plantb as pmm where pmm.idPlan = mm.idPlan)  END) as detalle,
             d.cantidad,
             d.precio,
             d.descuento
             FROM detalleventatb as d 
-            left JOIN plantb  as pl on d.idOrigen = pl.idPlan
-            left join productotb as pr on d.idOrigen = pr.idProducto
+            left join plantb  as pl on pl.idPlan = d.idOrigen 
+            left join productotb as pr on pr.idProducto = d.idOrigen 
+            left join membresiatb as mm on mm.idMembresia  = d.idOrigen
             where d.idVenta = ?");
             $cmdDetalleVenta->bindParam(1, $idVenta, PDO::PARAM_STR);
             $cmdDetalleVenta->execute();
@@ -704,7 +758,7 @@ class VentaAdo
                     return "fecha";
                 } else {
 
-                    $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta  = ? AND estado = 1");
+                    $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM ventacreditotb WHERE idVenta  = ? AND fechaRegistro <> CURDATE() AND estado = 1");
                     $cmdValidate->bindParam(1, $idVenta, PDO::PARAM_STR);
                     $cmdValidate->execute();
                     if ($cmdValidate->fetch()) {
@@ -730,6 +784,77 @@ class VentaAdo
             }
         } catch (Exception $ex) {
             Database::getInstance()->getDb()->rollback();
+            return $ex->getMessage();
+        }
+    }
+
+    public static function getVentaByEmpleado($idEmpleado)
+    {
+
+        try {
+            $array = array();
+            $venta = Database::getInstance()->getDb()->prepare("SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,
+            v.tipo,v.forma,v.numero,v.estado, e.apellidos,e.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total 
+            from ventatb as v 
+            INNER JOIN empleadotb as e on e.idEmpleado = v.vendedor 
+            INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento 
+            INNER JOIN detalleventatb as d on d.idVenta = v.idVenta 
+            WHERE v.vendedor = ?
+            GROUP BY v.idVenta ORDER BY v.fecha DESC,v.hora");
+            $venta->bindValue(1, $idEmpleado, PDO::PARAM_STR);
+            $venta->execute();
+            $count = 0;
+            while ($rowv = $venta->fetch()) {
+                $count++;
+                array_push($array, array(
+                    "id" => $count,
+                    "idVenta" => $rowv["idVenta"],
+                    "fecha" => $rowv["fecha"],
+                    "hora" => $rowv["hora"],
+                    "nombre" => $rowv["nombre"],
+                    "serie" => $rowv["serie"],
+                    "numeracion" => $rowv["numeracion"],
+                    "tipo" => $rowv["tipo"],
+                    "forma" => $rowv["forma"],
+                    "numero" => $rowv["numero"],
+                    "estado" => $rowv["estado"],
+                    "total" => $rowv["total"]
+                ));
+            }
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function getAsistenciaByEmpleado($idEmpleado)
+    {
+        try {
+            $array = array();
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT fechaApertura,
+                     fechaCierre,
+                     horaApertura,
+                     horaCierre,
+                     estado
+                     FROM asistenciatb WHERE idPersona = ?");
+            $comando->bindParam(1, $idEmpleado, PDO::PARAM_STR);
+            $comando->execute();
+
+            $count = 0;
+            while ($row = $comando->fetch()) {
+                $count++;
+                array_push($array, array(
+                    "id" => $count,
+                    "fechaApertura" => $row["fechaApertura"],
+                    "fechaCierre" => $row["fechaCierre"],
+                    "horaApertura" => $row["horaApertura"],
+                    "horaCierre" => $row["horaCierre"],
+                    "estado" => $row["estado"]
+                ));
+            }
+            return $array;
+        } catch (Exception $ex) {
             return $ex->getMessage();
         }
     }

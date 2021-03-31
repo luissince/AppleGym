@@ -70,7 +70,6 @@
 
 html {
     font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
-    ;
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -92,7 +91,7 @@ section {
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 0.875rem;
+    font-size: 0.855rem;
     font-weight: 400;
     line-height: 1.5;
     color: #212529;
@@ -445,7 +444,7 @@ h3,
 
 h4,
 .h4 {
-    font-size: 1.2125rem;
+    font-size: 1.15rem;
 }
 
 h5,
@@ -7295,7 +7294,7 @@ button.bg-primary:focus {
 }
 
 .bg-secondary {
-    background-color: #6c757d !important;
+    background-color: #404040 !important;
 }
 
 a.bg-secondary:hover,
@@ -12628,7 +12627,8 @@ body.stop-scrolling {
 }
 
 .notify-alert.alert-warning {
-    background-color: #ffce3a;
+    color: #212529 !important;
+    background-color: #ffc107;
 }
 
 .notify-alert.alert-danger {
@@ -14940,7 +14940,7 @@ be a descendant of the grid when it is being dragged.
     text-align: center;
     font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
     padding: 0 15px;
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 400;
     line-height: 50px;
     -webkit-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
@@ -14955,6 +14955,7 @@ be a descendant of the grid when it is being dragged.
         display: block;
         width: 230px;
         background-color: #95cb0a;
+        font-size: 26px;
     }
 }
 
@@ -15014,18 +15015,37 @@ be a descendant of the grid when it is being dragged.
 
 .app-nav__item {
     display: block;
-    padding: 15px;
-    line-height: 20px;
+    padding: 10px 5px;
+    line-height: 30px;
     color: #fff;
     -webkit-transition: background-color 0.3s ease;
     -o-transition: background-color 0.3s ease;
     transition: background-color 0.3s ease;
 }
 
+
 .app-nav__item:hover,
 .app-nav__item:focus {
     background: rgba(0, 0, 0, 0.1);
     color: #f6f6f6;
+}
+
+
+@media (min-width: 768px) {   
+    .app-nav__item {
+        padding: 15px;
+        line-height: 20px;
+    }
+}
+
+.app-nav_text{
+    font-size: 0;
+}
+
+@media (min-width: 768px) {    
+    .app-nav_text{
+        font-size: inherit;
+    }
 }
 
 .app-search {
@@ -15495,7 +15515,7 @@ be a descendant of the grid when it is being dragged.
 
 .app-title h1 {
     margin: 0;
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 400;
 }
 
@@ -16394,7 +16414,7 @@ be a descendant of the grid when it is being dragged.
 .login-content .login-box {
     position: relative;
     min-width: 390px;
-    min-height: 500px;
+    min-height: 520px;
     background-color: #fff;
     -webkit-box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
     box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
@@ -16442,7 +16462,7 @@ be a descendant of the grid when it is being dragged.
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 40px;
+    padding: 25px 40px;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     -webkit-transition: all 0.5s ease-in-out;
@@ -16611,7 +16631,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .user .profile {
-    margin: -30px -30px 0 -30px;
+    margin: -10px -10px 0 -10px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;

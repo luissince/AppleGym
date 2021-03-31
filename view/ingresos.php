@@ -3,6 +3,7 @@ session_start();
 if (!isset($_SESSION["IdEmpleado"])) {
     echo '<script>location.href = "./login.php";</script>';
 } else {
+    if ($_SESSION["Roles"][3]["ver"] == 1) {
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -294,8 +295,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         );
                         totalPaginacion = 0;
                     },
-                    success: function(result) {
-                        console.log(result)
+                    success: function(result) {                     
                         if (result.estado == 1) {
                             tbLista.empty();
                             if (result.ingresos.length == 0) {
@@ -389,4 +389,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
     </html>
 
 <?php
+  } else {
+    echo '<script>location.href = "./bienvenido.php";</script>';
+  }
 }
+

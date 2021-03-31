@@ -134,9 +134,11 @@ class MiEmpresaAdo {
             $cmdMembresiasPorVencerCount->execute();
             $resultMembresiasPorVencerTotal = $cmdMembresiasPorVencerCount->fetchColumn();
 
-            $cmdMembresiasFinalizadas = Database::getInstance()->getDb()->prepare("SELECT c.apellidos,c.nombres,c.celular,m.fechaFin  FROM  membresiatb as m 
+            $cmdMembresiasFinalizadas = Database::getInstance()->getDb()->prepare("SELECT 
+            c.apellidos,c.nombres,c.celular,m.fechaFin  
+            FROM  membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 OR m.estado = 0");
             $cmdMembresiasFinalizadas->execute();
 
             $arrayMembresiasFinalizadas = array();
@@ -151,7 +153,7 @@ class MiEmpresaAdo {
 
             $cmdMembresiasFinalizadasCount = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 OR m.estado = 0");
             $cmdMembresiasFinalizadasCount->execute();
             $resultMembresiasFinalizadasTotal = $cmdMembresiasFinalizadasCount->fetchColumn();
 

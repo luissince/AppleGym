@@ -259,8 +259,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                     <th class="sorting" style="width: 10%;">Tipo</th>
                                                     <th class="sorting" style="width: 10%;">Estado</th>
                                                     <th class="sorting" style="width: 15%;">Total</th>
-                                                    <th class="sorting" style="width: 10%;">Detalle</th>
-                                                    <th class="sorting" style="width: 10%;">Cuotas</th>
+                                                    <th class="sorting" style="width: 10%;">Detalle</th>                                                   
                                                 </tr>
                                             </thead>
                                             <tbody id="tbListaVentas">
@@ -311,16 +310,183 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <!-- Essential javascripts for application to work-->
         <?php include "./layout/footer.php"; ?>
         <script>
-            let tools = new Tools();        
+            let tools = new Tools();
             let idEmpleado = "<?php echo $_GET["idEmpleado"]; ?>";
+            let tbListaVenta = $("#tbListaVentas");
+            let tbAsistencia = $("#tbListaAsistencia");
 
             $(document).ready(function() {
-               
+                $("#btnCloseModalDetalle").click(function() {
+                    $("#modalDetalle").modal("hide");
+                });
+
+                $("#btnCerrarModalDetalle").click(function() {
+                    $("#modalDetalle").modal("hide");
+                });
+
+                loadDataEmpleado(idEmpleado);
+                loadVentas();
+                loadAsistencias();
             });
 
-            
+            function loadDataEmpleado(idEmpleado) {
+                $.ajax({
+                    url: "../app/empleados/EmpleadoController.php",
+                    method: "GET",
+                    data: {
+                        "type": "getbyid",
+                        "idEmpleado": idEmpleado
+                    },
+                    beforeSend: function() {
+                        $("#loading").empty();
+                        $("#loading").append('<img src="./images/loading.gif" width="25" height="25" />')
+                    },
+                    success: function(result) {
+                        $("#loading").empty();
+                        if (result.estado == 1) {
+                            let empleado = result.empleados;
 
-           
+                            $("#nombreCompleto").html(empleado.nombres + ' ' + empleado.apellidos)
+                            $("#dni").html(empleado.numeroDocumento)
+                            $("#celular").html(empleado.celular == '' ? '-' : empleado.celular)
+                            $("#email").html(empleado.email == '' ? '-' : empleado.email)
+                            $("#nacimiento").html(empleado.fechaNacimiento)
+                            $("#direccion").html(empleado.direccion == '' ? '-' : empleado.direccion)
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error.responseText)
+                        $("#loading").empty();
+                    }
+                });
+            }
+
+            function loadVentas() {
+                $.ajax({
+                    url: "../app/venta/Listar_Venta.php",
+                    method: "GET",
+                    data: {
+                        "opcion": 8,
+                        "idEmpleado": idEmpleado
+                    },
+                    beforeSend: function() {
+                        tbListaVenta.empty();
+                        tbListaVenta.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                        );
+                    },
+                    success: function(result) {
+                        if (result.estado == 1) {
+                            tbListaVenta.empty();
+                            for (let venta of result.ventas) {
+                                let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR PAGAR</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
+                                tbListaVenta.append('<tr>' +
+                                    '<td>' + venta.id + '</td>' +
+                                    '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora) + '</td>' +
+                                    '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
+                                    '<td>' + (venta.tipo == 1 ? 'CONTADO' : 'CRÉDITO') + '</td>' +
+                                    '<td>' + estado + '</td>' +
+                                    '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
+                                    '<td><button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button></td>' +
+                                    '</tr>');
+                            }
+                        } else {
+                            tbListaVenta.empty();
+                            tbListaVenta.append(
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                                result.mensaje + '</p></td></tr>');
+                        }
+                    },
+                    error: function(error) {
+                        tbListaVenta.empty();
+                        tbListaVenta.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                            error.responseText + '</p></td></tr>');
+                    }
+                });
+            }
+
+            function loadAsistencias() {
+                $.ajax({
+                    url: "../app/venta/Listar_Venta.php",
+                    method: "GET",
+                    data: {
+                        "opcion": 9,
+                        "idEmpleado": idEmpleado
+                    },
+                    beforeSend: function() {
+                        tbAsistencia.empty();
+                        tbAsistencia.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                        );
+                    },
+                    success: function(result) {
+                        if (result.estado == 1) {
+                            tbAsistencia.empty();
+                            for (let asistencia of result.asistencias) {
+                                let estado = asistencia.estado == 1 ? '<span class="badge badge-pill badge-success">APERTURADO</span>' : '<span class="badge badge-pill badge-danger">CERRADO</span>';
+                                tbAsistencia.append('<tr>' +
+                                    '<td>' + asistencia.id + '</td>' +
+                                    '<td>' + asistencia.fechaApertura + '</td>' +
+                                    '<td>' + asistencia.horaApertura + '</td>' +
+                                    '<td>' + tools.getNull(asistencia.fechaCierre) + '</td>' +
+                                    '<td>' + tools.getNull(asistencia.horaCierre) + '</td>' +
+                                    '<td>' + estado + '</td>' +
+                                    '</tr>');
+                            }
+                        } else {
+                            tbAsistencia.empty();
+                            tbAsistencia.append(
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><p>' +
+                                result.mensaje + '</p></td></tr>');
+                        }
+                    },
+                    error: function(error) {
+                        tbAsistencia.empty();
+                        tbAsistencia.append(
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><p>' +
+                            error.responseText + '</p></td></tr>');
+                    }
+                });
+            }
+
+            function detalleVenta(idVenta) {
+                $("#modalDetalle").modal("show");
+                $.ajax({
+                    url: "../app/venta/Listar_Venta.php",
+                    method: "GET",
+                    data: {
+                        "opcion": 3,
+                        "idVenta": idVenta
+                    },
+                    beforeSend: function() {
+                        $("#tbDetalleVenta").empty();
+                        $("#tbDetalleVenta").append('<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>');
+                    },
+                    success: function(result) {
+                        if (result.estado == 1) {
+                            $("#tbDetalleVenta").empty();
+                            for (let det of result.detalle) {
+                                $("#tbDetalleVenta").append('<tr>' +
+                                    '<td>' + det.id + '</td>' +
+                                    '<td>' + det.detalle + '</td>' +
+                                    '<td>' + tools.formatMoney(det.cantidad) + '</td>' +
+                                    '<td>' + tools.formatMoney(det.precio) + '</td>' +
+                                    '<td>' + tools.formatMoney(det.descuento) + '</td>' +
+                                    '<td>' + tools.formatMoney((det.cantidad * (det.precio - det.descuento))) + '</td>' +
+                                    '</tr>');
+                            }
+                        } else {
+                            $("#tbDetalleVenta").empty();
+                            $("#tbDetalleVenta").append('<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' + result.mensaje + '</p></td></tr>');
+                        }
+                    },
+                    error: function(error) {
+                        $("#tbDetalleVenta").empty();
+                        $("#tbDetalleVenta").append('<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' + error.responseText + '</p></td></tr>');
+                    }
+                });
+            }
         </script>
     </body>
 

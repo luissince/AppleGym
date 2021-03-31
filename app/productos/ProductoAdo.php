@@ -45,11 +45,15 @@ class ProductoAdo
                         SET clave = ?,
                         claveAlterna = ?,
                         nombre = ?,
-                        categoria = ?,
-                        impuesto = ?,
+                        idCategoria = ?,
+                        idImpuesto = ?,
+                        tipo = ?,
                         cantidad = ?,
+                        stockMinimo = ?,
+                        stockMaximo = ?,
                         costo = ?,
                         precio = ?,
+                        inventario = ?,
                         estado = ?
                         WHERE idProducto = ?");
                         $sentencia->bindParam(1, $body['clave'], PDO::PARAM_STR);
@@ -57,11 +61,15 @@ class ProductoAdo
                         $sentencia->bindParam(3, $body['nombre'], PDO::PARAM_STR);
                         $sentencia->bindParam(4, $body['categoria'], PDO::PARAM_STR);
                         $sentencia->bindParam(5, $body['impuesto'], PDO::PARAM_STR);
-                        $sentencia->bindParam(6, $body['cantidad'], PDO::PARAM_STR);
-                        $sentencia->bindParam(7, $body['costo'], PDO::PARAM_STR);
-                        $sentencia->bindParam(8, $body['precio'], PDO::PARAM_STR);
-                        $sentencia->bindParam(9, $body['estado'], PDO::PARAM_STR);
-                        $sentencia->bindParam(10, $body['idProducto'], PDO::PARAM_STR);
+                        $sentencia->bindParam(6, $body['tipoProducto'], PDO::PARAM_BOOL);
+                        $sentencia->bindParam(7, $body['cantidad'], PDO::PARAM_STR);
+                        $sentencia->bindParam(8, $body['stockMinimo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(9, $body['stockMaximo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(10, $body['costo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(11, $body['precio'], PDO::PARAM_STR);
+                        $sentencia->bindParam(12, $body['inventario'], PDO::PARAM_BOOL);
+                        $sentencia->bindParam(13, $body['estado'], PDO::PARAM_BOOL);
+                        $sentencia->bindParam(14, $body['idProducto'], PDO::PARAM_STR);
                         $sentencia->execute();
 
                         Database::getInstance()->getDb()->commit();
@@ -98,22 +106,30 @@ class ProductoAdo
                         claveAlterna,
                         nombre,
                         idCategoria,
-                        impuesto,
+                        idImpuesto,
+                        tipo,
                         cantidad,
+                        stockMinimo,
+                        stockMaximo,
                         costo,
                         precio,
+                        inventario,
                         estado)
-                        VALUES(?,?,?,?,?,?,?,?,?,?)");
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                         $sentencia->bindParam(1, $idProducto, PDO::PARAM_STR);
                         $sentencia->bindParam(2, $body['clave'], PDO::PARAM_STR);
                         $sentencia->bindParam(3, $body['claveAlterna'], PDO::PARAM_STR);
                         $sentencia->bindParam(4, $body['nombre'], PDO::PARAM_STR);
                         $sentencia->bindParam(5, $body['categoria'], PDO::PARAM_INT);
                         $sentencia->bindParam(6, $body['impuesto'], PDO::PARAM_STR);
-                        $sentencia->bindParam(7, $body['cantidad'], PDO::PARAM_STR);
-                        $sentencia->bindParam(8, $body['costo'], PDO::PARAM_STR);
-                        $sentencia->bindParam(9, $body['precio'], PDO::PARAM_STR);
-                        $sentencia->bindParam(10, $body['estado'], PDO::PARAM_STR);
+                        $sentencia->bindParam(7, $body['tipoProducto'], PDO::PARAM_BOOL);
+                        $sentencia->bindParam(8, $body['cantidad'], PDO::PARAM_STR);
+                        $sentencia->bindParam(9, $body['stockMinimo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(10, $body['stockMaximo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(11, $body['costo'], PDO::PARAM_STR);
+                        $sentencia->bindParam(12, $body['precio'], PDO::PARAM_STR);
+                        $sentencia->bindParam(13, $body['inventario'], PDO::PARAM_BOOL);
+                        $sentencia->bindParam(14, $body['estado'], PDO::PARAM_BOOL);
                         $sentencia->execute();
 
                         Database::getInstance()->getDb()->commit();
@@ -167,8 +183,20 @@ class ProductoAdo
         try {
             $array = array();
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT p.idProducto ,p.clave,p.claveAlterna,p.nombre,p.impuesto,p.cantidad,p.costo,p.precio,p.estado,t.nombre as categoria FROM productotb as p
-            LEFT JOIN tabla_categoria AS t ON t.idCategoria = p.idCategoria
+            $comando = Database::getInstance()->getDb()->prepare("SELECT 
+            p.idProducto,
+            p.clave,
+            p.claveAlterna,
+            p.nombre,
+            p.cantidad,
+            p.costo,
+            p.precio,
+            p.estado,
+            tc.nombre as categoria,
+            ti.nombre as impuesto
+            FROM productotb as p
+            LEFT JOIN tabla_categoria AS tc ON tc.idCategoria = p.idCategoria
+            LEFT JOIN tabla_impuesto AS ti ON ti.idImpuesto = p.idImpuesto
             WHERE p.clave LIKE concat(?,'%') OR p.nombre LIKE concat(?,'%') 
             LIMIT ?,?");
             $comando->bindValue(1, $search, PDO::PARAM_STR);
@@ -196,7 +224,8 @@ class ProductoAdo
             }
 
             $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM productotb as p
-            LEFT JOIN tabla_categoria AS t ON t.idCategoria = p.idCategoria
+            LEFT JOIN tabla_categoria AS tc ON tc.idCategoria = p.idCategoria
+            LEFT JOIN tabla_impuesto AS ti ON ti.idImpuesto = p.idImpuesto
             WHERE p.clave LIKE concat(?,'%')  OR p.nombre LIKE concat(?,'%')");
             $comando->bindValue(1, $search);
             $comando->bindValue(2, $search);
@@ -205,7 +234,7 @@ class ProductoAdo
 
             array_push($array, $arrayProductos, $totalProducto);
             return $array;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -222,14 +251,15 @@ class ProductoAdo
                 throw new Exception("Producto no encontrado, intente nuevamente.");
             }
 
-            $cmdCategoria = Database::getInstance()->getDb()->prepare("SELECT * FROM tabla_categoria");
+            $cmdCategoria = Database::getInstance()->getDb()->prepare("SELECT idCategoria,nombre FROM tabla_categoria");
             $cmdCategoria->execute();
-            $arrayCategoria = array();
-            while ($row = $cmdCategoria->fetch()) {
-                array_push($arrayCategoria, $row);
-            }
+            $arrayCategoria = $cmdCategoria->fetchAll(PDO::FETCH_CLASS);
 
-            array_push($array, $producto, $arrayCategoria);
+            $cmdImpuesto = Database::getInstance()->getDb()->prepare("SELECT idImpuesto,nombre FROM tabla_impuesto");
+            $cmdImpuesto->execute();
+            $arrayImpuesto = $cmdImpuesto->fetchAll(PDO::FETCH_CLASS);
+
+            array_push($array, $producto, $arrayCategoria, $arrayImpuesto);
 
             return $array;
         } catch (Exception $ex) {
@@ -242,15 +272,15 @@ class ProductoAdo
         try {
             $array = array();
 
-            $cmdCategoria = Database::getInstance()->getDb()->prepare("SELECT * FROM tabla_categoria");
+            $cmdCategoria = Database::getInstance()->getDb()->prepare("SELECT  idCategoria,nombre FROM tabla_categoria WHERE  estado = 1");
             $cmdCategoria->execute();
-            $arrayCategoria = array();
+            $arrayCategoria = $cmdCategoria->fetchAll(PDO::FETCH_CLASS);
 
-            while ($row = $cmdCategoria->fetch()) {
-                array_push($arrayCategoria, $row);
-            }
+            $cmdImpuesto = Database::getInstance()->getDb()->prepare("SELECT idImpuesto,nombre FROM tabla_impuesto WHERE estado = 1");
+            $cmdImpuesto->execute();
+            $arrayImpuesto = $cmdImpuesto->fetchAll(PDO::FETCH_CLASS);
 
-            array_push($array, $arrayCategoria);
+            array_push($array, $arrayCategoria, $arrayImpuesto);
             return $array;
         } catch (Exception $ex) {
             return $ex->getMessage();

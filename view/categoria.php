@@ -3,6 +3,7 @@ session_start();
 if (!isset($_SESSION["IdEmpleado"])) {
     echo '<script>location.href = "./login.php";</script>';
 } else {
+    if ($_SESSION["Roles"][17]["ver"] == 1) {
 ?>
 
     <!DOCTYPE html>
@@ -50,29 +51,28 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     </div>
 
                                     <div class="tile-body">
+
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label for="txtNombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                            <input id="txtNombre" type="text" class="form-control" placeholder="Ingrese el nombre" required="" minlength="8">
-                                                        </div>
-                                                    </div>
+                                                <div class="form-group">
+                                                    <label for="txtNombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                    <input id="txtNombre" type="text" class="form-control" placeholder="Ingrese el nombre" required="" minlength="8">
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="form-check">
-                                                                <label class="form-check-label">
-                                                                    <input class="form-check-input" id="cbEstado" type="checkbox" checked>Activo
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" id="cbEstado" type="checkbox" checked>Activo
+                                                        </label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
 
                                 </div>
@@ -364,7 +364,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         data: JSON.stringify({
                             "type": "crud",
                             "idCategoria": idCategoria,
-                            "nombre": $("#txtNombre").val(),
+                            "nombre": $("#txtNombre").val().trim(),
                             "estado": $("#cbEstado").is(":checked"),
                         }),
                         beforeSend: function() {
@@ -467,4 +467,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
     </html>
 
 <?php
+  } else {
+    echo '<script>location.href = "./bienvenido.php";</script>';
+  }
 }
+

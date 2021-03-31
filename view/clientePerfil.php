@@ -76,102 +76,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
             <!--  -->
 
-            <!-- modal detelle del credito -->
-            <div class="row">
-                <div class="modal fade show" id="modalCredito" data-backdrop="static" aria-modal="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="titulo-modal">
-                                    <i class="fa fa-bandcamp"></i> Detalle del Crédito
-                                </h4>
-                                <button type="button" class="close" id="btnCloseModalCredito">
-                                    <i class="fa fa-close"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group text-center">
-                                            <p class="h6">MONTO TOTAL</p>
-                                            <b class="h6 text-info" id="lblMontoTotal">S/ 0.00</b>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group text-center">
-                                            <p class="h6">MONTO COBRADO</p>
-                                            <b class="h6 text-info" id="lblMontoCobrado">S/ 0.00</b>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group text-center">
-                                            <p class="h6">DIFERENCIA</p>
-                                            <b class="h6 text-danger" id="lblDiferencia">S/ 0.00</b>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Forma de Pago:</label>
-                                        <div class="form-group">
-                                            <select id="formapagocredito" class="form-control form-control-sm">
-                                                <option value="">- Selecciona -</option>
-                                                <option value="1">EFECTIVO</option>
-                                                <option value="2">TARJETA</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label>N° Operación: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <div class="form-group">
-                                                    <input id="numerocreditotarjeta" type="text" class="form-control form-control-sm">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12 ">
-                                        <div class="tile-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="sorting" width="5%">#</th>
-                                                            <th class="sorting" width="20%">Monto</th>
-                                                            <th class="sorting" width="20%">Fecha Cobro</th>
-                                                            <th class="sorting" width="20%">Fecha Registro</th>
-                                                            <th class="sorting" width="20%">Opción </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbDetalleCredito">
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" id="btnAceptarModalCredito">
-                                    <i class="fa fa-check"></i> Aceptar</button>
-                                <button type="button" class="btn btn-danger" id="btnCerrarModalCredito">
-                                    <i class="fa fa-check"></i> Cerrar</button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--  -->
-
             <!--  -->
             <div class="row">
                 <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12 col-12 bg-secondary text-center">
@@ -270,7 +174,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                     <th class="sorting" style="width: 10%;">Estado</th>
                                                     <th class="sorting" style="width: 15%;">Total</th>
                                                     <th class="sorting" style="width: 10%;">Detalle</th>
-                                                    <th class="sorting" style="width: 10%;">Cuotas</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbListaVentas">
@@ -400,9 +303,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     clearModalCredito()
                 });
 
-                $("#tbDetalleCredito").on("click", "tr", function(e) {
-                    console.log($(this).find("td:eq(3)").find('input[type="checkbox"]').is(':checked'))
-                });
 
                 //----------------------------------------------------------
 
@@ -414,11 +314,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function loadDataCliente(idCurrentClient) {
                 $.ajax({
-                    url: "../app/cliente/Obtener_Clientes_By_Id.php",
+                    url: "../app/cliente/ClienteController.php",
                     method: "POST",
                     accepts: "application/json",
                     contentType: "application/json",
                     data: JSON.stringify({
+                        "type": "byid",
                         "idCliente": idCurrentClient
                     }),
                     beforeSend: function() {
@@ -436,7 +337,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 .fechaNacimiento, 'yyyy-mm-dd')
                             $("#direccion").append(cliente.direccion)
                             $("#descripcion").append(cliente.descripcion)
-                            
+
                             tools.AlertSuccess("Mensaje", 'Se cargaron correctamente los datos')
                             $("#loading").empty();
 
@@ -461,9 +362,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
             function loadTableMembresias(id) {
                 $.ajax({
-                    url: "../app/membresias/Obtener_Membresia_Por_Cliente.php",
+                    url: "../app/membresias/MembresiaController.php",
                     method: "GET",
                     data: {
+                        "type": "getlismem",
                         "page": 1,
                         "idCliente": id
                     },
@@ -478,7 +380,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             let count = 0;
                             tbListaMembresia.empty();
                             for (let membresia of result.membresias) {
-                                let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' :  membresia.membresia == 2 ? '<span class="badge badge-pill badge-warning">Por Vencer</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
+                                let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : membresia.membresia == 2 ? '<span class="badge badge-pill badge-warning">Por Vencer</span>' : membresia.membresia == 3 ? '<span class="badge badge-pill badge-danger">Traspaso</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
                                 let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">PAGADO</span>' : '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
                                 count++;
                                 tbListaMembresia.append('<tr role="row" class="odd">' +
@@ -538,7 +440,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + estado + '</td>' +
                                     '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
                                     '<td><button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button></td>' +
-                                    '<td><button class="btn btn-primary" onclick="detallePagos(\'' + venta.idVenta + '\')"><i class="fa fa-briefcase"></i></button></td>' +
                                     '</tr>');
                             }
                         } else {
@@ -628,7 +529,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td>' + tools.formatMoney(det.cantidad) + '</td>' +
                                     '<td>' + tools.formatMoney(det.precio) + '</td>' +
                                     '<td>' + tools.formatMoney(det.descuento) + '</td>' +
-                                    '<td>' + tools.formatMoney((det.cantidad * (det.precio-det.descuento) )) + '</td>' +
+                                    '<td>' + tools.formatMoney((det.cantidad * (det.precio - det.descuento))) + '</td>' +
                                     '</tr>');
                             }
                         } else {
@@ -643,57 +544,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 });
             }
 
-            function detallePagos(id) {
-                $("#modalCredito").modal("show");
-                $.ajax({
-                    url: "../app/venta/Listar_Venta.php",
-                    method: "GET",
-                    data: {
-                        "opcion": 4,
-                        "idVenta": id
-                    },
-                    beforeSend: function() {
-                        $("#tbDetalleCredito").empty();
-                        $("#tbDetalleCredito").append('<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>Cargado información...</p></td></tr>');
-
-                        $("#lblMontoTotal").html("S/ 0.00");
-                        $("#lblMontoCobrado").html("S/ 0.00");
-                        $("#lblDiferencia").html("S/ 0.00");
-                    },
-                    success: function(result) {
-                        $("#tbDetalleCredito").empty();
-                        if (result.estado == 1) {
-                            if (result.detalle.length == 0) {
-                                $("#tbDetalleCredito").append('<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>No hay registros para mostrar</p></td></tr>');
-                            } else {
-                                idVenta = id;
-                                let montoTotal = 0;
-                                let montoCobrado = 0;
-                                for (let det of result.detalle) {
-                                    montoTotal += det.monto;
-                                    montoCobrado += det.estado == "0" ? 0 : det.monto;
-                                    $("#tbDetalleCredito").append('<tr id="' + det.idVentaCredito + '">' +
-                                        '<td>' + det.id + '</td>' +
-                                        '<td><input class="form-control form-control-sm" type="text" value="' + tools.formatMoney(det.monto) + '" disabled></td>' +
-                                        '<td>' + tools.getDateForma(det.fechaRegistro) + '</td>' +
-                                        '<td>' + (det.estado == "0" ? '--' : tools.getDateForma(det.fechaPago)) + '</td>' +
-                                        '<td class="text-center">' + (det.estado == "0" ? '<input type="checkbox" />' : 'Cobrado') + '</td>' +
-                                        '</tr>');
-                                }
-                                $("#lblMontoTotal").html("S/ " + tools.formatMoney(montoTotal));
-                                $("#lblMontoCobrado").html("S/ " + tools.formatMoney(montoCobrado));
-                                $("#lblDiferencia").html("S/ " + tools.formatMoney(montoTotal - montoCobrado));
-                            }
-                        } else {
-                            $("#tbDetalleCredito").append('<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' + result.mensaje + '</p></td></tr>');
-                        }
-                    },
-                    error: function(error) {
-                        $("#tbDetalleCredito").empty();
-                        $("#tbDetalleCredito").append('<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' + error.responseText + '</p></td></tr>');
-                    }
-                });
-            }
 
             function registrarCredito() {
                 if ($("#tbDetalleCredito tr").length == 0) {
@@ -754,17 +604,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         });
                     }
                 }
-            }
-
-            function clearModalCredito() {
-                $("#modalCredito").modal("hide");
-                $("#lblMontoTotal").html("S/ 0.00");
-                $("#lblMontoCobrado").html("S/ 0.00");
-                $("#lblDiferencia").html("S/ 0.00");
-                $("#tbDetalleCredito").empty();
-                $("#formapagocredito").val("");
-                $("#numerocreditotarjeta").val("");
-                idVenta = "";
             }
         </script>
     </body>

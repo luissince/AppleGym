@@ -9,361 +9,148 @@ class RolAdo
     {
     }
 
-    /**
-     * Retorna en la todas las filas especificada de la tabla 'tabla_rol'
-     *
-     * @param $id Identificador del registro
-     * @return array Datos del registro
-     */
-    public static function getAll($x, $y)
+
+    public static function getAllRoles($search, $x, $y)
     {
-       
         try {
             $array = array();
-            // Preparar sentencia
-            $roles = Database::getInstance()->getDb()->prepare("SELECT * FROM tabla_rol LIMIT $x,$y");
-            $roles->execute();
-            $arrayRoles = $roles->fetchAll(PDO::FETCH_ASSOC);
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM tabla_rol");
+            $comando = Database::getInstance()->getDb()->prepare("SELECT idRol,nombre,descripcion,estado FROM roltb
+            WHERE nombre LIKE CONCAT(?,'%') OR descripcion LIKE CONCAT(?,'%')
+            LIMIT ?,?");
+            $comando->bindValue(1, $search, PDO::PARAM_STR);
+            $comando->bindValue(2, $search, PDO::PARAM_STR);
+            $comando->bindValue(3, $x, PDO::PARAM_INT);
+            $comando->bindValue(4, $y, PDO::PARAM_INT);
             $comando->execute();
-            $totalRoles = $comando->fetchColumn();
-            
-            array_push($array, $arrayRoles, $totalRoles);
-            return $array;
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public static function getAllDatos($datos, $x, $y)
-    {
-
-        try {
-            $array = array();
-            // Preparar sentencia
-            $roles = Database::getInstance()->getDb()->prepare("SELECT * FROM tabla_rol WHERE (nombre LIKE ?) LIMIT ?,?");
-            $roles->bindValue(1, "$datos%", PDO::PARAM_STR);
-            $roles->bindValue(2, $x, PDO::PARAM_INT);
-            $roles->bindValue(3, $y, PDO::PARAM_INT);
-            
-            $roles->execute();
 
             $arrayRoles = array();
             $count = 0;
-            while ($row = $roles->fetch()) {
-                // $membresias->execute(array($row["idCliente"]));
-                // $total_membresias = 0;
-                // $total_deudas = 0;
-
-                // while ($rows = $membresias->fetch()) {
-                //     $total_membresias++;
-                //     $venta->execute(array($rows['idVenta']));
-                //     while ($rowv = $venta->fetch()) {
-                //         $total_deudas++;
-                //     }
-                // }
+            while ($row = $comando->fetch()) {
                 $count++;
                 array_push($arrayRoles, array(
-                    "count" => $count + $x,
-                    "id" => $row["id"],
+                    "id" => $count,
+                    "idRol" => $row["idRol"],
                     "nombre" => $row["nombre"],
                     "descripcion" => $row["descripcion"],
-                    "claveAlterna" => $row["claveAlterna"],
                     "estado" => $row["estado"],
-                    "predeterminado" => $row["predeterminado"],
-
                 ));
             }
 
-            $roles = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM tabla_rol WHERE (nombre LIKE ?)");
-            $roles->bindValue(1, "$datos%", PDO::PARAM_STR);
-            $roles->execute();
-            $totalRoles =  $roles->fetchColumn();
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM roltb
+            WHERE nombre LIKE CONCAT(?,'%') OR descripcion LIKE CONCAT(?,'%')");
+            $comando->bindValue(1, $search);
+            $comando->bindValue(2, $search);
+            $comando->execute();
+            $totalRoles = $comando->fetchColumn();
 
             array_push($array, $arrayRoles, $totalRoles);
             return $array;
-        } catch (PDOException $e) {
-            return $e->getMessage();
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
     }
 
-    /**
-     * Retorna en la fila especificada de la tabla 'tabla_rol'
-     *
-     * @param $id Identificador del registro
-     * @return array Datos del registro
-     */
     public static function getRolById($idRol)
     {
-        $consulta = "SELECT * FROM tabla_rol WHERE id = ?";
         try {
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->execute(array($idRol['idRol']));
-            return $comando->fetchObject();
-        } catch (PDOException $e) {
-            return $e->getMessage();
+            $cmdRol = Database::getInstance()->getDb()->prepare("SELECT * FROM roltb WHERE idRol = ?");
+            $cmdRol->bindValue(1, $idRol, PDO::PARAM_INT);
+            $cmdRol->execute();
+            return $cmdRol->fetchObject();
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
     }
 
-    public static function validateRolId($idRol)
+    public static function getPermisosByIdRol($idRol)
     {
-        $validate = Database::getInstance()->getDb()->prepare("SELECT id FROM tabla_rol WHERE id = ?");
-        $validate->bindParam(1, $idRol);
-        $validate->execute();
-        if ($validate->fetch()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static function validateRolNombreById($idRol, $nombre)
-    {
-        $validate = Database::getInstance()->getDb()->prepare("SELECT id FROM tabla_rol WHERE id <> ? AND nombre = ?");
-        $validate->bindParam(1, $idRol);
-        $validate->bindParam(2, $nombre);
-        $validate->execute();
-        if ($validate->fetch()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-     /**
-     * Editar un nuevo rol
-     *   
-     */
-    public static function edit($body)
-    {
-        // Sentencia UPDATE
-        $comando = "UPDATE tabla_rol " .
-            "SET nombre = ?," .
-            " descripcion = ?," .
-            " claveAlterna = ?," .
-            " estado = ?," .
-            " predeterminado = ?" .
-            " WHERE id = ?";
-
         try {
-            // Preparar la sentencia         
-            Database::getInstance()->getDb()->beginTransaction();
+            $array = array();
+            $cmdRol = Database::getInstance()->getDb()->prepare("SELECT 
+            p.idPermiso ,
+            p.idRol,
+            p.idModulo,
+            m.nombre,
+            p.ver,
+            p.crear,
+            p.actualizar,
+            p.eliminar
+            FROM permisotb as p INNER JOIN modulotb AS m ON p.idModulo = m.idModulo 
+            WHERE p.idRol = ?");
+            $cmdRol->bindValue(1, $idRol, PDO::PARAM_INT);
+            $cmdRol->execute();
 
-            $sentencia = Database::getInstance()->getDb()->prepare($comando);
-            $sentencia->execute(
-                array(
-                    $body['nombre'],
-                    $body['descripcion'],
-                    $body['claveAlterna'],
-                    $body['estado'],
-                    $body['predeterminado'],
-                    $body['id']
-                )
-            );
-
-            Database::getInstance()->getDb()->commit();
-            return "updated";
-        } catch (Exception $e) {
-            Database::getInstance()->getDb()->rollback();
-            return $e->getMessage();
-        }
-    }
-
-    public static function validateRolNombre($nombre)
-    {
-        $validate = Database::getInstance()->getDb()->prepare("SELECT * FROM tabla_rol WHERE nombre = ?");
-        $validate->bindParam(1, $nombre);
-        $validate->execute();
-        if ($validate->fetch()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Insertar un nuevo rol
-     *   
-     * @param $body Array que contiene la información del rol
-     * @return string
-     */
-    public static function insert($body)
-    {
-
-        $rol = "INSERT INTO tabla_rol ( " .
-            "nombre," .
-            "descripcion," .
-            "claveAlterna," .
-            "estado," .
-            "predeterminado)" .
-            " VALUES(?,?,?,?,?)";
-
-        try {
-            // Preparar la sentencia
-            Database::getInstance()->getDb()->beginTransaction();
-
-            $executeRol = Database::getInstance()->getDb()->prepare($rol);
-            $executeRol->execute(
-                array(
-                    $body['nombre'],
-                    $body['descripcion'],
-                    $body['claveAlterna'],
-                    $body['estado'],
-                    $body['predeterminado']
-                )
-            );
-
-            Database::getInstance()->getDb()->commit();
-            return "inserted";
-        } catch (Exception $e) {
-            Database::getInstance()->getDb()->rollback();
-            return $e->getMessage();
-        }
-    }
-
-    // public static function getPrivilegioEmpleadoById($idRol){
-
-    //     try {
-    //         // Preparar sentencia
-    //         $comando = Database::getInstance()->getDb()->prepare("SELECT 
-    //         p.idprivilegio, p.idEmpledo, p.idModulo, m.nombre, e.rol, p.lectura, p.escritura, p.estado
-    //         FROM privilegiotb as p
-    //         INNER JOIN empleadotb as e ON p.idEmpledo=e.idEmpleado
-    //         INNER JOIN modulotb as m ON m.idModulo=p.idModulo
-    //         WHERE e.idEmpleado = ? ");
-
-    //         $comando->bindValue(1, $idEmpleado, PDO::PARAM_STR);
-
-    //         $comando->execute();
-    //         return $comando->fetchAll(PDO::FETCH_ASSOC);
-    //     } catch (PDOException $e) {
-    //         $e->getMessage();
-    //     }
-        
-    // }
-
-    public static function getAllModulos(){
-
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM modulotb");
-            $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            $e->getMessage();
-        }
-        
-    }
-
-    /*
-    public static function getMembresiaClienteById($idCliente)
-    {
-        $array = array();
-        try {
-            // Preparar sentencia
-            $membresia = Database::getInstance()->getDb()->prepare("select 
-                c.idPlan,
-                m.idVenta,
-                c.nombre,
-                c.tipoDisciplina,
-                c.meses,
-                c.dias,
-                c.freeze,
-                c.precio,
-                c.descripcion,
-                m.fechaInicio,
-                m.horaInicio,
-                m.fechaFin,
-                m.horaFin,
-                m.estado
-                from
-                membresiatb as m INNER JOIN plantb as c on m.idPlan = c.idPlan 
-                WHERE m.idCliente = ? ORDER BY m.fechaInicio DESC,m.horaInicio DESC");
-            // Ejecutar sentencia preparada
-            $membresia->execute(array($idCliente['idCliente']));
-
-            $disciplina = Database::getInstance()->getDb()->prepare("SELECT 
-                    d.nombre,
-                    p.numero 
-                    FROM 
-                    plantb_disciplinatb AS p 
-                    INNER JOIN disciplinatb AS d 
-                    ON p.idDisciplina = d.idDisciplina WHERE p.idPlan = ?");
-
-            $venta = Database::getInstance()->getDb()->prepare("SELECT 
-                    idVentaCredito,
-                    monto,
-                    fechaRegistro,
-                    fechaPago,
-                    estado 
-                    FROM ventacreditotb 
-                    WHERE idVenta = ?");
-
-            while ($row = $membresia->fetch()) {
-
-                $array_disciplina = array();
-                $disciplina->execute(array($row["idPlan"]));
-                while ($rows = $disciplina->fetch()) {
-                    array_push($array_disciplina, array(
-                        "nombre" => $rows['nombre'],
-                        "numero" => $rows['numero']
-                    ));
-                }
-
-                $array_venta = array();
-                $venta->execute(array($row["idVenta"]));
-                while ($rowv = $venta->fetch()) {
-                    array_push($array_venta, $rowv);
-                }
-
+            $count = 0;
+            while ($row = $cmdRol->fetch()) {
+                $count++;
                 array_push($array, array(
+                    "id" => $count,
+                    "idPermiso" => $row["idPermiso"],
+                    "idRol" => $row["idRol"],
+                    "idModulo" => $row["idModulo"],
                     "nombre" => $row["nombre"],
-                    "tipoDisciplina" => $row["tipoDisciplina"],
-                    "meses" => $row["meses"],
-                    "dias" => $row["dias"],
-                    "freeze" => $row["freeze"],
-                    "precio" => $row["precio"],
-                    "descripcion" => $row["descripcion"],
-                    "fechaInicio" => $row["fechaInicio"],
-                    "horaInicio" => $row["horaInicio"],
-                    "fechaFin" => $row["fechaFin"],
-                    "horaFin" => $row["horaFin"],
-                    "estado" => $row["estado"],
-                    "disciplinas" => $array_disciplina,
-                    "venta" => $array_venta
+                    "ver" => $row["ver"],
+                    "crear" => $row["crear"],
+                    "actualizar" => $row["actualizar"],
+                    "eliminar" => $row["eliminar"],
                 ));
             }
-        } catch (PDOException $e) {
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
-        return $array;
     }
 
-    public static function deleteCliente($body)
+    public static function crudRol($body)
     {
         try {
             Database::getInstance()->getDb()->beginTransaction();
 
-            $validateasistencia = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? ");
-            $validateasistencia->execute(array($body['idCliente']));
-
-            if ($validateasistencia->rowCount() >= 1) {
-                Database::getInstance()->getDb()->rollback();
-                return "asistencia";
-            } else {
-
-                $validateventa = Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb WHERE idCliente = ? ");
-                $validateventa->execute(array($body['idCliente']));
-
-                if ($validateventa->rowCount() >= 1) {
+            $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM roltb WHERE idRol  = ?");
+            $cmdValidate->bindValue(1, $body["idRol"], PDO::PARAM_INT);
+            $cmdValidate->execute();
+            if ($cmdValidate->fetch()) {
+                $cmdValidate =  Database::getInstance()->getDb()->prepare("SELECT * FROM roltb WHERE idRol  <> ? AND nombre = ?");
+                $cmdValidate->bindValue(1, $body["idRol"], PDO::PARAM_INT);
+                $cmdValidate->bindValue(2, $body["nombre"], PDO::PARAM_STR);
+                $cmdValidate->execute();
+                if ($cmdValidate->fetch()) {
                     Database::getInstance()->getDb()->rollback();
-                    return "membresia";
+                    return "nameduplicate";
                 } else {
-                    $sentencia = Database::getInstance()->getDb()->prepare("DELETE FROM clientetb WHERE idCliente = ?");
-                    $sentencia->execute(array($body['idCliente']));
+                    $cmdUpdate =  Database::getInstance()->getDb()->prepare("UPDATE roltb SET nombre = ?,descripcion=?,estado=?  WHERE idRol  = ?");
+                    $cmdUpdate->bindValue(1, $body["nombre"], PDO::PARAM_STR);
+                    $cmdUpdate->bindValue(2, $body["descripcion"], PDO::PARAM_STR);
+                    $cmdUpdate->bindValue(3, $body["estado"], PDO::PARAM_BOOL);
+                    $cmdUpdate->bindValue(4, $body["idRol"], PDO::PARAM_INT);
+                    $cmdUpdate->execute();
                     Database::getInstance()->getDb()->commit();
-                    return "deleted";
+                    return "updated";
+                }
+            } else {
+                $cmdValidate =  Database::getInstance()->getDb()->prepare("SELECT * FROM roltb WHERE nombre = ?");
+                $cmdValidate->bindValue(1, $body["nombre"], PDO::PARAM_STR);
+                $cmdValidate->execute();
+                if ($cmdValidate->fetch()) {
+                    Database::getInstance()->getDb()->rollback();
+                    return "nameduplicate";
+                } else {
+                    $cmdInsert =  Database::getInstance()->getDb()->prepare("INSERT INTO roltb (nombre,descripcion,estado) VALUES(?,?,?)");
+                    $cmdInsert->bindValue(1, $body["nombre"], PDO::PARAM_STR);
+                    $cmdInsert->bindValue(2, $body["descripcion"], PDO::PARAM_STR);
+                    $cmdInsert->bindValue(3, $body["estado"], PDO::PARAM_BOOL);
+                    $cmdInsert->execute();
+
+                    $idRol = Database::getInstance()->getDb()->lastInsertId();
+                    $cmdPermiso =  Database::getInstance()->getDb()->prepare("INSERT INTO permisotb (idRol, idModulo, ver,crear,actualizar,eliminar) VALUES (?,?,?,?,?,?)");
+                    for ($i = 0; $i < 22; $i++) {
+                        $cmdPermiso->execute(array($idRol, ($i + 1), 0, 0, 0, 0));
+                    }
+
+                    Database::getInstance()->getDb()->commit();
+                    return "inserted";
                 }
             }
         } catch (Exception $ex) {
@@ -372,51 +159,54 @@ class RolAdo
         }
     }
 
-    public static function getClientByNumeroDocumento($value)
-    {
-        $query_cliente = "SELECT * FROM clientetb WHERE dni = ? or codigo = ?";
-
-        $query_membresia = "SELECT m.fechaInicio,m.fechaFin,m.estado,p.nombre,p.tipoDisciplina,p.meses,p.dias,p.freeze,p.precio FROM 
-                membresiatb as m INNER JOIN plantb as p on m.idPlan = p.idPlan  
-                WHERE m.idCliente = ?";
-
-        $query_venta = "SELECT * FROM ";
-
-        $array = array();
-        try {
-            $execute_cliente = Database::getInstance()->getDb()->prepare($query_cliente);
-            $execute_cliente->execute(array($value, $value));
-
-            $cliente = $execute_cliente->fetchObject();
-
-            array_push($array, $cliente);
-
-            $execute_membresia = Database::getInstance()->getDb()->prepare($query_membresia);
-            $execute_membresia->bindParam(1, $cliente->idCliente);
-            $execute_membresia->execute();
-            array_push($array, $execute_membresia->fetchObject());
-            return $array;
-        } catch (PDOException $e) {
-            return array();
-        }
-    }
-    
-    public static function actualizarClientePredeterminado($idCliente)
+    public static function updateModulos($modulos)
     {
         try {
             Database::getInstance()->getDb()->beginTransaction();
-            $comando = Database::getInstance()->getDb()->prepare("UPDATE clientetb SET predeterminado = 0");
-            $comando->execute();
 
-            $predeterminado = Database::getInstance()->getDb()->prepare("UPDATE clientetb SET predeterminado = 1 WHERE idCliente = ?");
-            $predeterminado->execute(array($idCliente));
-
+            $comando = Database::getInstance()->getDb()->prepare("UPDATE permisotb SET ver = ?,crear=?,actualizar=?,eliminar=? WHERE idPermiso = ?");
+            foreach ($modulos as $value) {
+                $comando->execute(array(
+                    $value["ver"],
+                    $value["crear"],
+                    $value["actualizar"],
+                    $value["eliminar"],
+                    $value["idPermiso"]
+                ));
+            }
             Database::getInstance()->getDb()->commit();
             return "updated";
         } catch (Exception $ex) {
-            Database::getInstance()->getDb()->rollBack();
+            Database::getInstance()->getDb()->rollback();
             return $ex->getMessage();
         }
     }
-    */
+
+    public static function deleteRol($idRol)
+    {
+        try {
+            $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE idRol = ?");
+            $cmdValidate->bindParam(1, $idRol, PDO::PARAM_INT);
+            $cmdValidate->execute();
+            if ($cmdValidate->fetch()) {
+                Database::getInstance()->getDb()->rollback();
+                return "personal";
+            } else {
+                Database::getInstance()->getDb()->beginTransaction();
+                $cmdDelete =  Database::getInstance()->getDb()->prepare("DELETE FROM roltb WHERE idRol = ?");
+                $cmdDelete->bindValue(1, $idRol, PDO::PARAM_INT);
+                $cmdDelete->execute();
+
+                $cmdPermiso = Database::getInstance()->getDb()->prepare("DELETE FROM permisotb WHERE idRol = ?");
+                $cmdPermiso->bindValue(1, $idRol, PDO::PARAM_STR);
+                $cmdPermiso->execute();
+
+                Database::getInstance()->getDb()->commit();
+                return "deleted";
+            }
+        } catch (Exception $ex) {
+            Database::getInstance()->getDb()->rollback();
+            return $ex->getMessage();
+        }
+    }
 }

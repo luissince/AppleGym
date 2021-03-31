@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else if ($retorno == "noid") {
         echo json_encode(array(
             "estado" => 2,
-            "mensaje" => "Venta no encontrada o la venta esta anulada, intente nuevamente o comníquese con su proveedor."
+            "mensaje" => "No se puedo registrar el cobro ya que la venta se encuentra anulada."
         ));
     } else {
         echo json_encode(array(

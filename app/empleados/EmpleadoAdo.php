@@ -27,7 +27,7 @@ class EmpleadoAdo
             "formaPago," .
             "entidadBancaria," .
             "numeroCuenta," .
-            "rol," .
+            "idRol," .
             "estado," .
             "telefono," .
             "celular," .
@@ -38,41 +38,49 @@ class EmpleadoAdo
             " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
-            // Preparar la sentencia
+
             Database::getInstance()->getDb()->beginTransaction();
 
-            $codigoEmpleado = Database::getInstance()->getDb()->prepare($quey);
-            $codigoEmpleado->execute();
-            $idEmpleado = $codigoEmpleado->fetchColumn();
+            $validate = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE numeroDocumento = ?");
+            $validate->bindParam(1, $body['numeroDocumento']);
+            $validate->execute();
+            if ($validate->fetch()) {
+                Database::getInstance()->getDb()->rollback();
+                return "numdocumento";
+            } else {
+                $codigoEmpleado = Database::getInstance()->getDb()->prepare($quey);
+                $codigoEmpleado->execute();
+                $idEmpleado = $codigoEmpleado->fetchColumn();
 
-            $executeEmpleado = Database::getInstance()->getDb()->prepare($empleado);
-            $executeEmpleado->execute(
-                array(
-                    $idEmpleado,
-                    $body['tipoDocumento'],
-                    $body['numeroDocumento'],
-                    $body['apellidos'],
-                    $body['nombres'],
-                    $body['sexo'],
-                    $body['fechaNacimiento'],
-                    $body['codigo'],
-                    $body['ocupacion'],
-                    $body['formaPago'],
-                    $body['entidadBancaria'],
-                    $body['numeroCuenta'],
-                    $body['rol'],
-                    $body['estado'],
-                    $body['telefono'],
-                    $body['celular'],
-                    $body['email'],
-                    $body['direccion'],
-                    $body['usuario'],
-                    $body['clave']
-                )
-            );
+                $executeEmpleado = Database::getInstance()->getDb()->prepare($empleado);
+                $executeEmpleado->execute(
+                    array(
+                        $idEmpleado,
+                        $body['tipoDocumento'],
+                        $body['numeroDocumento'],
+                        $body['apellidos'],
+                        $body['nombres'],
+                        $body['sexo'],
+                        $body['fechaNacimiento'],
+                        $body['codigo'],
+                        $body['ocupacion'],
+                        $body['formaPago'],
+                        $body['entidadBancaria'],
+                        $body['numeroCuenta'],
+                        $body['rol'],
+                        $body['estado'],
+                        $body['telefono'],
+                        $body['celular'],
+                        $body['email'],
+                        $body['direccion'],
+                        $body['usuario'],
+                        $body['clave']
+                    )
+                );
 
-            Database::getInstance()->getDb()->commit();
-            return "inserted";
+                Database::getInstance()->getDb()->commit();
+                return "inserted";
+            }
         } catch (Exception $e) {
             Database::getInstance()->getDb()->rollback();
             return $e->getMessage();
@@ -94,7 +102,7 @@ class EmpleadoAdo
             " formaPago = ?," .
             " entidadBancaria = ?," .
             " numeroCuenta = ?," .
-            " rol = ?," .
+            " idRol = ?," .
             " estado = ?," .
             " telefono = ?," .
             " celular = ?," .
@@ -105,38 +113,102 @@ class EmpleadoAdo
             "WHERE idEmpleado = ?";
 
         try {
-            // Preparar la sentencia         
             Database::getInstance()->getDb()->beginTransaction();
 
-            $sentencia = Database::getInstance()->getDb()->prepare($comando);
-            $sentencia->execute(
-                array(
-                    $body['tipoDocumento'],
-                    $body['numeroDocumento'],
-                    $body['apellidos'],
-                    $body['nombres'],
-                    $body['sexo'],
-                    $body['fechaNacimiento'],
-                    $body['codigo'],
-                    $body['ocupacion'],
-                    $body['formaPago'],
-                    $body['entidadBancaria'],
-                    $body['numeroCuenta'],
-                    $body['rol'],
-                    $body['estado'],
-                    $body['telefono'],
-                    $body['celular'],
-                    $body['email'],
-                    $body['direccion'],
-                    $body['usuario'],
-                    $body['clave'],
-                    $body['idEmpleado']
-                )
-            );
+            $validate = Database::getInstance()->getDb()->prepare("SELECT idEmpleado FROM empleadotb WHERE idEmpleado <> ? AND numeroDocumento = ?");
+            $validate->bindParam(1, $body['idEmpleado']);
+            $validate->bindParam(2, $body['numeroDocumento']);
+            $validate->execute();
+            if ($validate->fetch()) {
+                Database::getInstance()->getDb()->rollback();
+                return "numdocumento";
+            } else {
+                $sentencia = Database::getInstance()->getDb()->prepare($comando);
+                $sentencia->execute(
+                    array(
+                        $body['tipoDocumento'],
+                        $body['numeroDocumento'],
+                        $body['apellidos'],
+                        $body['nombres'],
+                        $body['sexo'],
+                        $body['fechaNacimiento'],
+                        $body['codigo'],
+                        $body['ocupacion'],
+                        $body['formaPago'],
+                        $body['entidadBancaria'],
+                        $body['numeroCuenta'],
+                        $body['rol'],
+                        $body['estado'],
+                        $body['telefono'],
+                        $body['celular'],
+                        $body['email'],
+                        $body['direccion'],
+                        $body['usuario'],
+                        $body['clave'],
+                        $body['idEmpleado']
+                    )
+                );
+                Database::getInstance()->getDb()->commit();
+                return "updated";
+            }
+        } catch (Exception $e) {
+            Database::getInstance()->getDb()->rollback();
+            return $e->getMessage();
+        }
+    }
 
+    public static function editPerfil($body)
+    {
 
-            Database::getInstance()->getDb()->commit();
-            return "updated";
+        $comando = "UPDATE empleadotb " .
+            "SET tipoDocumento = ?," .
+            " numeroDocumento = ?," .
+            " apellidos = ?," .
+            " nombres = ?," .
+            " sexo = ?," .
+            " fechaNacimiento = ?," .
+            " codigo = ?," .
+            " telefono = ?," .
+            " celular = ?," .
+            " email = ?," .
+            " direccion = ?," .
+            " usuario = ?," .
+            " clave = ?" .
+            "WHERE idEmpleado = ?";
+
+        try {
+            Database::getInstance()->getDb()->beginTransaction();
+
+            $validate = Database::getInstance()->getDb()->prepare("SELECT idEmpleado FROM empleadotb WHERE idEmpleado <> ? AND numeroDocumento = ?");
+            $validate->bindParam(1, $body['idEmpleado']);
+            $validate->bindParam(2, $body['numeroDocumento']);
+            $validate->execute();
+            if ($validate->fetch()) {
+                Database::getInstance()->getDb()->rollback();
+                return "numdocumento";
+            } else {
+                $sentencia = Database::getInstance()->getDb()->prepare($comando);
+                $sentencia->execute(
+                    array(
+                        $body['tipoDocumento'],
+                        $body['numeroDocumento'],
+                        $body['apellidos'],
+                        $body['nombres'],
+                        $body['sexo'],
+                        $body['fechaNacimiento'],
+                        $body['codigo'],                    
+                        $body['telefono'],
+                        $body['celular'],
+                        $body['email'],
+                        $body['direccion'],
+                        $body['usuario'],
+                        $body['clave'],
+                        $body['idEmpleado']
+                    )
+                );
+                Database::getInstance()->getDb()->commit();
+                return "updated";
+            }
         } catch (Exception $e) {
             Database::getInstance()->getDb()->rollback();
             return $e->getMessage();
@@ -208,7 +280,7 @@ class EmpleadoAdo
                     "formaPago" => $row["formaPago"],
                     "entidadBancaria" => $row["entidadBancaria"],
                     "numeroCuenta" => $row["numeroCuenta"],
-                    "rol" => $row["rol"],
+                    "rol" => $row["idRol"],
                     "usuario" => $row["usuario"],
                     "clave" => $row["clave"],
                     "estado" => $row["estado"]
@@ -233,12 +305,30 @@ class EmpleadoAdo
 
     public static function getEmpleadoById($idEmpleado)
     {
-        try {            
-            $comando = Database::getInstance()->getDb()->prepare( "SELECT * FROM empleadotb WHERE idEmpleado = ?");          
-            $comando->execute(array($idEmpleado));
-            return $comando->fetchObject();
-        } catch (PDOException $e) {
-            return false;
+        try {
+            $array = array();
+
+            $cmdEmpleado = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE idEmpleado = ?");
+            $cmdEmpleado->execute(array($idEmpleado));
+            $resultEmpleado = $cmdEmpleado->fetchObject();
+            if (!$resultEmpleado) {
+                throw new Exception("No se encontro al personal, intente nuevamente.");
+            }
+
+            $cmdRol =  Database::getInstance()->getDb()->prepare("SELECT idRol ,nombre FROM roltb");
+            $cmdRol->execute();
+            $arrayRol = array();
+            while ($row = $cmdRol->fetch()) {
+                array_push($arrayRol, array(
+                    "idRol" => $row["idRol"],
+                    "nombre" => $row["nombre"]
+                ));
+            }
+
+            array_push($array, $resultEmpleado, $arrayRol);
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
     }
 
@@ -262,17 +352,53 @@ class EmpleadoAdo
 
     public static function getEmpleadoForLogin($usuario, $clave)
     {
-        $consulta = "SELECT * FROM empleadotb WHERE usuario = ? and clave = ? ";
-
         try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
+            $array = array();
+
+            $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE usuario = ?");
             $comando->bindValue(1, $usuario, PDO::PARAM_STR);
-            $comando->bindValue(2, $clave, PDO::PARAM_STR);
-            // Ejecutar sentencia preparada
             $comando->execute();
-            return $comando->fetchObject();
-        } catch (PDOException $e) {
+            if ($comando->fetchObject()) {
+                $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE  clave = ? ");
+                $comando->bindValue(1, $clave, PDO::PARAM_STR);
+                $comando->execute();
+
+                if ($comando->fetchObject()) {
+
+                    $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE usuario = ? AND clave = ? AND estado = 1");
+                    $comando->bindValue(1, $usuario, PDO::PARAM_STR);
+                    $comando->bindValue(2, $clave, PDO::PARAM_STR);
+                    $comando->execute();
+                    if ($row = $comando->fetchObject()) {
+                        $idRol = $row->idRol;
+                        $cmdRol = Database::getInstance()->getDb()->prepare("SELECT * FROM permisotb WHERE idRol = ? ");
+                        $cmdRol->bindValue(1,  $idRol, PDO::PARAM_INT);
+                        $cmdRol->execute();
+
+                        $arrayRol = array();
+                        while ($rowRol =  $cmdRol->fetch()) {
+                            array_push($arrayRol, array(
+                                "idModulo" => $rowRol["idModulo"],
+                                "ver" => $rowRol["ver"],
+                                "crear" => $rowRol["crear"],
+                                "actualizar" => $rowRol["actualizar"],
+                                "eliminar" => $rowRol["eliminar"]
+                            ));
+                        }
+
+                        array_push($array, $row, $arrayRol);
+
+                        return  $array;
+                    } else {
+                        return "nostate";
+                    }
+                } else {
+                    return "nopassword";
+                }
+            } else {
+                return "nouser";
+            }
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -292,50 +418,6 @@ class EmpleadoAdo
         }
     }
 
-    public static function getPuestoForLista()
-    {
-        $consulta = "SELECT * FROM tabla_puesto ORDER BY nombre ASC";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->setFetchMode(PDO::FETCH_ASSOC);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchAll();
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public static function getPeridoPagoForLista()
-    {
-        $consulta = "SELECT * FROM tabla_periodo_pago ORDER BY nombre ASC";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->setFetchMode(PDO::FETCH_ASSOC);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchAll();
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public static function getEmpleadoByNumeroDocumento($numeroDocumento)
-    {
-        $consulta = "SELECT * FROM empleadotb WHERE numeroDocumento = ?";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute(array($numeroDocumento));
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return false;
-        }
-    }
-
     public static function validateEmpleadoId($idEmpleados)
     {
         $validate = Database::getInstance()->getDb()->prepare("SELECT idEmpleado FROM empleadotb WHERE idEmpleado = ?");
@@ -346,90 +428,6 @@ class EmpleadoAdo
         } else {
             return false;
         }
-    }
-
-    public static function validateEmpleadoNumeroDocumento($documento)
-    {
-        $validate = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE numeroDocumento = ?");
-        $validate->bindParam(1, $documento);
-        $validate->execute();
-        if ($validate->fetch()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static function validateEmpledoNumeroDocumentoById($idEmpleado, $documento)
-    {
-        $validate = Database::getInstance()->getDb()->prepare("SELECT idEmpleado FROM empleadotb WHERE idEmpleado <> ? AND numeroDocumento = ?");
-        $validate->bindParam(1, $idEmpleado);
-        $validate->bindParam(2, $documento);
-        $validate->execute();
-        if ($validate->fetch()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static function getContratoById($idContrato)
-    {
-        $consulta = "SELECT c.idEmpleado,e.apellidos,e.nombres,c.puesto,c.fechaInicio,c.fechaCulminacion,c.horario,c.periodo,c.sueldo
-                FROM systemagym.contratotb as c INNER JOIN systemagym.empleadotb as e on c.idEmpleado = e.idEmpleado
-                WHERE c.idContrato = ?";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            // Ejecutar sentencia preparada
-            $comando->execute(array($idContrato));
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public static function getDatosEmpresa()
-    {
-        $array = null;
-        try {
-            $comando = Database::getInstance()->getDb()->prepare("SELECT idMiEmpresa,representante,nombreEmpresa,ruc,telefono,celular,email,paginaWeb,direccion,terminos FROM mi_empresatb");
-            $comando->execute();
-            while ($row = $comando->fetch()) {
-                $array = array(
-                    "idMiEmpresa" => $row["idMiEmpresa"],
-                    "representante" => $row["representante"],
-                    "nombreEmpresa" => $row["nombreEmpresa"],
-                    "ruc" => $row["ruc"],
-                    "telefono" => $row["telefono"],
-                    "celular" => $row["celular"],
-                    "email" => $row["email"],
-                    "paginaWeb" => $row["paginaWeb"],
-                    "direccion" => $row["direccion"],
-                    "terminos" => $row["terminos"]
-                );
-            }
-        } catch (Exception $ex) {
-        }
-        return $array;
-    }
-
-    public static function getDatosCliente()
-    {
-        $array = null;
-        try {
-            $comando = Database::getInstance()->getDb()->prepare("SELECT idCliente,apellidos,nombres FROM clientetb WHERE predeterminado = 1");
-            $comando->execute();
-            while ($row = $comando->fetch()) {
-                $array = array(
-                    "idCliente" => $row["idCliente"],
-                    "apellidos" => $row["apellidos"],
-                    "nombres" => $row["nombres"]
-                );
-            }
-        } catch (Exception $ex) {
-        }
-        return $array;
     }
 
     public static function getMembresiaMarcarAsistencia($buscar)
@@ -447,11 +445,11 @@ class EmpleadoAdo
 
             $resultAsistencia = "";
             $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1");
-            $comando->bindValue(1, $empleado->idEmpleado , PDO::PARAM_STR);
+            $comando->bindValue(1, $empleado->idEmpleado, PDO::PARAM_STR);
             $comando->execute();
             if ($comando->fetch()) {
                 $comando = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and estado = 1 and fechaApertura  = CURDATE()");
-                $comando->bindValue(1, $empleado->idEmpleado , PDO::PARAM_STR);
+                $comando->bindValue(1, $empleado->idEmpleado, PDO::PARAM_STR);
                 $comando->execute();
                 $validate = $comando->fetchObject();
                 if ($validate) {
@@ -470,5 +468,24 @@ class EmpleadoAdo
         }
     }
 
+    public static function getEmpleadoRegister()
+    {
+        try {
+            $array = array();
 
+            $cmdRol =  Database::getInstance()->getDb()->prepare("SELECT idRol ,nombre FROM roltb");
+            $cmdRol->execute();
+            $arrayRol = array();
+            while ($row = $cmdRol->fetch()) {
+                array_push($arrayRol, array(
+                    "idRol" => $row["idRol"],
+                    "nombre" => $row["nombre"]
+                ));
+            }
+            array_push($array, $arrayRol);
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
 }

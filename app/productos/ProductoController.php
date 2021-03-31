@@ -10,9 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if ($_GET["type"] == "lista") {
         $search = $_GET['datos'];
-        $body = $_GET['page'];
+        $page = $_GET['page'];
 
-        $productos = ProductoAdo::getAllProducto($search, ($body - 1) * 5, 5);
+        $productos = ProductoAdo::getAllProducto($search, ($page - 1) * 10, 10);
         if (is_array($productos)) {
             $datos["estado"] = 1;
             $datos["total"] = $productos[1];
@@ -30,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             print json_encode(array(
                 "estado" => 1,
                 "producto" => $result[0],
-                "categorias"=>$result[1]
+                "categorias" => $result[1],
+                "impuestos" => $result[2],
             ));
         } else {
             print json_encode(array(
@@ -43,7 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         if (is_array($result)) {
             print json_encode(array(
                 "estado" => 1,
-                "categorias" => $result[0]
+                "categorias" => $result[0],
+                "impuestos" => $result[1]
             ));
         } else {
             print json_encode(array(

@@ -25,15 +25,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             ));
         }
     } else if ($_GET["type"] == "getbyid") {
-        $empleados = EmpleadoAdo::getEmpleadoById($_GET["idEmpleado"]);
-        if (is_object($empleados)) {
+        $result = EmpleadoAdo::getEmpleadoById($_GET["idEmpleado"]);
+        if (is_array($result)) {
             $datos["estado"] = 1;
-            $datos["empleados"] = $empleados;
+            $datos["empleados"] = $result[0];
+            $datos["roles"] = $result[1];
             print json_encode($datos);
         } else {
             print json_encode(array(
                 "estado" => 2,
                 "mensaje" => "Ha ocurrido un error"
+            ));
+        }
+    } else if ($_GET["type"] == "getregistro") {
+        $result = EmpleadoAdo::getEmpleadoRegister();
+        if (is_array($result)) {
+            $datos["estado"] = 1;
+            $datos["roles"] = $result[0];
+            print json_encode($datos);
+        } else {
+            print json_encode(array(
+                "estado" => 2,
+                "mensaje" => $result
+            ));
+        }
+    } else if ($_GET["type"] == "getmembresia") {
+        $empleado = EmpleadoAdo::getMembresiaMarcarAsistencia($_GET["buscar"]);
+        if (is_array($empleado)) {
+            print json_encode(array(
+                "estado" => 1,
+                "empleado" => $empleado[0],
+                "asistencia" => $empleado[1]
+            ));
+        } else {
+            print json_encode(array(
+                "estado" => 0,
+                "mensaje" => $empleado
             ));
         }
     }
@@ -43,27 +70,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if ($body["type"] == "crud") {
         if (EmpleadoAdo::validateEmpleadoId($body['idEmpleado'])) {
-            if (EmpleadoAdo::validateEmpledoNumeroDocumentoById($body['idEmpleado'], $body['numeroDocumento'])) {
-                echo json_encode(array("estado" => 2, "mensaje" => "Ya existe un empleado con el mismo número de documento"));
+            $retorno = EmpleadoAdo::editEmpleado($body);
+            if ($retorno == "updated") {
+                echo json_encode(array("estado" => 1, "mensaje" => "Se actualizó correctamente el empleado."));
+            } else if ($result == "numdocumento") {
+                echo json_encode(array("estado" => 2, "mensaje" => "Ya existe un empleado con el mismo número de documento."));
             } else {
-                $retorno = EmpleadoAdo::editEmpleado($body);
-                if ($retorno == "updated") {
-                    echo json_encode(array("estado" => 1, "mensaje" => "Se actualizó correctamente el empleado"));
-                } else {
-                    echo json_encode(array("estado" => 3, "mensaje" => $retorno));
-                }
+                echo json_encode(array("estado" => 3, "mensaje" => $retorno));
             }
         } else {
-            if (EmpleadoAdo::validateEmpleadoNumeroDocumento($body['numeroDocumento'])) {
-                echo json_encode(array("estado" => 2, "mensaje" => "Ya existe un empleado con el mismo número de documento"));
+            $result = EmpleadoAdo::insertEmpleado($body);
+            if ($result == "inserted") {
+                echo json_encode(array("estado" => 1, "mensaje" => "Se registró correctamente el empleado."));
+            } else if ($result == "numdocumento") {
+                echo json_encode(array("estado" => 2, "mensaje" => "Ya existe un empleado con el mismo número de documento."));
             } else {
-                $retorno = EmpleadoAdo::insertEmpleado($body);
-                if ($retorno == "inserted") {
-                    echo json_encode(array("estado" => 1, "mensaje" => "Se registró correctamente el empleado"));
-                } else {
-                    echo json_encode(array("estado" => 3, "mensaje" => $retorno));
-                }
+                echo json_encode(array("estado" => 0, "mensaje" => $result));
             }
+        }
+    } else if ($body["type"] == "delete") {
+        $retorno = EmpleadoAdo::deleteEmpleado($body);
+        if ($retorno == "deleted") {
+            print json_encode(array("estado" => 1, "mensaje" => "Se eliminó correctamente"));
+        } elseif ($retorno == "asistencia") {
+            print json_encode(array("estado" => 2, "mensaje" => "No se puede eliminar al empleado porque tiene un historial de asistencias"));
+        } else if ($retorno == "venta") {
+            print json_encode(array("estado" => 3, "mensaje" => "No se puede eliminar al empleado porque tiene una venta vinculada"));
+        } else {
+            print json_encode(array("estado" => 4, "mensaje" => $retorno));
+        }
+    } else if ($body["type"] == "updateperdfil") {
+        $retorno = EmpleadoAdo::editPerfil($body);
+        if ($retorno == "updated") {
+            echo json_encode(array("estado" => 1, "mensaje" => "Se actualizó correctamente el empleado."));
+        } else if ($result == "numdocumento") {
+            echo json_encode(array("estado" => 2, "mensaje" => "Ya existe un empleado con el mismo número de documento."));
+        } else {
+            echo json_encode(array("estado" => 3, "mensaje" => $retorno));
         }
     }
 }
