@@ -379,7 +379,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             '</button>';
 
                                         let btnUpdate = editView == 1 ?
-                                            '<button class="btn btn-warning" title="Editar datos" onclick="loadUpdateCliente(\'' +
+                                            '<button class="btn btn-warning" title="Editar datos" onclick="updateCliente(\'' +
                                             cliente.idCliente + '\')">' +
                                             '<i class="fa fa-edit"></i>' +
                                             '</button>' : '-';
@@ -490,7 +490,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     idClienteUpdate = "";
                 }
 
-                function loadUpdateCliente(idCliente) {
+                function updateCliente(idCliente) {
                     $("#modalCliente").modal("show");
                     $("#titulo-modal").append('<i class="fa fa-user"></i> Editar Cliente');
                     idClienteUpdate = idCliente;

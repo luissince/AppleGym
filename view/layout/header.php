@@ -6,14 +6,14 @@
     <!-- Navbar Right Menu-->
     <ul class="app-nav">
         <?php
-        if ($_SESSION["Roles"][20]["ver"] == 1) {
+        if ($_SESSION["Roles"][21]["ver"] == 1) {
             print '<li class="dropdown">
              <a class="app-nav__item" href="puntoDeVenta.php">
                  <i class="fa fa fa-shopping-cart fa-lg"></i> <span class="app-nav_text">Punto de Venta<span>
              </a>
          </li>';
         }
-        if ($_SESSION["Roles"][21]["ver"] == 1) {
+        if ($_SESSION["Roles"][22]["ver"] == 1) {
             print ' <li class="dropdown">
              <a class="app-nav__item" href="javascript:void(0)" onclick="openMarcarEntrada()">
                  <i class="fa fa-hand-pointer-o fa-lg"></i> <span class="app-nav_text">Marcar Entreda<span>

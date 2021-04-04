@@ -60,7 +60,7 @@
                                 $inventariomenu .= ' <li><a class="app-menu__item" href="productos.php"><i class="app-menu__icon fa fa-product-hunt"></i><span class="app-menu__label">Productos/Servicios</span></a></li>';
                         }
                         if ($_SESSION["Roles"][12]["ver"] == 1) {
-                                $inventariomenu .= '<li><a class="app-menu__item" href="membresias.php"><i class="app-menu__icon fa fa-book "></i><span class="app-menu__label">Recepción de Mercadería</span></a></li>';
+                                $inventariomenu .= '<li><a class="app-menu__item" href="recepcionmercaderia.php"><i class="app-menu__icon fa fa-book "></i><span class="app-menu__label">Recepción de Mercadería</span></a></li>';
                         }
                         $inventariomenu .= '</ul></li>';
                         print  $inventariomenu;
@@ -89,6 +89,9 @@
                         }
 
                         if ($_SESSION["Roles"][19]["ver"] == 1) {
+                                $configuracionmenu .= '<li><a class="app-menu__item" href="comprobantes.php"><i class="app-menu__icon fa fa-window-maximize"></i><span class="app-menu__label">Comprobantes</span></a></li>';
+                        }
+                        if ($_SESSION["Roles"][20]["ver"] == 1) {
                                 $configuracionmenu .= '<li><a class="app-menu__item" href="empresa.php"><i class="app-menu__icon fa fa-building"></i><span class="app-menu__label">Empresa</span></a></li>';
                         }
                         $configuracionmenu .= '</ul></li>';

@@ -145,7 +145,7 @@ class RolAdo
 
                     $idRol = Database::getInstance()->getDb()->lastInsertId();
                     $cmdPermiso =  Database::getInstance()->getDb()->prepare("INSERT INTO permisotb (idRol, idModulo, ver,crear,actualizar,eliminar) VALUES (?,?,?,?,?,?)");
-                    for ($i = 0; $i < 22; $i++) {
+                    for ($i = 0; $i < 23; $i++) {
                         $cmdPermiso->execute(array($idRol, ($i + 1), 0, 0, 0, 0));
                     }
 
@@ -185,6 +185,7 @@ class RolAdo
     public static function deleteRol($idRol)
     {
         try {
+            Database::getInstance()->getDb()->beginTransaction();
             $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM empleadotb WHERE idRol = ?");
             $cmdValidate->bindParam(1, $idRol, PDO::PARAM_INT);
             $cmdValidate->execute();
@@ -192,7 +193,6 @@ class RolAdo
                 Database::getInstance()->getDb()->rollback();
                 return "personal";
             } else {
-                Database::getInstance()->getDb()->beginTransaction();
                 $cmdDelete =  Database::getInstance()->getDb()->prepare("DELETE FROM roltb WHERE idRol = ?");
                 $cmdDelete->bindValue(1, $idRol, PDO::PARAM_INT);
                 $cmdDelete->execute();
