@@ -263,16 +263,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#btnGuardarModal").click(function() {
                         if ($("#dni").val() == '' || $("#dni").val().length < 8) {
                             tools.AlertWarning("Advertencia", "Ingrese un número de dni valido")
+                            $("#dni").focus();
                         } else if ($("#apellidos").val() == '' || $("#apellidos").val().length < 1) {
                             tools.AlertWarning("Advertencia", "Ingrese un apellido de 2 o mas letras.")
+                            $("#apellidos").focus();
                         } else if ($("#nombres").val() == '' || $("#nombres").val().length < 1) {
                             tools.AlertWarning("Advertencia", "Ingrese un nombre de 2 o mas letras.")
+                            $("#nombres").focus();
                         } else if ($("#genero").val() == '') {
                             tools.AlertWarning("Advertencia", "Seleccione su sexo.")
+                            $("#genero").focus();
                         } else if ($("#nacimiento").val() == '') {
                             tools.AlertWarning("Advertencia", "Ingrese un fecha de nacimiento.")
+                            $("#nacimiento").focus();
                         } else if ($("#celular").val() == '' || $("#celular").val().length < 6) {
                             tools.AlertWarning("Advertencia", "Ingrese un número de celular valido")
+                            $("#celular").focus();
                         } else {
                             tools.ModalDialog('Cliente', '¿Desea guardar los datos?', 'question', function(result) {
                                 if (result) {
@@ -351,7 +357,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             state = true;
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                             );
                             totalPaginacion = 0;
                         },
@@ -363,7 +369,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                 if (data.clientes.length == 0) {
                                     tbLista.append(
-                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>No hay información para mostrar.</p></td></tr>'
+                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>No hay información para mostrar.</p></td></tr>'
                                     );
                                     $("#lblPaginaActual").html(0);
                                     $("#lblPaginaSiguiente").html(0);
@@ -412,7 +418,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             } else {
                                 tbLista.empty();
                                 tbLista.append(
-                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
                                     data.mensaje + '</p></td></tr>');
                                 $("#lblPaginaActual").html(0);
                                 $("#lblPaginaSiguiente").html(0);
@@ -422,7 +428,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         error: function(error) {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="8" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
                                 error.responseText + '</p></td></tr>');
                             $("#lblPaginaActual").html(0);
                             $("#lblPaginaSiguiente").html(0);

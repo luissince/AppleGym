@@ -30,8 +30,8 @@ class VentaAdo
             "monto," .
             "fechaRegistro," .
             "horaRegistro," .
-            "fechaPago,".
-            "horaPago,".
+            "fechaPago," .
+            "horaPago," .
             "estado)" .
             " VALUES(?,?,?,?,?,?,?)";
 
@@ -145,7 +145,6 @@ class VentaAdo
                     $body['estado']
                 )
             );
-
             $executeDetalleVenta = Database::getInstance()->getDb()->prepare($detalle_venta);
             $executeProducto = Database::getInstance()->getDb()->prepare($update_producto);
 
@@ -160,14 +159,12 @@ class VentaAdo
                         $result['procedencia']
                     )
                 );
-
                 if ($result["procedencia"] == 1) {
                     $codigoMembresia = Database::getInstance()->getDb()->prepare($quey_codigo_membresia);
                     $codigoMembresia->execute();
                     $idMembresia = $codigoMembresia->fetchColumn();
-
-                    $executeMembresia = Database::getInstance()->getDb()->prepare($membresia);
-                    $executeMembresia->execute(
+                    $cmdMembresia = Database::getInstance()->getDb()->prepare($membresia);
+                    $cmdMembresia->execute(
                         array(
                             $idMembresia,
                             $result['idPlan'],
@@ -184,6 +181,9 @@ class VentaAdo
                             $result['descuento'],
                         )
                     );
+
+                    $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                    $cmdHistorialMembresia->execute(array($idMembresia, "PRIMER REGISTRO DE MEMBRESÍA", $body['fecha'], $body['hora'], $result['fechaInico'], $result['fechaFin']));
                 } else if ($result["procedencia"] == 2) {
                     $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto  = ?");
                     $validateProducto->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
@@ -216,15 +216,17 @@ class VentaAdo
                             $cmdMembresia->bindValue(2, $result['membresia'], PDO::PARAM_STR);
                             $cmdMembresia->execute();
 
-
                             $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
                             $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
                             $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
                             $cmdTraspaso->execute();
-                        }else{
+
+                            $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                            $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $fechaFin, $date->format('Y-m-d')));
+                        } else {
                             throw new Exception("No se pudo obtener los días a trapasar.");
                         }
-                    }else{
+                    } else {
                         throw new Exception("No se pudo obtener la membrecia a traspasar.");
                     }
                 }
@@ -354,7 +356,7 @@ class VentaAdo
     public static function getAll($tipo, $search, $fechaInicio, $fechaFin, $x, $y)
     {
         $consulta = "SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,v.tipo,v.forma,v.numero,v.estado,
-        c.apellidos,c.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total,
+        c.dni,c.apellidos,c.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total,
         CASE WHEN e.apellidos IS NULL or e.apellidos = '' THEN 'SIN DATOS' ELSE e.apellidos END AS 	empleadoApellidos,
         CASE WHEN e.nombres IS NULL OR e.nombres = '' THEN 'SIN DATOS' ELSE e.nombres END AS empleadoNombres
         from ventatb as v 
@@ -421,6 +423,7 @@ class VentaAdo
                     "forma" => $row["forma"],
                     "numero" => $row["numero"],
                     "estado" => $row["estado"],
+                    "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
                     "total" => $row["total"],
@@ -528,7 +531,11 @@ class VentaAdo
             (case 
             when not pl.idPlan is null then UPPER(pl.nombre)
             when not pr.idProducto is null then UPPER(pr.nombre)
-            else (select concat('TRASPASO DEL ',' ',pmm.nombre) from plantb as pmm where pmm.idPlan = mm.idPlan)  END) as detalle,
+            else 
+                concat(
+                    (select concat('TRASPASO DEL ',' ',pmm.nombre,' DE ') from plantb as pmm where pmm.idPlan = mm.idPlan),
+                    (select concat(cl.apellidos,' ',cl.nombres) from clientetb as cl where cl.idCliente = mm.idCliente)
+                    ) END) as detalle,
             d.cantidad,
             d.precio,
             d.descuento
@@ -725,12 +732,13 @@ class VentaAdo
     {
         try {
             $array = array();
-            $executecomprobante = Database::getInstance()->getDb()->prepare("SELECT idTipoComprobante,nombre FROM tipocomprobantetb");
+            $executecomprobante = Database::getInstance()->getDb()->prepare("SELECT idTipoComprobante,nombre,predeterminado FROM tipocomprobantetb WHERE estado = 1");
             $executecomprobante->execute();
-            while ($rowp = $executecomprobante->fetch()) {
+            while ($row = $executecomprobante->fetch()) {
                 array_push($array, array(
-                    "idTipoComprobante" => $rowp['idTipoComprobante'],
-                    "nombre" => $rowp['nombre']
+                    "idTipoComprobante" => $row['idTipoComprobante'],
+                    "nombre" => $row['nombre'],
+                    "predeterminado" => $row["predeterminado"]
                 ));
             }
             return $array;

@@ -50,6 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "mensaje" => $membresias
             ));
         }
+    } else if ($_GET["type"] == "listahistorialdetalle") {
+        $result = MembresiaAdo::GetByIdHistorialMembresia($_GET["idMembresia"]);
+        if (is_array($result)) {
+            print json_encode(array(
+                "estado" => 1,
+                "historial" => $result
+            ));
+        } else {
+            print json_encode(array(
+                "estado" => 2,
+                "mensaje" => $result
+            ));
+        }
     }
 
     exit();
@@ -60,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         if ($result == "updated") {
             print json_encode(array(
                 "estado" => 1,
-                "membresia" => "Se actualizó correctamente la membresia."
+                "mensaje" => "Se actualizó correctamente la membresia."
             ));
         } else if ($result == "inactivo") {
             print json_encode(array(

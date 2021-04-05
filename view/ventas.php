@@ -461,7 +461,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             '<td>' + venta.id + '</td>' +
                                             '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora, true) + '</td>' +
                                             '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
-                                            '<td>' + venta.nombres + '<br>' + venta.apellidos + '</td>' +
+                                            '<td>' + venta.dni+'<br>'+venta.apellidos + '<br>' + venta.nombres + '</td>' +
                                             '<td>' + (venta.tipo == 1 ? "CONTADO" : "CRÉDITO") + '</td>' +
                                             '<td>' + estado + '</td>' +
                                             '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +

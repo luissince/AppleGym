@@ -18,109 +18,184 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <?php include "./layout/header.php"; ?>
             <!-- Sidebar menu-->
             <?php include "./layout/menu.php"; ?>
-            <main class="app-content">
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
+            <!-- modal detelle de la venta -->
+            <div class="row">
+                <div class="modal fade show" id="modalDetalle" data-backdrop="static" aria-modal="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
-                <!-- Sidebar menu-->
-                <?php include "./marcarentrada.php"; ?>
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    <i class="fa fa-bandcamp"></i> Historial Membresía
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModalDetalle">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
 
-                <!-- modal nuevo/update Productos  -->
-                <div class="row">
-                    <div class="modal fade" id="modalAjuste" data-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="titulo-modal">
-                                    </h4>
-                                    <button type="button" class="close" id="btnCloseModal">
-                                        <i class="fa fa-close"></i>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="tile p-0">
-
-                                        <div class="overlay d-none" id="divOverlayAjuste">
-                                            <div class="m-loader mr-4">
-                                                <svg class="m-circular" viewBox="25 25 50 50">
-                                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"></circle>
-                                                </svg>
-                                            </div>
-                                            <h4 class="l-text" id="lblTextOverlayAjuste">Cargando información...</h4>
-                                        </div>
-
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12 ">
                                         <div class="tile-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="txtFechaInicio">Fecha Inicio: </label>
-                                                        <input id="txtFechaInicio" type="date" class="form-control" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="txtFechaFecha">Fecha Final: </label>
-                                                        <input id="txtFechaFecha" type="date" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="sorting" width="5%">#</th>
+                                                            <th class="sorting" width="10%">Fecha Registro</th>
+                                                            <th class="sorting" width="35%">Descripción</th>
+                                                            <th class="sorting" width="15%">Mem. Fecha Inicio/Final</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbDetalleVenta">
 
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="text-left text-info"><i class="fa fa-info text-danger"></i> Ajustar la membresia modificando la fecha de finalización</p>
-                                                </div>
-                                                <div class="col-md-6 text-right">
-                                                    <button type="button" class="btn btn-success btn-sm" id="btnAjustarFecha">
-                                                        <i class="fa fa-save"></i> Ajustar</button>
-                                                </div>
+                                                    </tbody>
+                                                </table>
                                             </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12 border-top">
-                                                    <div class="form-group">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="txtFreeze">Dias restanteste de Freeze : </label>
-                                                        <input id="txtFreeze" type="text" class="form-control" placeholder="0" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="txtCongelar">Dias a congelar: </label>
-                                                        <input id="txtCongelar" type="text" class="form-control" placeholder="0">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="text-left text-info"><i class="fa fa-info text-danger"></i> Ajusta la membresia congelando sus días usando el freeze</p>
-                                                </div>
-                                                <div class="col-md-6 text-right">
-                                                    <button type="button" class="btn btn-success btn-sm" id="btnAjustarFreeze">
-                                                        <i class="fa fa-save"></i> Ajustar</button>
-                                                </div>
-                                            </div>
-
                                         </div>
-
                                     </div>
                                 </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger btn-sm" id="btnCancelModal">
-                                        <i class="fa fa-remove"></i> Cancelar</button>
-                                </div>
-
                             </div>
+
+                            <div class="modal-footer">
+                                <div class="col-md-8 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="text-left">
+                                            <button class="btn btn-primary" id="btnAnteriorDetalle">
+                                                <i class="fa fa-arrow-circle-left"></i>
+                                            </button>
+                                            <span class="m-2" id="lblPaginaActualDetalle">0
+                                            </span>
+                                            <span class="m-2">
+                                                de
+                                            </span>
+                                            <span class="m-2" id="lblPaginaSiguienteDetalle">0
+                                            </span>
+                                            <button class="btn btn-primary" id="btnSiguienteDetalle">
+                                                <i class="fa fa-arrow-circle-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="text-right">
+                                            <button type="button" class="btn btn-danger" id="btnCerrarModalDetalle">
+                                                <i class="fa fa-check"></i> Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
+            </div>
+            <!--  -->
+
+            <!-- modal nuevo/update Productos  -->
+            <div class="row">
+                <div class="modal fade" id="modalAjuste" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="tile p-0">
+
+                                    <div class="overlay d-none" id="divOverlayAjuste">
+                                        <div class="m-loader mr-4">
+                                            <svg class="m-circular" viewBox="25 25 50 50">
+                                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"></circle>
+                                            </svg>
+                                        </div>
+                                        <h4 class="l-text" id="lblTextOverlayAjuste">Cargando información...</h4>
+                                    </div>
+
+                                    <div class="tile-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="txtFechaInicio">Fecha Inicio: </label>
+                                                    <input id="txtFechaInicio" type="date" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="txtFechaFecha">Fecha Final: </label>
+                                                    <input id="txtFechaFecha" type="date" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p class="text-left text-info"><i class="fa fa-info text-danger"></i> Ajustar la membresia modificando la fecha de finalización</p>
+                                            </div>
+                                            <div class="col-md-6 text-right">
+                                                <button type="button" class="btn btn-success btn-sm" id="btnAjustarFecha">
+                                                    <i class="fa fa-save"></i> Ajustar</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12 border-top">
+                                                <div class="form-group">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="txtFreeze">Dias restanteste de Freeze : </label>
+                                                    <input id="txtFreeze" type="text" class="form-control" placeholder="0" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="txtCongelar">Dias a congelar: </label>
+                                                    <input id="txtCongelar" type="text" class="form-control" placeholder="0">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p class="text-left text-info"><i class="fa fa-info text-danger"></i> Ajusta la membresia congelando sus días usando el freeze</p>
+                                            </div>
+                                            <div class="col-md-6 text-right">
+                                                <button type="button" class="btn btn-success btn-sm" id="btnAjustarFreeze">
+                                                    <i class="fa fa-save"></i> Ajustar</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger btn-sm" id="btnCancelModal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--  -->
+
+            <main class="app-content">
 
                 <div class="app-title">
                     <div>
@@ -191,8 +266,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th class="sorting" style="width: 10%;">Comprobante</th>
                                                 <th class="sorting" style="width: 10%;">Duración</th>
                                                 <th class="sorting" style="width: 10%;">Pago</th>
-                                                <th class="sorting" style="width: 7%;">Total</th>
-                                                <th class="sorting" style="width: 10%;">Ajustar</th>
+                                                <th class="sorting" style="width: 10%;">Total</th>
+                                                <th class="sorting" style="width: 5%;">Ajustar</th>
+                                                <th class="sorting" style="width: 5%;">Historial</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbLista">
@@ -336,7 +412,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             state = true;
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                             );
                             totalPaginacion = 0;
                         },
@@ -346,7 +422,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                 if (result.membresias.length == 0) {
                                     tbLista.append(
-                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>No hay datos para mostrar</p></td></tr>'
+                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>No hay datos para mostrar</p></td></tr>'
                                     );
                                     $("#lblPaginaActual").html(0);
                                     $("#lblPaginaSiguiente").html(0);
@@ -356,21 +432,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     for (let membresia of result.membresias) {
                                         let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : membresia.membresia == 2 ? '<span class="badge badge-pill badge-warning">Por Vencer</span>' : membresia.membresia == 3 ? '<span class="badge badge-pill badge-danger">Traspaso</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
                                         let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">PAGADO</span>' : '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
-                                        let btnAjustar =
-                                            '<button class="btn btn-info btn-sm" onclick="openModalAjustar(\'' + membresia.idMembresia + '\')" >' +
-                                            '<i class="fa fa-sign-in"></i> Ajustar' +
-                                            '</button>';
-
+                                        let btnAjustar = '<button class="btn btn-success" onclick="openModalAjustar(\'' + membresia.idMembresia + '\')" ><i class="fa fa-sign-in"></i></button>';
+                                        let btnHistorial = '<button class="btn btn-info" onclick="openModalDetalle(\'' + membresia.idMembresia + '\')"><i class="fa fa fa-eye"></i> </button>';
                                         tbLista.append('<tr role="row" class="odd">' +
                                             '<td>' + membresia.id + '</td>' +
-                                            '<td>' + membresia.dni + '<br>' + membresia.apellidos + ', ' + membresia.nombres + '</td>' +
+                                            '<td>' + membresia.dni + '<br>' + membresia.apellidos + '<br>' + membresia.nombres + '</td>' +
                                             '<td class="text-center">' + estadoMembresia + '</td>' +
                                             '<td>' + membresia.nombrePlan + '</td>' +
                                             '<td>' + membresia.serie + '-' + membresia.numeracion + '</td>' +
                                             '<td>' + 'Del ' + tools.getDateForma(membresia.fechaInicio) + ' al ' + tools.getDateForma(membresia.fechaFin) + '</td>' +
                                             '<td>' + estado + '</td>' +
                                             '<td>S/ ' + tools.formatMoney(membresia.total) + '</td>' +
-                                            '<td> ' + btnAjustar + '</td>' +
+                                            '<td class="text-center"> ' + btnAjustar + '</td>' +
+                                            '<td class="text-center"> ' + btnHistorial + '</td>' +
                                             '</tr>');
                                     }
                                     totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
@@ -382,7 +456,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             } else {
                                 tbLista.empty();
                                 tbLista.append(
-                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
                                     result.mensaje + '</p></td></tr>');
                                 $("#lblPaginaActual").html(0);
                                 $("#lblPaginaSiguiente").html(0);
@@ -392,7 +466,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         error: function(error) {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
                                 error.responseText + '</p></td></tr>');
                             $("#lblPaginaActual").html(0);
                             $("#lblPaginaSiguiente").html(0);
@@ -442,6 +516,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             data: JSON.stringify({
                                                 "type": "updateAjusteFecha",
                                                 "idMembresia": idMembresia,
+                                                "fecha": tools.getCurrentDate(),
+                                                "hora": tools.getCurrentTime(),
                                                 "fechaFin": $("#txtFechaFecha").val()
                                             }),
                                             beforeSend: function() {
@@ -483,6 +559,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             data: JSON.stringify({
                                                 "type": "updateAjusteFreeze",
                                                 "idMembresia": idMembresia,
+                                                "fecha": tools.getCurrentDate(),
+                                                "hora": tools.getCurrentTime(),
                                                 "fechaFin": fechaFin,
                                                 "dias": parseInt($("#txtCongelar").val().trim())
                                             }),
@@ -510,6 +588,72 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         },
                         error: function(error) {
                             $("#lblTextOverlayAjuste").html(error.responseText);
+                        }
+                    });
+                }
+
+                function openModalDetalle(id) {
+                    $("#modalDetalle").modal("show");
+
+                    $("#btnCloseModalDetalle").unbind();
+                    $("#btnCloseModalDetalle").bind('click', function() {
+                        $("#modalDetalle").modal("hide");
+                        $("#tbDetalleVenta").empty();
+                    });
+
+                    $("#btnCerrarModalDetalle").unbind();
+                    $("#btnCerrarModalDetalle").bind('click', function() {
+                        $("#modalDetalle").modal("hide");
+                        $("#tbDetalleVenta").empty();
+                    });
+
+                    $.ajax({
+                        url: "../app/membresias/MembresiaController.php",
+                        method: 'GET',
+                        data: {
+                            "type": "listahistorialdetalle",
+                            "idMembresia": id,
+                        },
+                        beforeSend: function() {
+                            $("#tbDetalleVenta").empty();
+                            $("#tbDetalleVenta").append(
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
+                            );
+                        },
+                        success: function(result) {
+                            $("#tbDetalleVenta").empty();
+                            if (result.estado == 1) {
+                                if (result.historial.length == 0) {
+                                    $("#tbDetalleVenta").append(
+                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
+                                    );
+                                    $("#lblPaginaActualDetalle").html(0);
+                                    $("#lblPaginaSiguienteDetalle").html(0);
+                                } else {
+                                    for (let value of result.historial) {
+                                        $("#tbDetalleVenta").append('<tr>' +
+                                            '<td>' + value.id + '</td>' +
+                                            '<td>' + tools.getDateForma(value.fecha) + '<br>' + tools.getTimeForma24(value.hora) + '</td>' +
+                                            '<td>' + value.descripcion + '</td>' +
+                                            '<td>' + tools.getDateForma(value.fechaInicio) + '<br>' + tools.getDateForma(value.fechaFinal) + '</td>' +
+                                            '</tr>');
+                                    }
+                                }
+                            } else {
+                                $("#tbDetalleVenta").append(
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' + result.mensaje + '</p></td></tr>'
+                                );
+                                $("#lblPaginaActualDetalle").html(0);
+                                $("#lblPaginaSiguienteDetalle").html(0);
+                            }
+                        },
+                        error: function(error) {
+                            $("#tbDetalleVenta").empty();
+                            $("#tbDetalleVenta").append(
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' + error.responseText + '</p></td></tr>'
+                            );
+                            $("#lblPaginaActualDetalle").html(0);
+                            $("#lblPaginaSiguienteDetalle").html(0);
                         }
                     });
                 }

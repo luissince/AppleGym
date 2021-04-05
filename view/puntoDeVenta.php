@@ -48,104 +48,120 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 <?php include('./layout/puntoventa/modaltraspaso.php'); ?>
 
                 <div class="tile">
-                    <div class="row">
-                        <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group text-left">
-                                        <button class="btn btn-success" type="button" id="btnPlan"><i class="fa fa-file"></i>
-                                            Planes</button>
-                                        <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-plus"></i>
-                                            Productos/Servicio</button>
-                                        <button class="btn btn-success" type="button" id="btnTraspaso"><i class="fa fa-sign-in"></i>
-                                            Traspaso</button>
-                                    </div>
-                                    <div class="form-group d-flex">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Cliente..." id="clienteDatos" disabled>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-warning" type="button" id="btnOpenModalCliente"><i class="fa fa-plus"></i></button>
-                                            </div>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" id="btnListaCliente"><i class="fa fa-search"></i></button>
+
+                    <div class="overlay" id="divOverlayPuntoVenta">
+                        <div class="m-loader mr-4">
+                            <svg class="m-circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"></circle>
+                            </svg>
+                        </div>
+                        <h4 class="l-text" id="lblTextOverlayPuntoVenta">Cargando información...</h4>
+                    </div>
+
+                    <div class="tile-body">
+                        <div class="row">
+                            <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group text-left">
+                                            <button class="btn btn-success" type="button" id="btnPlan"><i class="fa fa-file"></i>
+                                                Planes</button>
+                                            <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-plus"></i>
+                                                Producto/Servicio</button>
+                                            <button class="btn btn-success" type="button" id="btnTraspaso"><i class="fa fa-sign-in"></i>
+                                                Traspaso</button>
+                                            <!-- <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-pencil-square-o"></i>
+                                                Renovar</button> -->
+
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="Cliente..." id="clienteDatos" disabled>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-warning" type="button" id="btnOpenModalCliente"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" id="btnListaCliente"><i class="fa fa-search"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-bordered">
-                                            <thead>
-                                                <tr role="row">
-                                                    <th class="sorting">Nombre</th>
-                                                    <th class="sorting_asc">Cantidad</th>
-                                                    <th class="sorting">Precio Plan ( - Descuento)</th>
-                                                    <th class="sorting">Precio</th>
-                                                    <th class="sorting">Importe</th>
-                                                    <th class="sorting">Quitar</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tbLista">
-                                                <!-- tbLista -->
-                                                <tr role="row" class="odd">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th class="sorting">Nombre</th>
+                                                        <th class="sorting_asc">Cantidad</th>
+                                                        <th class="sorting">Precio Plan ( - Descuento)</th>
+                                                        <th class="sorting">Precio</th>
+                                                        <th class="sorting">Importe</th>
+                                                        <th class="sorting">Quitar</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbLista">
+                                                    <!-- tbLista -->
+                                                    <tr role="row" class="odd">
 
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                            <div class="row">
-                                <div class="col-md-12 mb-2">
-                                    <div class="form-group">
-                                        <h4>Detalle del Cobro</h4>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <button id="btnCobrar" class="btn btn-success btn-block">
-                                            <div class="row justify-content-center">
-                                                <div class="col-md-6 text-left">
-                                                    <h5>COBRAR</h5>
-                                                </div>
-                                                <div class="col-md-6 text-right">
-                                                    <h5 id="lblSumaTotal">S/ 0.00</h5>
-                                                </div>
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label>Comprobante:</label>
-                                    <div class="form-group">
-                                        <select id="comprobante" class="form-control">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label>Numeración</label>
-                                    <div class="form-group d-flex">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="txtNumeracion" placeholder="Numeración Automatica" disabled>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" id="btnDesbloquear"><i class="fa fa-lock"></i></button>
-                                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                                <div class="row">
+                                    <div class="col-md-12 mb-2">
+                                        <div class="form-group">
+                                            <h4>Detalle del Cobro</h4>
                                         </div>
                                     </div>
-
-
-                                    <div class="form-group">
-
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <button id="btnCobrar" class="btn btn-success btn-block">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-md-6 text-left">
+                                                        <h5>COBRAR</h5>
+                                                    </div>
+                                                    <div class="col-md-6 text-right">
+                                                        <h5 id="lblSumaTotal">S/ 0.00</h5>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="text-danger" id="errorComprobante"></label>
+                                    <div class="col-md-12">
+                                        <label>Comprobante:</label>
+                                        <div class="form-group">
+                                            <select id="comprobante" class="form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label>Numeración</label>
+                                        <div class="form-group d-flex">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="txtNumeracion" placeholder="Numeración Automatica" disabled>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" id="btnDesbloquear"><i class="fa fa-lock"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="text-danger" id="errorComprobante"></label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
             </main>
@@ -268,12 +284,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 for (let comprobante of result.comprobantes) {
                                     $("#comprobante").append('<option value="' + comprobante.idTipoComprobante + '">' + comprobante.nombre + '</option>');
                                 }
+                                for (let comprobante of result.comprobantes) {
+                                    if (comprobante.predeterminado == 1) {
+                                        $("#comprobante").val(comprobante.idTipoComprobante);
+                                        break;
+                                    }
+                                }
+                                $("#divOverlayPuntoVenta").addClass("d-none");
                             } else {
-                                $("#errorComprobante").html(result.mensaje);
+                                $("#lblTextOverlayPuntoVenta").html(result.mensaje);
                             }
                         },
                         error: function(error) {
-                            $("#errorComprobante").html("Ha ocurrido un problema en cargar los comprobantes.");
+                            $("#lblTextOverlayPuntoVenta").html(error.responseText);
                         }
                     });
                 }

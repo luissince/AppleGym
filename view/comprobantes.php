@@ -26,7 +26,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 <!-- modal nuevo/update Productos  -->
                 <div class="row">
-                    <div class="modal fade" id="modalCategoria" data-backdrop="static">
+                    <div class="modal fade" id="modalComprobante" data-backdrop="static">
                         <div class="modal-dialog">
                             <div class="modal-content">
 
@@ -41,13 +41,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <div class="modal-body">
                                     <div class="tile p-0">
 
-                                        <div class="overlay d-none" id="divOverlayCategoria">
+                                        <div class="overlay d-none" id="divOverlayComprobante">
                                             <div class="m-loader mr-4">
                                                 <svg class="m-circular" viewBox="25 25 50 50">
                                                     <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"></circle>
                                                 </svg>
                                             </div>
-                                            <h4 class="l-text" id="lblTextOverlayCategoria">Cargando información...</h4>
+                                            <h4 class="l-text" id="lblTextOverlayComprobante">Cargando información...</h4>
                                         </div>
 
                                         <div class="tile-body">
@@ -64,9 +64,33 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
+                                                        <label for="txtSerie">Serie: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                        <input id="txtSerie" type="text" class="form-control" placeholder="F001, F002, NT001" required="" minlength="8">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="txtNumeracion">Numeración: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                        <input id="txtNumeracion" type="text" class="form-control" placeholder="1" required="" minlength="8">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
                                                         <div class="form-check">
                                                             <label class="form-check-label">
                                                                 <input class="form-check-input" id="cbEstado" type="checkbox" checked>Activo
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="form-check">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" id="cbPredeterminado" type="checkbox">Predeterminado
                                                             </label>
                                                         </div>
                                                     </div>
@@ -147,6 +171,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th width="20%;">Nombre</th>
                                                 <th width="10%;">Serie</th>
                                                 <th width="10%;">Numeración</th>
+                                                <th width="10%;">Predeterminado</th>
                                                 <th width="10%;">Estado</th>
                                                 <th width="10%;">Editar</th>
                                                 <th width="10%;">Eliminar</th>
@@ -173,7 +198,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 let opcion = 0;
                 let totalPaginacion = 0;
 
+                let idComprobante = 0;
+
                 $(document).ready(function() {
+
+                    $("#btnAdd").click(function() {
+                        $("#modalComprobante").modal("show");
+                        $("#titulo-modal").append('<i class="fa fa-align-left"></i> Agregar Comprobante');
+                    });
+
+                    $("#btnAdd").keypress(function(event) {
+                        if (event.keyCode == 13) {
+                            $("#modalComprobante").modal("show");
+                            $("#titulo-modal").append('<i class="fa fa-align-left"></i> Agregar Comprobante');
+                        }
+                        event.preventDefault();
+                    });
 
                     $("#btnReload").click(function() {
                         loadInitImpuestos();
@@ -188,7 +228,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                     $("#txtSearch").keyup(function() {
                         if ($("#txtSearch").val().trim() != '') {
-                            if (!sstate) {
+                            if (!state) {
                                 paginacion = 1;
                                 loadTableImpuestos($("#txtSearch").val().trim());
                                 opcion = 1;
@@ -213,7 +253,39 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         }
                     });
 
+                    loadComponentesModal();
+                    loadInitImpuestos();
+
                 });
+
+                function loadComponentesModal() {
+                    $("#btnGuardarModal").click(function() {
+                        crudComprobante();
+                    });
+
+                    $("#btnGuardarModal").keypress(function(event) {
+                        if (event.keyCode == 13) {
+                            crudComprobante();
+                        }
+                        event.preventDefault();
+                    });
+
+                    $("#btnCloseModal").click(function() {
+                        clearComponents();
+                    });
+
+                    $("#btnCancelModal").click(function() {
+                        clearComponents();
+                    });
+
+                    $("#txtNumeracion").keypress(function(event) {
+                        var key = window.Event ? event.which : event.keyCode;
+                        var c = String.fromCharCode(key);
+                        if ((c < '0' || c > '9') && (c != '\b')) {
+                            event.preventDefault();
+                        }
+                    });
+                }
 
                 function onEventPaginacion() {
                     switch (opcion) {
@@ -263,12 +335,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     state = false;
                                 } else {
                                     for (let value of result.comprobantes) {
+                                        let predeterminado = value.predeterminado == 1 ? '<span class="h5 text-success"><i class="fa fa-check-square"></i></span>' : '<span class="h5 text-info"><i class="fa fa-circle-o "></i></span>';
                                         let estado = value.estado == 1 ? '<span class="badge badge-pill badge-success">Activo</span>' : '<span class="badge badge-pill badge-danger">Inactivo</span>';
                                         tbLista.append('<tr role="row" class="odd">' +
                                             '<td>' + value.id + '</td>' +
                                             '<td>' + value.nombre + '</td>' +
                                             '<td>' + value.serie + '</td>' +
                                             '<td>' + value.numeracion + '</td>' +
+                                            '<td>' + predeterminado + '</td>' +
                                             '<td>' + estado + '</td>' +
                                             '<td><button class="btn btn-warning btn-sm" onclick="updateComprobante(\'' + value.idTipoComprobante + '\')"><i class="fa fa-wrench"></i></button></td>' +
                                             '<td><button class="btn btn-danger btn-sm" onclick="deleteComprobante(\'' + value.idTipoComprobante + '\')"><i class="fa fa-trash"></i></button></td>' +
@@ -301,14 +375,135 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     });
                 }
 
-                function updateComprobante(){
-
+                function crudComprobante() {
+                    if ($("#txtNombre").val().trim() == '') {
+                        tools.AlertWarning("Advertencia:", "Ingrese el nombre del comprobante.");
+                        $("#txtNombre").focus();
+                    } else if ($("#txtSerie").val().trim() == '') {
+                        tools.AlertWarning("Advertencia:", "Ingrese la serie del comprobante.");
+                        $("#txtSerie").focus();
+                    } else if ($("#txtNumeracion").val().trim() == '') {
+                        tools.AlertWarning("Advertencia:", "Ingrese la numeración del comprobante.");
+                        $("#txtNumeracion").focus();
+                    } else if (!tools.isNumeric($("#txtNumeracion").val().trim())) {
+                        tools.AlertWarning("Advertencia:", "Ingrese un valor numérico en campo numeración.");
+                        $("#txtNumeracion").focus();
+                    } else if (parseFloat($("#txtNumeracion").val().trim()) <= 0) {
+                        tools.AlertWarning("Advertencia:", "Ingrese un valor mayor que 0.");
+                        $("#txtNumeracion").focus();
+                    } else {
+                        $.ajax({
+                            url: "../app/compobante/ComprobanteController.php",
+                            method: 'POST',
+                            accepts: "application/json",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                "type": "crud",
+                                "idTipoComprobante": idComprobante,
+                                "nombre": $("#txtNombre").val().trim(),
+                                "serie": $("#txtSerie").val().trim(),
+                                "numeracion": $("#txtNumeracion").val().trim(),
+                                "predeterminado": $("#cbPredeterminado").is(":checked"),
+                                "estado": $("#cbEstado").is(":checked"),
+                            }),
+                            beforeSend: function() {
+                                clearComponents();
+                                tools.ModalAlertInfo("Modulos", "Procesando petición..");
+                            },
+                            success: function(result) {
+                                if (result.estado == 1) {
+                                    tools.ModalAlertSuccess("Modulos", result.mensaje);
+                                    loadInitImpuestos();
+                                } else {
+                                    tools.ModalAlertWarning("Modulos", result.mensaje);
+                                }
+                            },
+                            error: function(error) {
+                                tools.ModalAlertError("Modulos", error.responseText);
+                            }
+                        });
+                    }
                 }
 
-                function deleteComprobante(){
+                function updateComprobante(id) {
+                    $("#modalComprobante").modal("show");
+                    $("#titulo-modal").append('<i class="fa fa-align-left"></i> Editar Comprobante');
 
+                    $.ajax({
+                        url: "../app/compobante/ComprobanteController.php",
+                        method: 'GET',
+                        data: {
+                            "type": "getbyid",
+                            "idComprobante": id
+                        },
+                        beforeSend: function() {
+                            $("#lblTextOverlayComprobante").html("Cargando información...");
+                            $("#divOverlayComprobante").removeClass("d-none");
+                        },
+                        success: function(result) {
+                            if (result.estado == 1) {
+                                idComprobante = id;
+                                $("#txtNombre").val(result.comprobante.nombre);
+                                $("#txtSerie").val(result.comprobante.serie);
+                                $("#txtNumeracion").val(result.comprobante.numeracion);
+                                $("#cbEstado").prop("checked", result.comprobante.estado == 1 ? true : false);
+                                $("#cbPredeterminado").prop("checked", result.comprobante.predeterminado == 1 ? true : false);
+                                $("#divOverlayComprobante").addClass("d-none");
+                            } else {
+                                $("#lblTextOverlayComprobante").html(result.mensaje);
+                            }
+                        },
+                        error: function(error) {
+                            $("#lblTextOverlayComprobante").html(error.responseText);
+                        }
+                    });
                 }
 
+                function deleteComprobante(id) {
+                    tools.ModalDialog('Comprobante', '¿Está seguro de eliminar el comprobante?', 'question', function(result) {
+                        if (result) {
+                            $.ajax({
+                                url: "../app/compobante/ComprobanteController.php",
+                                method: 'POST',
+                                accepts: "application/json",
+                                contentType: "application/json",
+                                data: JSON.stringify({
+                                    "type": "delete",
+                                    "idTipoComprobante": id,
+                                }),
+                                beforeSend: function() {
+                                    clearComponents();
+                                    tools.ModalAlertInfo("Modulos", "Procesando petición..");
+                                },
+                                success: function(result) {
+                                    if (result.estado == 1) {
+                                        tools.ModalAlertSuccess("Modulos", result.mensaje);
+                                        loadInitImpuestos();
+                                    } else {
+                                        tools.ModalAlertWarning("Modulos", result.mensaje);
+                                    }
+                                },
+                                error: function(error) {
+                                    tools.ModalAlertError("Modulos", error.responseText);
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function clearComponents() {
+                    $("#modalComprobante").modal("hide");
+                    $("#titulo-modal").empty();
+
+                    $("#txtNombre").val("");
+                    $("#txtSerie").val("");
+                    $("#txtNumeracion").val("");
+
+                    $("#cbEstado").prop("checked", true);
+                    $("#cbPredeterminado").prop("checked", false);
+
+                    idComprobante = 0;
+                }
             </script>
         </body>
 

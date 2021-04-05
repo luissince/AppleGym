@@ -160,7 +160,7 @@ class ClienteAdo
             m.cantidad, 
             m.precio 
             FROM  membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan
-            WHERE idCliente = ?");
+            WHERE m.idCliente = ? AND m.estado = 1");
             $traspaso->bindValue(1, $dni, PDO::PARAM_STR);
             $traspaso->execute();
 
@@ -196,7 +196,7 @@ class ClienteAdo
             m.cantidad, 
             m.precio 
             FROM  membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan
-            WHERE idCliente = ? AND m.fechafin > NOW()");
+            WHERE idCliente = ? AND m.fechafin > NOW() AND m.estado = 1");
             $membresia->bindValue(1, $idCliente, PDO::PARAM_STR);
             $membresia->execute();
 
