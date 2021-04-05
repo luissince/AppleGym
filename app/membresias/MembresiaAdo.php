@@ -11,7 +11,6 @@ class MembresiaAdo
 
     public static function listarMembresias($opcion, $buscar, $tipo, $x, $y)
     {
-
         try {
             $array = array();
 
@@ -68,6 +67,7 @@ class MembresiaAdo
             OR
             ? = 2 AND ? = 4 AND m.estado = 0
             GROUP BY m.idMembresia
+            ORDER BY v.fecha desc, v.hora desc
             LIMIT ?,?");
             $membresia->bindParam(1, $opcion, PDO::PARAM_INT); //0
 
@@ -120,8 +120,7 @@ class MembresiaAdo
                     "idMembresia" => $row["idMembresia"],
                     "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
-                    "nombres" => $row["nombres"],
-                    "nombres" => $row["nombres"],
+                    "nombres" => $row["nombres"],                   
                     "membresia" => $row["membresia"],
                     "nombrePlan" => $row["nombrePlan"],
                     "serie" => $row["serie"],
@@ -211,6 +210,71 @@ class MembresiaAdo
         }
     }
 
+    public static function listarMembresiasReporte($month, $year)
+    {
+        try {
+            $membresia = Database::getInstance()->getDb()->prepare("SELECT 
+            m.idMembresia,
+            c.dni,
+            c.apellidos,
+            c.nombres,
+            p.nombre AS 'nombrePlan',  
+            v.serie, 
+            v.numeracion, 
+            CASE v.estado
+            WHEN 1 THEN 'PAGADO'
+            WHEN 2 THEN 'PENDIENTE'
+            ELSE 'ANULADO' END AS 'estadoventa',
+            m.tipoMembresia,
+            m.fechaInicio, 
+            m.fechaFin, 
+            CASE 
+            WHEN m.estado = 0 THEN 'Traspaso'
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 'Activa'
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 THEN 'Por Vencer'
+            ELSE 'Finalizada' END AS 'membresia', 
+            m.cantidad, 
+            m.precio, 
+            SUM(m.cantidad*m.precio) AS 'total' 
+            FROM membresiatb AS m
+            INNER JOIN ventatb AS v ON v.idVenta = m.idVenta
+            INNER JOIN plantb AS p ON p.idPlan = m.idPlan
+            INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
+            WHERE 
+            MONTH(v.fecha) = ? AND YEAR(v.fecha) = ?
+            GROUP BY m.idMembresia
+            ORDER BY v.fecha desc, v.hora desc");
+            $membresia->bindParam(1, $month, PDO::PARAM_INT);
+            $membresia->bindParam(2, $year, PDO::PARAM_INT);
+            $membresia->execute();
+
+            $count = 0;
+            $array_membresias = array();
+            while ($row = $membresia->fetch()) {
+                $count++;
+                array_push($array_membresias, array(
+                    "id" => $count,
+                    "idMembresia" => $row["idMembresia"],
+                    "dni" => $row["dni"],
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],                    
+                    "membresia" => $row["membresia"],
+                    "nombrePlan" => $row["nombrePlan"],
+                    "serie" => $row["serie"],
+                    "numeracion" => $row["numeracion"],
+                    "fechaInicio" => $row["fechaInicio"],
+                    "fechaFin" => $row["fechaFin"],
+                    "estadoventa" => $row["estadoventa"],
+                    "total" => floatval($row["total"]),
+                ));
+            }
+
+            return $array_membresias;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public static function getAllMembresiasPorCliente($idCliente, $x, $y)
     {
 
@@ -241,7 +305,8 @@ class MembresiaAdo
             INNER JOIN ventatb as v ON v.idVenta = m.idVenta
             INNER JOIN plantb as p ON p.idPlan = m.idPlan
             where v.cliente=?
-            GROUP BY m.idMembresia");
+            GROUP BY m.idMembresia
+            ORDER BY v.fecha desc, v.hora desc");
             $comando->bindValue(1, $idCliente, PDO::PARAM_STR);
             $comando->execute();
             $arrayDetalle = array();

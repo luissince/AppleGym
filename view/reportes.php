@@ -6,23 +6,18 @@ if (!isset($_SESSION["IdEmpleado"])) {
     if ($_SESSION["Roles"][13]["ver"] == 1) {
 ?>
 
-    <!DOCTYPE html>
-    <html lang="en">
+        <!DOCTYPE html>
+        <html lang="en">
 
-    <head>
-        <?php include './layout/head.php'; ?>
-    </head>
+        <head>
+            <?php include './layout/head.php'; ?>
+        </head>
 
-    <body class="app sidebar-mini">
-        <!-- Navbar-->
-        <?php include "./layout/header.php"; ?>
-        <!-- Sidebar menu-->
-        <?php include "./layout/menu.php"; ?>
-        <main class="app-content">
-
+        <body class="app sidebar-mini">
+            <!-- Navbar-->
+            <?php include "./layout/header.php"; ?>
             <!-- Sidebar menu-->
-            <?php include "./marcarentrada.php"; ?>
-
+            <?php include "./layout/menu.php"; ?>
             <!-- modal de ingresos por fechas -->
             <div class="row">
                 <div class="modal fade show" id="modalIngresos" data-backdrop="static" aria-modal="true">
@@ -405,265 +400,366 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
             <!-- modal de resumen de membresia -->
 
-            <div class="app-title">
-                <div>
-                    <h1><i class="fa fa-bar-chart"></i> Reportes <spam id="loading"></spam>
-                    </h1>
+            <!-- modal de servicios -->
+            <div class="row">
+                <div class="modal fade show" id="modalServicioModal" data-backdrop="static" aria-modal="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                    <i class="fa fa-calendar"></i> Resumen de Servicios/Inscripción
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label for="cbServicios">Servicio/Inscripción: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <select id="cbServicios" style="width: 100%;" class="form-control select2">
+                                                <option value="">- Selecciona -</option>                                               
+                                            </select>
+                                        </div>
+                                    </div>                                    
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-right">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-success" id="btnAceptarServiciosInscripcion">
+                                                <i class="fa fa-file-pdf-o"></i> Generar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <!-- modal de resumen de membresia -->
 
-            <div class="tile mb-4">
+            <main class="app-content">
+                <!-- Sidebar menu-->
+                <?php include "./marcarentrada.php"; ?>
 
-                <div class="row">
-
-                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                        <button class="btn btn-default" id="btnReporteIngresos">
-                            <div class="bs-component">
-                                <div class="card">
-                                    <h5 class="card-header">Reporte de Ingresos - Ventas</h5>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
-                                                <img width="140" src="./images/ingresos.png" alt="Card image">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
+                <div class="app-title">
+                    <div>
+                        <h1><i class="fa fa-bar-chart"></i> Reportes <spam id="loading"></spam>
+                        </h1>
                     </div>
-
-                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                        <button class="btn btn-default" id="btnReporteAsistenciaClientes">
-                            <div class="bs-component">
-                                <div class="card">
-                                    <h5 class="card-header">Reporte de Asistencias - Clientes</h5>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
-                                                <img width="140" src="./images/asistencia.png" alt="Card image">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                        <button class="btn btn-default" id="btnReporteAsistenciaPersonal">
-                            <div class="bs-component">
-                                <div class="card">
-                                    <h5 class="card-header">Reporte de Asistencias - Personal</h5>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
-                                                <img width="140" src="./images/asistencia.png" alt="Card image">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                        <button class="btn btn-default" id="btnReporteMembresia">
-                            <div class="bs-component">
-                                <div class="card">
-                                    <h5 class="card-header">Reporte de Membresias - Mes</h5>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
-                                                <img width="140" src="./images/asistencia.png" alt="Card image">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-
                 </div>
 
-        </main>
-        <!-- Essential javascripts for application to work-->
-        <?php include "./layout/footer.php"; ?>
-        <script>
-            let tools = new Tools();
+                <div class="tile mb-4">
 
-            let fechaInicioIngresos = $("#txtFechaInicioIngreso");
-            let fechaFinalIngresos = $("#txtFechaFinalIngreso");
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                            <button class="btn btn-default" id="btnReporteIngresos">
+                                <div class="bs-component">
+                                    <div class="card">
+                                        <h5 class="card-header">Reporte de Ingresos - Ventas</h5>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                                                    <img width="140" src="./images/ingresos.png" alt="Card image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
 
-            let fechaInicioClientes = $("#txtFechaInicioAsistenciaClientes");
-            let fechaFinalClientes = $("#txtFechaFinalAsistenciaClientes");
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                            <button class="btn btn-default" id="btnReporteAsistenciaClientes">
+                                <div class="bs-component">
+                                    <div class="card">
+                                        <h5 class="card-header">Reporte de Asistencias - Clientes</h5>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                                                    <img width="140" src="./images/asistencia.png" alt="Card image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
 
-            let fechaInicioPersonal = $("#txtFechaInicioAsistenciaPersonal");
-            let fechaFinalPersonal = $("#txtFechaFinalAsistenciaPersonal");
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                            <button class="btn btn-default" id="btnReporteAsistenciaPersonal">
+                                <div class="bs-component">
+                                    <div class="card">
+                                        <h5 class="card-header">Reporte de Asistencias - Personal</h5>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                                                    <img width="140" src="./images/asistencia.png" alt="Card image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
 
-            let monthClientes = $("#cbMonthAsistenciaClientes");
-            let yearClientes = $("#cbYearAsistenciaClientes");
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                            <button class="btn btn-default" id="btnReporteMembresia">
+                                <div class="bs-component">
+                                    <div class="card">
+                                        <h5 class="card-header">Reporte de Membresias - Mes</h5>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                                                    <img width="140" src="./images/asistencia.png" alt="Card image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
 
-            let monthPersonal = $("#cbMonthAsistenciaPersonal");
-            let yearPersonal = $("#cbYearAsistenciaPersonal");
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                            <button class="btn btn-default" id="btnReporteServicio">
+                                <div class="bs-component">
+                                    <div class="card">
+                                        <h5 class="card-header">Reporte de Servicio/Inscripción</h5>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                                                    <img width="140" src="./images/asistencia.png" alt="Card image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
 
-            let monthMembresia = $("#cbMonthMembresia");
-            let yearMembresia = $("#cbYearMembresia");
+            </main>
+            <!-- Essential javascripts for application to work-->
+            <?php include "./layout/footer.php"; ?>
+            <script>
+                let tools = new Tools();
 
-            $(document).ready(function() {
+                let fechaInicioIngresos = $("#txtFechaInicioIngreso");
+                let fechaFinalIngresos = $("#txtFechaFinalIngreso");
 
-                fechaInicioIngresos.val(tools.getCurrentDate());
-                fechaFinalIngresos.val(tools.getCurrentDate());
+                let fechaInicioClientes = $("#txtFechaInicioAsistenciaClientes");
+                let fechaFinalClientes = $("#txtFechaFinalAsistenciaClientes");
 
-                fechaInicioClientes.val(tools.getCurrentDate());
-                fechaFinalClientes.val(tools.getCurrentDate());
+                let fechaInicioPersonal = $("#txtFechaInicioAsistenciaPersonal");
+                let fechaFinalPersonal = $("#txtFechaFinalAsistenciaPersonal");
 
-                fechaInicioPersonal.val(tools.getCurrentDate());
-                fechaFinalPersonal.val(tools.getCurrentDate());
+                let monthClientes = $("#cbMonthAsistenciaClientes");
+                let yearClientes = $("#cbYearAsistenciaClientes");
 
-                monthClientes.val(tools.getCurrentMonth());
-                yearClientes.val(tools.getCurrentYear());
+                let monthPersonal = $("#cbMonthAsistenciaPersonal");
+                let yearPersonal = $("#cbYearAsistenciaPersonal");
 
-                monthPersonal.val(tools.getCurrentMonth());
-                yearPersonal.val(tools.getCurrentYear());
+                let monthMembresia = $("#cbMonthMembresia");
+                let yearMembresia = $("#cbYearMembresia");
 
-                monthMembresia.val(tools.getCurrentMonth());
-                yearMembresia.val(tools.getCurrentYear());
+                $(document).ready(function() {
 
-                //-----------------------------------------------------------------------------------------------------
+                    fechaInicioIngresos.val(tools.getCurrentDate());
+                    fechaFinalIngresos.val(tools.getCurrentDate());
 
-                $("#btnAceptarIngresos").click(function() {
-                    if (tools.validateDate(fechaInicioIngresos.val()) && tools.validateDate(fechaFinalIngresos.val())) {
-                        window.open("../app/reportes/resumeningresos.php?fechaInicial=" + fechaInicioIngresos.val() + "&fechaFinal=" + fechaFinalIngresos.val(), "_blank");
-                    }
-                });
+                    fechaInicioClientes.val(tools.getCurrentDate());
+                    fechaFinalClientes.val(tools.getCurrentDate());
 
-                $("#btnAceptarIngresos").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    fechaInicioPersonal.val(tools.getCurrentDate());
+                    fechaFinalPersonal.val(tools.getCurrentDate());
+
+                    monthClientes.val(tools.getCurrentMonth());
+                    yearClientes.val(tools.getCurrentYear());
+
+                    monthPersonal.val(tools.getCurrentMonth());
+                    yearPersonal.val(tools.getCurrentYear());
+
+                    monthMembresia.val(tools.getCurrentMonth());
+                    yearMembresia.val(tools.getCurrentYear());
+
+                    //-----------------------------------------------------------------------------------------------------
+
+                    $("#btnAceptarIngresos").click(function() {
                         if (tools.validateDate(fechaInicioIngresos.val()) && tools.validateDate(fechaFinalIngresos.val())) {
                             window.open("../app/reportes/resumeningresos.php?fechaInicial=" + fechaInicioIngresos.val() + "&fechaFinal=" + fechaFinalIngresos.val(), "_blank");
                         }
-                    }
-                });
+                    });
 
-                $("#btnReporteIngresos").click(function() {
-                    $("#modalIngresos").modal("show");
-                });
+                    $("#btnAceptarIngresos").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            if (tools.validateDate(fechaInicioIngresos.val()) && tools.validateDate(fechaFinalIngresos.val())) {
+                                window.open("../app/reportes/resumeningresos.php?fechaInicial=" + fechaInicioIngresos.val() + "&fechaFinal=" + fechaFinalIngresos.val(), "_blank");
+                            }
+                        }
+                        event.preventDefault();
+                    });
 
-                $("#btnReporteIngresos").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnReporteIngresos").click(function() {
                         $("#modalIngresos").modal("show");
-                    }
-                });
+                    });
 
-                //-----------------------------------------------------------------------------------------------------
+                    $("#btnReporteIngresos").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            $("#modalIngresos").modal("show");
+                        }
+                        event.preventDefault();
+                    });
 
-                $("#btnAceptarAsistenciaClientes").click(function() {
-                    if (tools.validateDate(fechaInicioClientes.val()) && tools.validateDate(fechaFinalClientes.val())) {
-                        window.open("../app/reportes/resumenasistenciaclientes.php?fechaInicial=" + fechaInicioClientes.val() + "&fechaFinal=" + fechaFinalClientes.val(), "_blank");
-                    }
-                });
+                    //-----------------------------------------------------------------------------------------------------
 
-                $("#btnAceptarAsistenciaClientes").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnAceptarAsistenciaClientes").click(function() {
                         if (tools.validateDate(fechaInicioClientes.val()) && tools.validateDate(fechaFinalClientes.val())) {
                             window.open("../app/reportes/resumenasistenciaclientes.php?fechaInicial=" + fechaInicioClientes.val() + "&fechaFinal=" + fechaFinalClientes.val(), "_blank");
                         }
-                    }
-                });
+                    });
 
-                $("#btnAceptarAsistenciaPorMesClientes").click(function() {
-                    window.open("../app/reportes/resumenasistenciamesclientes.php?month=" + monthClientes.val() + "&year=" + yearClientes.val(), "_blank");
+                    $("#btnAceptarAsistenciaClientes").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            if (tools.validateDate(fechaInicioClientes.val()) && tools.validateDate(fechaFinalClientes.val())) {
+                                window.open("../app/reportes/resumenasistenciaclientes.php?fechaInicial=" + fechaInicioClientes.val() + "&fechaFinal=" + fechaFinalClientes.val(), "_blank");
+                            }
+                        }
+                        event.preventDefault();
+                    });
 
-                });
-
-                $("#btnAceptarAsistenciaPorMesClientes").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnAceptarAsistenciaPorMesClientes").click(function() {
                         window.open("../app/reportes/resumenasistenciamesclientes.php?month=" + monthClientes.val() + "&year=" + yearClientes.val(), "_blank");
+                    });
 
-                    }
-                });
+                    $("#btnAceptarAsistenciaPorMesClientes").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            window.open("../app/reportes/resumenasistenciamesclientes.php?month=" + monthClientes.val() + "&year=" + yearClientes.val(), "_blank");
 
-                $("#btnReporteAsistenciaClientes").click(function() {
-                    $("#modalAsistenciaClientes").modal("show");
-                });
+                        }
+                        event.preventDefault();
+                    });
 
-                $("#btnReporteAsistenciaClientes").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnReporteAsistenciaClientes").click(function() {
                         $("#modalAsistenciaClientes").modal("show");
-                    }
-                });
+                    });
 
-                //-----------------------------------------------------------------------------------------------------
+                    $("#btnReporteAsistenciaClientes").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            $("#modalAsistenciaClientes").modal("show");
+                        }
+                        event.preventDefault();
+                    });
 
-                $("#btnAceptarAsistenciaPersonal").click(function() {
-                    if (tools.validateDate(fechaInicioPersonal.val()) && tools.validateDate(fechaFinalPersonal.val())) {
-                        window.open("../app/reportes/resumenasistenciaempleado.php?fechaInicial=" + fechaInicioPersonal.val() + "&fechaFinal=" + fechaFinalPersonal.val(), "_blank");
-                    }
-                });
+                    //-----------------------------------------------------------------------------------------------------
 
-                $("#btnAceptarAsistenciaPersonal").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnAceptarAsistenciaPersonal").click(function() {
                         if (tools.validateDate(fechaInicioPersonal.val()) && tools.validateDate(fechaFinalPersonal.val())) {
                             window.open("../app/reportes/resumenasistenciaempleado.php?fechaInicial=" + fechaInicioPersonal.val() + "&fechaFinal=" + fechaFinalPersonal.val(), "_blank");
                         }
-                    }
-                });
+                    });
 
-                $("#btnAceptarAsistenciaPorMesPersonal").click(function() {
-                    window.open("../app/reportes/resumenasistenciamesempleados.php?month=" + monthPersonal.val() + "&year=" + yearPersonal.val(), "_blank");
-                });
+                    $("#btnAceptarAsistenciaPersonal").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            if (tools.validateDate(fechaInicioPersonal.val()) && tools.validateDate(fechaFinalPersonal.val())) {
+                                window.open("../app/reportes/resumenasistenciaempleado.php?fechaInicial=" + fechaInicioPersonal.val() + "&fechaFinal=" + fechaFinalPersonal.val(), "_blank");
+                            }
+                        }
+                        event.preventDefault();
+                    });
 
-                $("#btnAceptarAsistenciaPorMesPersonal").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnAceptarAsistenciaPorMesPersonal").click(function() {
                         window.open("../app/reportes/resumenasistenciamesempleados.php?month=" + monthPersonal.val() + "&year=" + yearPersonal.val(), "_blank");
-                    }
-                });
+                    });
 
-                $("#btnReporteAsistenciaPersonal").click(function() {
-                    $("#modalAsistenciaPersonal").modal("show");
-                });
+                    $("#btnAceptarAsistenciaPorMesPersonal").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            window.open("../app/reportes/resumenasistenciamesempleados.php?month=" + monthPersonal.val() + "&year=" + yearPersonal.val(), "_blank");
+                        }
+                        event.preventDefault();
+                    });
 
-                $("#btnReporteAsistenciaPersonal").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnReporteAsistenciaPersonal").click(function() {
                         $("#modalAsistenciaPersonal").modal("show");
-                    }
-                });
+                    });
 
-                //-----------------------------------------------------------------------------------------------------
+                    $("#btnReporteAsistenciaPersonal").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            $("#modalAsistenciaPersonal").modal("show");
+                        }
+                        event.preventDefault();
+                    });
 
-                //resumenmembresias
+                    //-----------------------------------------------------------------------------------------------------
 
-                $("#btnAceptarMembreias").click(function() {
-                    window.open("../app/reportes/resumenmembresias.php?month="+monthMembresia.val()+"&year="+yearMembresia.val(), "_blank");
+                    //resumenmembresias
 
-                });
+                    $("#btnAceptarMembreias").click(function() {
+                        window.open("../app/reportes/resumenmembresias.php?month=" + monthMembresia.val() + "&year=" + yearMembresia.val(), "_blank");
 
-                $("#btnAceptarMembreias").keypress(function(event) {
-                    if (event.keyCode === 13) {
-                        window.open("../app/reportes/resumenmembresias.php?month="+monthMembresia.val()+"&year="+yearMembresia.val(), "_blank");
-                    }
-                });
+                    });
 
-                $("#btnReporteMembresia").click(function() {
-                    $("#modalAsistenciaModal").modal("show");
-                });
+                    $("#btnAceptarMembreias").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            window.open("../app/reportes/resumenmembresias.php?month=" + monthMembresia.val() + "&year=" + yearMembresia.val(), "_blank");
+                        }
+                        event.preventDefault();
+                    });
 
-                $("#btnReporteMembresia").keypress(function(event) {
-                    if (event.keyCode === 13) {
+                    $("#btnReporteMembresia").click(function() {
                         $("#modalAsistenciaModal").modal("show");
-                    }
+                    });
+
+                    $("#btnReporteMembresia").keypress(function(event) {
+                        if (event.keyCode === 13) {
+                            $("#modalAsistenciaModal").modal("show");
+                        }
+                        event.preventDefault();
+                    });
+
+                    //-----------------------------------------------------------------------------------------------------
+                    //inscripción
+                    $("#btnReporteServicio").click(function() {
+                        $("#modalServicioModal").modal("show");
+                        $("#cbServicios").select2();
+                    });
+
+                    $("#btnReporteServicio").keypress(function(event) {
+                        if (event.keyCode == 13) {
+                            $("#modalServicioModal").modal("show");
+                            $("#cbServicios").select2();
+                        }
+                        event.preventDefault();
+                    });
+
+                    $("#cbServicios").change(function(){
+                            console.log("Dd")
+                    });
+
+                    $("#btnAceptarServiciosInscripcion").click(function(){
+
+                    });
+
+                    $("#btnAceptarServiciosInscripcion").keypress(function(event){
+                        if(event.keyCode == 13){
+
+                        }
+                        event.preventDefault();
+                    });
+
                 });
+            </script>
+        </body>
 
-            });
-        </script>
-    </body>
-
-    </html>
+        </html>
 
 <?php
-  } else {
-    echo '<script>location.href = "./bienvenido.php";</script>';
-  }
+    } else {
+        echo '<script>location.href = "./bienvenido.php";</script>';
+    }
 }
-
