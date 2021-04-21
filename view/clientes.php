@@ -182,6 +182,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th class="sorting" style="width: 10%;">Celular</th>
                                                 <th class="sorting" style="width: 10%;">Email</th>
                                                 <th class="sorting" style="width: 15%;">Membresia</th>
+                                                <th class="sorting" style="width: 15%;">Deuda</th>
                                                 <th class="sorting" style="width: 10%;">Descripción</th>
                                                 <th class="sorting" style="width: 5%;">Perfil</th>
                                                 <th class="sorting" style="width: 5%;">Editar</th>
@@ -214,9 +215,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 let editView = "<?php echo $_SESSION["Roles"][5]["actualizar"]; ?>";
                 let deleteView = "<?php echo $_SESSION["Roles"][5]["eliminar"]; ?>";
-
-
-
 
                 $(document).ready(function() {
 
@@ -357,7 +355,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             state = true;
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                             );
                             totalPaginacion = 0;
                         },
@@ -369,7 +367,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                 if (data.clientes.length == 0) {
                                     tbLista.append(
-                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>No hay información para mostrar.</p></td></tr>'
+                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><p>No hay información para mostrar.</p></td></tr>'
                                     );
                                     $("#lblPaginaActual").html(0);
                                     $("#lblPaginaSiguiente").html(0);
@@ -396,13 +394,19 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             '<i class="fa fa-trash"></i>' +
                                             '</button>' : '-';
 
+                                        let membresia = cliente.membresia >= 1 ? '<span class="badge badge-pill badge-success">' + cliente.membresia + " ACTIVA(S)" + '</span><br>' : '';
+                                        let porvencer = cliente.porvencer >= 1 ? '<span class="badge badge-pill badge-warning">' + cliente.porvencer + " POR VENCER" + '</span><br>' : '';
+                                        let vencidas = cliente.vencidas >= 1 ? '<span class="badge badge-pill badge-danger">' + cliente.porvencer + " VENCIDA(S)<br>" + '</span>' : '';
+                                        let traspaso = cliente.traspado >= 1 ? '<span class="badge badge-pill badge-danger">' + cliente.traspado + " TRASPASO(S)" + '</span>' : '';
+
                                         tbLista.append('<tr role="row" class="odd">' +
                                             '<td class="sorting_1">' + cliente.id + '</td>' +
                                             '<td>' + cliente.dni + '</td>' +
                                             '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                                             '<td>' + cliente.celular + '</td>' +
                                             '<td>' + cliente.email + '</td>' +
-                                            '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" : "NINGUNA") + '<br>' + (cliente.deudas >= 1 ? cliente.deudas + " DEUDA(S)" : "NINGUNA") + '</td>' +
+                                            '<td>' + membresia + ' ' + porvencer + ' ' + vencidas +' ' + traspaso + '</td>' +
+                                            '<td>' + (cliente.venta == 1 ? cliente.venta + " deuda(s)" : "0 deudas") + '</td>' +
                                             '<td>' + cliente.descripcion + '</td>' +
                                             '<td>' + btnPerfil + '</td>' +
                                             '<td>' + btnUpdate + '</td>' +
@@ -418,7 +422,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             } else {
                                 tbLista.empty();
                                 tbLista.append(
-                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><p>' +
                                     data.mensaje + '</p></td></tr>');
                                 $("#lblPaginaActual").html(0);
                                 $("#lblPaginaSiguiente").html(0);
@@ -428,7 +432,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         error: function(error) {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><p>' +
                                 error.responseText + '</p></td></tr>');
                             $("#lblPaginaActual").html(0);
                             $("#lblPaginaSiguiente").html(0);

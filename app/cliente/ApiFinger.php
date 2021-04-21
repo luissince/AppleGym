@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo json_encode(array("estado" => 2, "message" => $result));
         }
     } else  if ($_GET["type"] == "searchCliente") {
-        $result = ClienteAdo::marcarEntredaSalida($_GET["idCliente"]);
+        $result = ClienteAdo::marcarEntredaSalida($_GET["idCliente"], $_GET["estado"], $_GET["persona"]);
         if ($result == "salida") {
             echo json_encode(array("estado" => 1, "message" => "Se marco su salida correctamente."));
         } else if ($result == "entrada") {

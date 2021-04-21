@@ -3,12 +3,12 @@ function ModalTraspaso() {
     let tbMembresiaTraspaso = $("#tbMembresiaTraspaso");
     let cbListaMembresiaCliente = $("#cbListaMembresiaCliente");
 
-    this.init = function () {
-        $("#btnCloseModalTraspaso").click(function () {
+    this.init = function() {
+        $("#btnCloseModalTraspaso").click(function() {
             $("#modalTraspaso").modal("hide")
         });
 
-        $("#btnTraspaso").click(function () {
+        $("#btnTraspaso").click(function() {
             if (idCliente == '') {
                 tools.AlertWarning("Ventas: ", "Seleccione un cliente.");
             } else {
@@ -19,7 +19,7 @@ function ModalTraspaso() {
 
         $("#cbClienteTraspaso").append('<option value="">- Seleccione un Cliente-</option>');
 
-        $('#cbClienteTraspaso').on('select2:select', function (e) {
+        $('#cbClienteTraspaso').on('select2:select', function(e) {
             var data = e.params.data;
             tablaCLienteTraspaso(data.id);
         });
@@ -35,14 +35,14 @@ function ModalTraspaso() {
                 "type": "listatraspaso",
                 "idCliente": idCliente
             },
-            beforeSend: function () {
+            beforeSend: function() {
                 $("#lblTextOverlayTraspaso").html("Cargando información...");
                 $("#divOverlayTraspaso").removeClass("d-none");
                 $('#cbClienteTraspaso').empty();
                 tbMembresiaTraspaso.empty();
                 cbListaMembresiaCliente.empty();
             },
-            success: function (result) {
+            success: function(result) {
                 let data = result;
                 if (data.estado == 1) {
                     $("#cbClienteTraspaso").append('<option value="">- Seleccione un Cliente -</option>');
@@ -57,7 +57,7 @@ function ModalTraspaso() {
                     $("#lblTextOverlayTraspaso").html(result.mensaje);
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 $("#cbClienteTraspaso").append('<option value="">- Seleccione un Cliente -</option>');
                 $("#lblTextOverlayTraspaso").html(error.responseText);
             }
@@ -73,29 +73,24 @@ function ModalTraspaso() {
                 "dni": dni,
                 "idCliente": idCliente
             },
-            beforeSend: function () {
+            beforeSend: function() {
                 tbMembresiaTraspaso.empty();
                 tbMembresiaTraspaso.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                 );
                 cbListaMembresiaCliente.empty();
             },
-            success: function (result) {
+            success: function(result) {
                 let data = result;
-                console.log(data)
                 tbMembresiaTraspaso.empty();
                 if (data.estado == 1) {
                     if (data.traspasos.length == 0) {
                         tbMembresiaTraspaso.append(
                             '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
                         );
-
-                        tbMembresiaCliente.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
-                        );
                     } else {
                         for (let value of data.traspasos) {
-                            let Costo = '<input class= "form-control" type="number" placeholder="Precio S/." id="' + value.idMembresia + '">';
+                            let Costo = '<input class= "form-control" type="text" onkeypress="onKeyPressTable(this)" placeholder="Precio S/." id="' + value.idMembresia + '">';
                             let traspaso = '<button class="btn btn-success" type="button" onclick="addTraspaso(\'' + value.idMembresia + '\',\'' + value.plan + '\',\'' + value.fechaInicio + '\',\'' + value.fechaFin + '\')"><i class="fa fa-sign-in"></i>Traspaso</button>';
                             tbMembresiaTraspaso.append('<tr role="row" class="odd">' +
                                 '<td>' + value.id + '</td>' +
@@ -110,7 +105,7 @@ function ModalTraspaso() {
 
                         cbListaMembresiaCliente.append('<option value="">- Seleccione una membresia -</option>');
                         for (let value of data.membresias) {
-                            cbListaMembresiaCliente.append('<option value="' + value.idMembresia + '">' + value.plan + " (" + value.dias + " día(s) para finalizar)" + '</option>');
+                            cbListaMembresiaCliente.append('<option value="' + value.idMembresia + '">' + value.plan + " (" + (value.membresia == 1 ? 'ACTIVO' : value.membresia == 2 ? 'POR VENCER' : value.membresia == 3 ? 'TRASPASO' : 'VENCIDO') + ")" + '</option>');
                         }
                         cbListaMembresiaCliente.select2();
                     }
@@ -120,7 +115,7 @@ function ModalTraspaso() {
                     );
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 tbMembresiaTraspaso.empty();
                 tbMembresiaTraspaso.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' + error.responseText + '</p></td></tr>'
@@ -129,17 +124,27 @@ function ModalTraspaso() {
         });
     }
 
-    addTraspaso = function (idMembresia, plan, fechaInicio, fechaFinal) {
+    onKeyPressTable = function(value) {
+        var key = window.Event ? event.which : event.keyCode;
+        var c = String.fromCharCode(key);
+        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+            event.preventDefault();
+        }
+        if (c == '.' && value.value.includes(".")) {
+            event.preventDefault();
+        }
+    }
+
+
+    addTraspaso = function(idMembresia, plan, fechaInicio, fechaFinal) {
         let txtCosto = $("#" + idMembresia);
-        console.log($('#cbListaMembresiaCliente').has('option').length)
         if (!tools.isNumeric(txtCosto.val())) {
             tools.AlertWarning("Traspaso: ", "Ingrese un Precio.")
             txtCosto.focus();
         } else if ($('#cbListaMembresiaCliente').has('option').length <= 0 || $('#cbListaMembresiaCliente').val() == '') {
             tools.AlertWarning("Traspaso: ", "Seleccione la membresia a utilizar.")
             $('#cbListaMembresiaCliente').focus();
-        }
-        else {
+        } else {
             if (!validateDatelleVenta(idMembresia)) {
                 listaVenta.push({
                     "idPlan": idMembresia,

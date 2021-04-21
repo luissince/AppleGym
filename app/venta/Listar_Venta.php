@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             ));
         }
     } else if ($opcion == 6) {
-        $asistencias = VentaAdo::getAsistemcias($_GET["idCliente"]);
+        $asistencias = VentaAdo::getAsistencias($_GET["idCliente"]);
         if (is_array($asistencias)) {
             print json_encode(array(
                 "estado" => 1,

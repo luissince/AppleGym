@@ -47,6 +47,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 <!-- modal clientes traspaso -->
                 <?php include('./layout/puntoventa/modaltraspaso.php'); ?>
 
+                <!-- modal clientes traspaso -->
+                <?php include('./layout/puntoventa/modalactivacion.php'); ?>
+
+                <!-- modal clientes traspaso -->
+                <?php include('./layout/puntoventa/modalrenovacion.php'); ?>
+
                 <div class="tile">
 
                     <div class="overlay" id="divOverlayPuntoVenta">
@@ -70,8 +76,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 Producto/Servicio</button>
                                             <button class="btn btn-success" type="button" id="btnTraspaso"><i class="fa fa-sign-in"></i>
                                                 Traspaso</button>
-                                            <!-- <button class="btn btn-success" type="button" id="btnProductos"><i class="fa fa-pencil-square-o"></i>
-                                                Renovar</button> -->
+                                            <button class="btn btn-success" type="button" id="btnActivacion"><i class="fa fa-external-link-square"></i>
+                                                Activación</button>
+                                            <button class="btn btn-success" type="button" id="btnRenovar"><i class="fa fa-pencil-square-o"></i>
+                                                Renovar</button>
 
                                         </div>
                                         <div class="form-group d-flex">
@@ -172,6 +180,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <script src="js/puntoventa/modallistaplanes.js"></script>
             <script src="js/puntoventa/modallistaproductos.js"></script>
             <script src="js/puntoventa/modaltraspaso.js"></script>
+            <script src="js/puntoventa/modalactivacion.js"></script>
+            <script src="js/puntoventa/modalrenovacion.js"></script>
             <script src="js/puntoventa/modalpagar.js"></script>
             <script>
                 let tools = new Tools();
@@ -180,6 +190,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 let modalListaPlanes = new ModalListaPlanes();
                 let modalListaProductos = new ModalListaProductos();
                 let modalTraspaso = new ModalTraspaso();
+                let modalActivacion = new ModalActivacion();
+                let modalRenovacion = new ModalRenovacion();
                 let mondalPagar = new ModalPagar();
 
                 let listaVenta = [];
@@ -198,6 +210,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     modalListaPlanes.init();
                     modalListaProductos.init();
                     modalTraspaso.init();
+                    modalActivacion.init();
+                    modalRenovacion.init();
                     mondalPagar.init();
 
                     $("#txtNumeracion").keypress(function() {
@@ -306,6 +320,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#clienteDatos").val("");
                     listaVenta = [];
                     listarPlanes = [];
+                    planActivacion = {};
+                    listarPlanesActivacion = [];
+                    listarPlanNormal = [];
+                    planNormal = {};
+                    listaPlanesRenovar = [];
+                    planRenovar = {};
                     listarDetalleVenta();
                     $("#monto").val("");
                     $("#vuelto").val("");
@@ -319,7 +339,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 function clearPlanes() {
                     $("#modalPlan").modal("hide");
                     $("#plan").val("");
-                    $("#Membresia").val("");
                     $("#cantidad").val("1");
                     $("#descuento").val("0");
 

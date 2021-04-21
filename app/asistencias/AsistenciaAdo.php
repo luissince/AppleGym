@@ -19,15 +19,15 @@ class AsistenciaAdo
             $idAsistencia = $codigoAsistencia->fetchColumn();
 
             $executeAsistencia = Database::getInstance()->getDb()->prepare("INSERT INTO asistenciatb ( " .
-            "idAsistencia," .
-            "fechaApertura," .
-            "fechaCierre," .
-            "horaApertura," .
-            "horaCierre," .
-            "estado," .
-            "idPersona," .
-            "tipoPersona)" .
-            " VALUES(?,?,?,?,?,?,?,?)");
+                "idAsistencia," .
+                "fechaApertura," .
+                "fechaCierre," .
+                "horaApertura," .
+                "horaCierre," .
+                "estado," .
+                "idPersona," .
+                "tipoPersona)" .
+                " VALUES(?,?,?,?,?,?,?,?)");
             $executeAsistencia->execute(
                 array(
                     $idAsistencia,
@@ -161,7 +161,7 @@ class AsistenciaAdo
             FROM clientetb AS c INNER JOIN asistenciatb as a 
             ON a.idPersona = c.idCliente 
             WHERE fechaApertura BETWEEN ? AND ? AND tipoPersona = 1
-            ORDER BY c.apellidos ASC, c.nombres ASC");
+            ORDER BY a.fechaApertura DESC, a.horaApertura DESC");
             $comando->bindValue(1, $fechaInicio, PDO::PARAM_STR);
             $comando->bindValue(2, $fechaFinal, PDO::PARAM_STR);
             $comando->execute();
@@ -200,7 +200,7 @@ class AsistenciaAdo
             FROM empleadotb AS c INNER JOIN asistenciatb as a 
             ON a.idPersona = c.idEmpleado  
             WHERE fechaApertura BETWEEN ? AND ? AND tipoPersona = 2
-            ORDER BY c.apellidos ASC, c.nombres ASC");
+            ORDER BY a.fechaApertura ASC, a.horaApertura ASC");
             $comando->bindValue(1, $fechaInicio, PDO::PARAM_STR);
             $comando->bindValue(2, $fechaFinal, PDO::PARAM_STR);
             $comando->execute();
@@ -266,25 +266,85 @@ class AsistenciaAdo
     {
         try {
             $array = array();
-            $cmdLista = Database::getInstance()->getDb()->prepare("SELECT  
+            $cmdLista = Database::getInstance()->getDb()->prepare("SELECT 
+            a.idPersona,
             c.dni,
             c.apellidos,
             c.nombres,
-            a.fechaApertura
-            FROM clientetb AS c INNER JOIN asistenciatb as a 
-            ON a.idPersona = c.idCliente  
-            WHERE MONTH(a.fechaApertura) = $month AND YEAR(a.fechaApertura) = $year");
+            MAX(CASE WHEN day(fechaApertura) = 1 THEN 1 ELSE 0 END) AS '1',
+            MAX(CASE WHEN day(fechaApertura) = 2 THEN 2 ELSE 0 END) AS '2',
+            MAX(CASE WHEN day(fechaApertura) = 3 THEN 3 ELSE 0 END) AS '3',
+            MAX(CASE WHEN day(fechaApertura) = 4 THEN 4 ELSE 0 END) AS '4',
+            MAX(CASE WHEN day(fechaApertura) = 5 THEN 5 ELSE 0 END) AS '5',
+            MAX(CASE WHEN day(fechaApertura) = 6 THEN 6 ELSE 0 END) AS '6',
+            MAX(CASE WHEN day(fechaApertura) = 7 THEN 7 ELSE 0 END) AS '7',
+            MAX(CASE WHEN day(fechaApertura) = 8 THEN 8 ELSE 0 END) AS '8',
+            MAX(CASE WHEN day(fechaApertura) = 9 THEN 9 ELSE 0 END) AS '9',
+            MAX(CASE WHEN day(fechaApertura) = 10 THEN 10 ELSE 0 END) AS '10',
+            MAX(CASE WHEN day(fechaApertura) = 11 THEN 11 ELSE 0 END) AS '11',
+            MAX(CASE WHEN day(fechaApertura) = 12 THEN 12 ELSE 0 END) AS '12',
+            MAX(CASE WHEN day(fechaApertura) = 13 THEN 13 ELSE 0 END) AS '13',
+            MAX(CASE WHEN day(fechaApertura) = 14 THEN 14 ELSE 0 END) AS '14',
+            MAX(CASE WHEN day(fechaApertura) = 15 THEN 15 ELSE 0 END) AS '15',
+            MAX(CASE WHEN day(fechaApertura) = 16 THEN 16 ELSE 0 END) AS '16',
+            MAX(CASE WHEN day(fechaApertura) = 17 THEN 17 ELSE 0 END) AS '17',
+            MAX(CASE WHEN day(fechaApertura) = 18 THEN 18 ELSE 0 END) AS '18',
+            MAX(CASE WHEN day(fechaApertura) = 19 THEN 19 ELSE 0 END) AS '19',
+            MAX(CASE WHEN day(fechaApertura) = 20 THEN 20 ELSE 0 END) AS '20',
+            MAX(CASE WHEN day(fechaApertura) = 21 THEN 21 ELSE 0 END) AS '21',
+            MAX(CASE WHEN day(fechaApertura) = 22 THEN 22 ELSE 0 END) AS '22',
+            MAX(CASE WHEN day(fechaApertura) = 23 THEN 23 ELSE 0 END) AS '23',
+            MAX(CASE WHEN day(fechaApertura) = 24 THEN 24 ELSE 0 END) AS '24',
+            MAX(CASE WHEN day(fechaApertura) = 26 THEN 25 ELSE 0 END) AS '25',
+            MAX(CASE WHEN day(fechaApertura) = 26 THEN 26 ELSE 0 END) AS '26',
+            MAX(CASE WHEN day(fechaApertura) = 27 THEN 27 ELSE 0 END) AS '27',
+            MAX(CASE WHEN day(fechaApertura) = 28 THEN 28 ELSE 0 END) AS '28',
+            MAX(CASE WHEN day(fechaApertura) = 29 THEN 29 ELSE 0 END) AS '29',
+            MAX(CASE WHEN day(fechaApertura) = 30 THEN 30 ELSE 0 END) AS '30',
+            MAX(CASE WHEN day(fechaApertura) = 31 THEN 31 ELSE 0 END) AS '31'
+            FROM asistenciatb AS a INNER JOIN clientetb AS c ON  c.idCliente = a.idPersona
+            WHERE MONTH(a.fechaApertura) = $month AND YEAR(a.fechaApertura) = $year
+           GROUP BY idPersona");
             $cmdLista->execute();
 
             $count = 0;
             while ($row = $cmdLista->fetch()) {
                 $count++;
-                $date = new DateTime($row["fechaApertura"]);
                 array_push($array, array(
                     "id" => $count,
                     "dni" => $row["dni"],
                     "cliente" => $row["apellidos"] . ' ' . $row["nombres"],
-                    "dia" => $date->format("d")
+                    "dia1" => $row["1"],
+                    "dia2" => $row["2"],
+                    "dia3" => $row["3"],
+                    "dia4" => $row["4"],
+                    "dia5" => $row["5"],
+                    "dia6" => $row["6"],
+                    "dia7" => $row["7"],
+                    "dia8" => $row["8"],
+                    "dia9" => $row["9"],
+                    "dia10" => $row["10"],
+                    "dia11" => $row["11"],
+                    "dia12" => $row["12"],
+                    "dia13" => $row["13"],
+                    "dia14" => $row["14"],
+                    "dia15" => $row["15"],
+                    "dia16" => $row["16"],
+                    "dia17" => $row["17"],
+                    "dia18" => $row["18"],
+                    "dia19" => $row["19"],
+                    "dia20" => $row["20"],
+                    "dia21" => $row["21"],
+                    "dia22" => $row["22"],
+                    "dia23" => $row["23"],
+                    "dia24" => $row["24"],
+                    "dia25" => $row["25"],
+                    "dia26" => $row["26"],
+                    "dia27" => $row["27"],
+                    "dia28" => $row["28"],
+                    "dia29" => $row["29"],
+                    "dia30" => $row["30"],
+                    "dia31" => $row["31"],
                 ));
             }
 
@@ -298,25 +358,85 @@ class AsistenciaAdo
     {
         try {
             $array = array();
-            $cmdLista = Database::getInstance()->getDb()->prepare("SELECT  
+            $cmdLista = Database::getInstance()->getDb()->prepare("SELECT 
+            a.idPersona,
             c.numeroDocumento,
             c.apellidos,
             c.nombres,
-            a.fechaApertura
-            FROM empleadotb AS c INNER JOIN asistenciatb as a 
-            ON a.idPersona = c.idEmpleado   
-            WHERE MONTH(a.fechaApertura) = $month AND YEAR(a.fechaApertura) = $year");
+            MAX(CASE WHEN day(fechaApertura) = 1 THEN 1 ELSE 0 END) AS '1',
+            MAX(CASE WHEN day(fechaApertura) = 2 THEN 2 ELSE 0 END) AS '2',
+            MAX(CASE WHEN day(fechaApertura) = 3 THEN 3 ELSE 0 END) AS '3',
+            MAX(CASE WHEN day(fechaApertura) = 4 THEN 4 ELSE 0 END) AS '4',
+            MAX(CASE WHEN day(fechaApertura) = 5 THEN 5 ELSE 0 END) AS '5',
+            MAX(CASE WHEN day(fechaApertura) = 6 THEN 6 ELSE 0 END) AS '6',
+            MAX(CASE WHEN day(fechaApertura) = 7 THEN 7 ELSE 0 END) AS '7',
+            MAX(CASE WHEN day(fechaApertura) = 8 THEN 8 ELSE 0 END) AS '8',
+            MAX(CASE WHEN day(fechaApertura) = 9 THEN 9 ELSE 0 END) AS '9',
+            MAX(CASE WHEN day(fechaApertura) = 10 THEN 10 ELSE 0 END) AS '10',
+            MAX(CASE WHEN day(fechaApertura) = 11 THEN 11 ELSE 0 END) AS '11',
+            MAX(CASE WHEN day(fechaApertura) = 12 THEN 12 ELSE 0 END) AS '12',
+            MAX(CASE WHEN day(fechaApertura) = 13 THEN 13 ELSE 0 END) AS '13',
+            MAX(CASE WHEN day(fechaApertura) = 14 THEN 14 ELSE 0 END) AS '14',
+            MAX(CASE WHEN day(fechaApertura) = 15 THEN 15 ELSE 0 END) AS '15',
+            MAX(CASE WHEN day(fechaApertura) = 16 THEN 16 ELSE 0 END) AS '16',
+            MAX(CASE WHEN day(fechaApertura) = 17 THEN 17 ELSE 0 END) AS '17',
+            MAX(CASE WHEN day(fechaApertura) = 18 THEN 18 ELSE 0 END) AS '18',
+            MAX(CASE WHEN day(fechaApertura) = 19 THEN 19 ELSE 0 END) AS '19',
+            MAX(CASE WHEN day(fechaApertura) = 20 THEN 20 ELSE 0 END) AS '20',
+            MAX(CASE WHEN day(fechaApertura) = 21 THEN 21 ELSE 0 END) AS '21',
+            MAX(CASE WHEN day(fechaApertura) = 22 THEN 22 ELSE 0 END) AS '22',
+            MAX(CASE WHEN day(fechaApertura) = 23 THEN 23 ELSE 0 END) AS '23',
+            MAX(CASE WHEN day(fechaApertura) = 24 THEN 24 ELSE 0 END) AS '24',
+            MAX(CASE WHEN day(fechaApertura) = 26 THEN 25 ELSE 0 END) AS '25',
+            MAX(CASE WHEN day(fechaApertura) = 26 THEN 26 ELSE 0 END) AS '26',
+            MAX(CASE WHEN day(fechaApertura) = 27 THEN 27 ELSE 0 END) AS '27',
+            MAX(CASE WHEN day(fechaApertura) = 28 THEN 28 ELSE 0 END) AS '28',
+            MAX(CASE WHEN day(fechaApertura) = 29 THEN 29 ELSE 0 END) AS '29',
+            MAX(CASE WHEN day(fechaApertura) = 30 THEN 30 ELSE 0 END) AS '30',
+            MAX(CASE WHEN day(fechaApertura) = 31 THEN 31 ELSE 0 END) AS '31'
+            FROM asistenciatb AS a INNER JOIN empleadotb AS c ON  c.idEmpleado = a.idPersona
+            WHERE MONTH(a.fechaApertura) = $month AND YEAR(a.fechaApertura) = $year
+            GROUP BY idPersona");
             $cmdLista->execute();
 
             $count = 0;
             while ($row = $cmdLista->fetch()) {
                 $count++;
-                $date = new DateTime($row["fechaApertura"]);
                 array_push($array, array(
                     "id" => $count,
                     "dni" => $row["numeroDocumento"],
                     "cliente" => $row["apellidos"] . ' ' . $row["nombres"],
-                    "dia" => $date->format("d")
+                    "dia1" => $row["1"],
+                    "dia2" => $row["2"],
+                    "dia3" => $row["3"],
+                    "dia4" => $row["4"],
+                    "dia5" => $row["5"],
+                    "dia6" => $row["6"],
+                    "dia7" => $row["7"],
+                    "dia8" => $row["8"],
+                    "dia9" => $row["9"],
+                    "dia10" => $row["10"],
+                    "dia11" => $row["11"],
+                    "dia12" => $row["12"],
+                    "dia13" => $row["13"],
+                    "dia14" => $row["14"],
+                    "dia15" => $row["15"],
+                    "dia16" => $row["16"],
+                    "dia17" => $row["17"],
+                    "dia18" => $row["18"],
+                    "dia19" => $row["19"],
+                    "dia20" => $row["20"],
+                    "dia21" => $row["21"],
+                    "dia22" => $row["22"],
+                    "dia23" => $row["23"],
+                    "dia24" => $row["24"],
+                    "dia25" => $row["25"],
+                    "dia26" => $row["26"],
+                    "dia27" => $row["27"],
+                    "dia28" => $row["28"],
+                    "dia29" => $row["29"],
+                    "dia30" => $row["30"],
+                    "dia31" => $row["31"],
                 ));
             }
 
@@ -325,5 +445,4 @@ class AsistenciaAdo
             return $e->getMessage();
         }
     }
-
 }

@@ -1,8 +1,8 @@
 function ModalPagar() {
 
-    this.init = function () {
+    this.init = function() {
 
-        $("#btnCobrar").click(function () {
+        $("#btnCobrar").click(function() {
             if (listaVenta.length == 0) {
                 tools.AlertWarning("Ventas: ", "Agregué un plan o producto/servicio para continuar.");
             } else if (idCliente == '') {
@@ -20,15 +20,15 @@ function ModalPagar() {
             }
         });
 
-        $("#btnCancelModal").click(function () {
+        $("#btnCancelModal").click(function() {
             $("#modalCobro").modal("hide")
         });
 
-        $("#btnCloseModal").click(function () {
+        $("#btnCloseModal").click(function() {
             $("#modalCobro").modal("hide")
         });
 
-        $("#monto").keypress(function () {
+        $("#monto").keypress(function() {
             var key = window.Event ? event.which : event.keyCode;
             var c = String.fromCharCode(key);
             if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
@@ -39,7 +39,7 @@ function ModalPagar() {
             }
         });
 
-        $("#montocreditotarjeta").keypress(function () {
+        $("#montocreditotarjeta").keypress(function() {
             var key = window.Event ? event.which : event.keyCode;
             var c = String.fromCharCode(key);
             if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
@@ -50,7 +50,7 @@ function ModalPagar() {
             }
         });
 
-        $("#monto").keyup(function (event) {
+        $("#monto").keyup(function(event) {
             if (tools.isNumeric($("#monto").val())) {
                 montoCambio = Math.abs(parseFloat(total) - parseFloat($("#monto").val()));
                 $("#vuelto").val(tools.formatMoney(montoCambio));
@@ -65,14 +65,14 @@ function ModalPagar() {
             }
         });
 
-        $("#btnGuardarModal").click(function () {
+        $("#btnGuardarModal").click(function() {
             registrarVenta();
         });
 
-        $("#btnPlazos").click(function () {
+        $("#btnPlazos").click(function() {
             let currentDate = Date.now();
             $("#tvPlazos").append('<tr id="' + currentDate + '">' +
-                '<td><input class="form-control form-control-sm" type="number" /></td>' +
+                '<td><input class="form-control form-control-sm" type="text" onkeypress="onKeyPressTable(this)" /></td>' +
                 '<td><input class="form-control form-control-sm" type="date" /></td>' +
                 '<td><div class="text-center"><input type="checkbox" /></div></td>' +
                 '<td><button class="btn btn-danger" onclick="removePlazos(\'' + currentDate + '\')"><i class="fa fa-trash"></i></button></td>' +
@@ -81,8 +81,19 @@ function ModalPagar() {
 
     }
 
-    removePlazos = function (idPlazos) {
+    removePlazos = function(idPlazos) {
         $("#" + idPlazos).remove();
+    }
+
+    onKeyPressTable = function(value) {
+        var key = window.Event ? event.which : event.keyCode;
+        var c = String.fromCharCode(key);
+        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+            event.preventDefault();
+        }
+        if (c == '.' && value.value.includes(".")) {
+            event.preventDefault();
+        }
     }
 
     function registrarVenta() {
@@ -95,7 +106,7 @@ function ModalPagar() {
                     tools.AlertWarning("Venta: ", "El monto ingresado es menor que el total.");
                     $("#monto").focus();
                 } else {
-                    tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function (value) {
+                    tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
                         if (value) {
                             $.ajax({
                                 url: "../app/venta/RegistrarVenta.php",
@@ -118,20 +129,20 @@ function ModalPagar() {
                                     "estado": 1,
                                     "lista": listaVenta,
                                 }),
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $("#modalCobro").modal("hide");
                                     clearComponents();
                                     clearPlanes();
                                     tools.ModalAlertInfo('Venta', 'Procesando petición...');
                                 },
-                                success: function (result) {
+                                success: function(result) {
                                     if (result.estado == 1) {
                                         tools.ModalAlertSuccess('Venta', result.mensaje);
                                     } else {
                                         tools.ModalAlertWarning('Venta', result.mensaje);
                                     }
                                 },
-                                error: function (error) {
+                                error: function(error) {
                                     tools.ModalAlertError('Venta', error.responseText);
                                 }
                             });
@@ -146,7 +157,7 @@ function ModalPagar() {
                     tools.AlertWarning("Venta: ", "Ingrese número de la operación.");
                     $("#numerotarjeta").focus();
                 } else {
-                    tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function (value) {
+                    tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
                         if (value) {
                             $.ajax({
                                 url: "../app/venta/RegistrarVenta.php",
@@ -169,20 +180,20 @@ function ModalPagar() {
                                     "estado": 1,
                                     "lista": listaVenta
                                 }),
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $("#modalCobro").modal("hide");
                                     clearComponents();
                                     clearPlanes();
                                     tools.ModalAlertInfo('Venta', 'Procesando petición...');
                                 },
-                                success: function (result) {
+                                success: function(result) {
                                     if (result.estado == 1) {
                                         tools.ModalAlertSuccess('Venta', result.mensaje);
                                     } else {
                                         tools.ModalAlertWarning('Venta', result.mensaje);
                                     }
                                 },
-                                error: function (error) {
+                                error: function(error) {
                                     tools.ModalAlertError('Venta', error.responseText);
                                 }
                             });
@@ -199,7 +210,7 @@ function ModalPagar() {
                 let valueFecha = 0;
                 let valueInicial = 0;
                 let sumMonto = 0;
-                $("#tvPlazos tr").each(function (row, tr) {
+                $("#tvPlazos tr").each(function(row, tr) {
                     let montoet = $(tr).find("td:eq(0)").find("input").val();
                     let fechet = $(tr).find("td:eq(1)").find("input").val();
                     let initet = $(tr).find("td:eq(2)").find('input[type="checkbox"]').is(':checked');
@@ -228,7 +239,7 @@ function ModalPagar() {
                     tools.AlertWarning("Ventas: ", "Ingrese el número de la operación");
                     $("#numerocreditotarjeta").focus();
                 } else {
-                    tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function (value) {
+                    tools.ModalDialog('Venta', '¿Está seguro de continuar?', 'question', function(value) {
                         if (value) {
                             $.ajax({
                                 url: "../app/venta/RegistrarVenta.php",
@@ -252,20 +263,20 @@ function ModalPagar() {
                                     "lista": listaVenta,
                                     "credito": listaCredito
                                 }),
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $("#modalCobro").modal("hide");
                                     clearComponents();
                                     clearPlanes();
                                     tools.ModalAlertInfo('Venta', 'Procesando petición...');
                                 },
-                                success: function (result) {
+                                success: function(result) {
                                     if (result.estado == 1) {
                                         tools.ModalAlertSuccess('Venta', result.mensaje);
                                     } else {
                                         tools.ModalAlertWarning('Venta', result.mensaje);
                                     }
                                 },
-                                error: function (error) {
+                                error: function(error) {
                                     tools.ModalAlertError('Venta', error.responseText);
                                 }
                             });

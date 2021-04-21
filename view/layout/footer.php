@@ -142,7 +142,7 @@
                                                     'fechaCierre': null,
                                                     'horaApertura': tools.getCurrentTime(),
                                                     'horaCierre': null,
-                                                    'estado': 1,
+                                                    'estado': 0,
                                                     'idPersona': result.cliente.idCliente,
                                                     'tipoPersona': 1,
                                                 }),

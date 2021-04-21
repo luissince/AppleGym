@@ -9,12 +9,7 @@ class DisciplinaAdo
     {
     }
 
-    /**
-     * Insertar un nueva disciplina
-     *   
-     * @param $body Array que contiene la información de la disciplina
-     * @return string
-     */
+   
     public static function crudDisciplina($body)
     {
 
@@ -77,18 +72,17 @@ class DisciplinaAdo
 
     public static function delete($body)
     {
-        $consulta = "DELETE FROM disciplinatb WHERE idDisciplina = ?";
         try {
             Database::getInstance()->getDb()->beginTransaction();
 
             $validate = Database::getInstance()->getDb()->prepare("SELECT * FROM plantb_disciplinatb WHERE idDisciplina = ? ");
             $validate->execute(array($body['idDisciplina']));
 
-            if ($validate->rowCount() >= 1) {
+            if ($validate->fetch()) {
                 Database::getInstance()->getDb()->rollback();
                 return "registrado";
             } else {
-                $sentencia = Database::getInstance()->getDb()->prepare($consulta);
+                $sentencia = Database::getInstance()->getDb()->prepare("DELETE FROM disciplinatb WHERE idDisciplina = ?");
                 $sentencia->execute(array($body['idDisciplina']));
                 Database::getInstance()->getDb()->commit();
                 return "deleted";
@@ -131,50 +125,19 @@ class DisciplinaAdo
             $totalDisciplinas = $comando->fetchColumn();
             array_push($array, $arrayDisciplina, $totalDisciplinas);
             return $array;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
 
     public static function getDisciplinaById($idDisciplina)
     {
-        $consulta = "SELECT idDisciplina ,nombre,color,descripcion,estado FROM disciplinatb WHERE idDisciplina = ?";
         try {
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->execute(array($idDisciplina['idDisciplina']));
+            $comando = Database::getInstance()->getDb()->prepare("SELECT idDisciplina ,nombre,color,descripcion,estado FROM disciplinatb WHERE idDisciplina = ?");
+            $comando->execute(array($idDisciplina));
             return $comando->fetchObject();
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
-        }
-    }
-
-    public static function getAllDatosSearch($datos, $x, $y)
-    {
-        $consulta = "SELECT * FROM disciplinatb WHERE nombre LIKE ? LIMIT ?,?";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindValue(1, "$datos%", PDO::PARAM_STR);
-            $comando->bindValue(2, $x, PDO::PARAM_INT);
-            $comando->bindValue(3, $y, PDO::PARAM_INT);
-            // Ejecutar sentencia preparada
-            $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public static function getAllDatosForSelect()
-    {
-        $consulta = "SELECT idDisciplina,nombre FROM disciplinatb";
-        try {
-            // Preparar sentencia
-            $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->execute();
-            return $comando->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $ex) {
-            return $ex->getMessage();
         }
     }
 }

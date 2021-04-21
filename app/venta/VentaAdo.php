@@ -50,7 +50,6 @@ class VentaAdo
             . "idMembresia,"
             . "idPlan,"
             . "idCliente,"
-            . "idVenta,"
             . "fechaInicio,"
             . "horaInicio,"
             . "fechaFin,"
@@ -60,7 +59,7 @@ class VentaAdo
             . "cantidad,"
             . "precio,"
             . "descuento)"
-            . "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            . "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             Database::getInstance()->getDb()->beginTransaction();
@@ -148,28 +147,24 @@ class VentaAdo
             $executeDetalleVenta = Database::getInstance()->getDb()->prepare($detalle_venta);
             $executeProducto = Database::getInstance()->getDb()->prepare($update_producto);
 
+            $countMem1 = 0;
+            $countMem3 = 0;
+            $countMem4 = 0;
+            $countMem5 = 0;
+
             foreach ($body['lista'] as $result) {
-                $executeDetalleVenta->execute(
-                    array(
-                        $idVenta,
-                        $result['idPlan'],
-                        $result['cantidad'],
-                        $result['precio'],
-                        $result['descuento'],
-                        $result['procedencia']
-                    )
-                );
                 if ($result["procedencia"] == 1) {
+
                     $codigoMembresia = Database::getInstance()->getDb()->prepare($quey_codigo_membresia);
                     $codigoMembresia->execute();
                     $idMembresia = $codigoMembresia->fetchColumn();
+
                     $cmdMembresia = Database::getInstance()->getDb()->prepare($membresia);
                     $cmdMembresia->execute(
                         array(
                             $idMembresia,
                             $result['idPlan'],
                             $body['cliente'],
-                            $idVenta,
                             $result['fechaInico'],
                             $result['horaInicio'],
                             $result['fechaFin'],
@@ -184,7 +179,31 @@ class VentaAdo
 
                     $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
                     $cmdHistorialMembresia->execute(array($idMembresia, "PRIMER REGISTRO DE MEMBRESÍA", $body['fecha'], $body['hora'], $result['fechaInico'], $result['fechaFin']));
+
+                    $executeDetalleVenta->execute(
+                        array(
+                            $idVenta,
+                            $idMembresia,
+                            $result['cantidad'],
+                            $result['precio'],
+                            $result['descuento'],
+                            $result['procedencia']
+                        )
+                    );
+
+                    $countMem1++;
                 } else if ($result["procedencia"] == 2) {
+                    $executeDetalleVenta->execute(
+                        array(
+                            $idVenta,
+                            $result['idPlan'],
+                            $result['cantidad'],
+                            $result['precio'],
+                            $result['descuento'],
+                            $result['procedencia']
+                        )
+                    );
+
                     $validateProducto = Database::getInstance()->getDb()->prepare("SELECT * FROM productotb WHERE idProducto  = ?");
                     $validateProducto->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
                     $validateProducto->execute();
@@ -194,7 +213,8 @@ class VentaAdo
                         }
                     }
                 } else if ($result["procedencia"] == 3) {
-                    $trasValidate = Database::getInstance()->getDb()->prepare("SELECT fechaFin FROM membresiatb WHERE idMembresia  = ?");
+
+                    $trasValidate = Database::getInstance()->getDb()->prepare("SELECT fechaFin FROM membresiatb WHERE idMembresia  = ? AND fechaFin >= NOW() AND estado = 1");
                     $trasValidate->bindValue(1, $result['membresia'], PDO::PARAM_STR);
                     $trasValidate->execute();
                     if ($rowm = $trasValidate->fetch()) {
@@ -205,31 +225,168 @@ class VentaAdo
                         WHERE idMembresia = ?");
                         $trasValidate->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
                         $trasValidate->execute();
-                        if ($rowt =  $trasValidate->fetch()) {
-                            $dias = $rowt["Dias"];
 
-                            $date = new DateTime($fechaFin);
-                            $date->modify("+" .  $dias . " day");
+                        $rowt =  $trasValidate->fetch();
+                        $dias = $rowt["Dias"];
 
-                            $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaFin = ? WHERE idMembresia = ?");
-                            $cmdMembresia->bindValue(1, $date->format('Y-m-d'), PDO::PARAM_STR);
-                            $cmdMembresia->bindValue(2, $result['membresia'], PDO::PARAM_STR);
-                            $cmdMembresia->execute();
+                        $date = new DateTime($fechaFin);
+                        $date->modify("+" .  $dias . " day");
 
-                            $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
-                            $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
-                            $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
-                            $cmdTraspaso->execute();
+                        $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaFin = ?,tipoMembresia =3,estado = 1 WHERE idMembresia = ?");
+                        $cmdMembresia->bindValue(1, $date->format('Y-m-d'), PDO::PARAM_STR);
+                        $cmdMembresia->bindValue(2, $result['membresia'], PDO::PARAM_STR);
+                        $cmdMembresia->execute();
 
-                            $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
-                            $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $fechaFin, $date->format('Y-m-d')));
-                        } else {
-                            throw new Exception("No se pudo obtener los días a trapasar.");
-                        }
+                        $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
+                        $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
+                        $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
+                        $cmdTraspaso->execute();
+
+                        $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                        $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $fechaFin, $date->format('Y-m-d')));
+
+                        $executeDetalleVenta->execute(
+                            array(
+                                $idVenta,
+                                $result['idPlan'],
+                                $result['cantidad'],
+                                $result['precio'],
+                                $result['descuento'],
+                                $result['procedencia']
+                            )
+                        );
+
+                        $countMem3++;
                     } else {
-                        throw new Exception("No se pudo obtener la membrecia a traspasar.");
+
+                        $trasValidate = Database::getInstance()->getDb()->prepare("SELECT DATEDIFF(fechaFin,CURDATE()) AS Dias
+                        FROM membresiatb 
+                        WHERE idMembresia = ?");
+                        $trasValidate->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
+                        $trasValidate->execute();
+                        $rowt =  $trasValidate->fetch();
+                        $dias = $rowt["Dias"];
+
+                        $date = new DateTime($body['fecha']);
+                        $date->modify("+" .  $dias . " day");
+
+                        $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaInicio = ?,fechaFin = ?,estado = 1 WHERE idMembresia = ?");
+                        $cmdMembresia->bindValue(1, $body['fecha'], PDO::PARAM_STR);
+                        $cmdMembresia->bindValue(2, $date->format('Y-m-d'), PDO::PARAM_STR);
+                        $cmdMembresia->bindValue(3, $result['membresia'], PDO::PARAM_STR);
+                        $cmdMembresia->execute();
+
+                        $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
+                        $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
+                        $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
+                        $cmdTraspaso->execute();
+
+                        $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                        $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $body['fecha'], $date->format('Y-m-d')));
+
+                        $executeDetalleVenta->execute(
+                            array(
+                                $idVenta,
+                                $result['idPlan'],
+                                $result['cantidad'],
+                                $result['precio'],
+                                $result['descuento'],
+                                $result['procedencia']
+                            )
+                        );
+
+                        $countMem3++;
                     }
+                } else if ($result["procedencia"] == 4) {
+
+                    $codigoMembresia = Database::getInstance()->getDb()->prepare($quey_codigo_membresia);
+                    $codigoMembresia->execute();
+                    $idMembresia = $codigoMembresia->fetchColumn();
+
+                    $cmdMembresia = Database::getInstance()->getDb()->prepare($membresia);
+                    $cmdMembresia->execute(
+                        array(
+                            $idMembresia,
+                            $result['idPlan'],
+                            $body['cliente'],
+                            $result['fechaInico'],
+                            $result['horaInicio'],
+                            $result['fechaFin'],
+                            $result['horaFin'],
+                            $result['membresia'],
+                            1,
+                            $result['cantidad'],
+                            $result['precio'],
+                            $result['descuento'],
+                        )
+                    );
+
+                    $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                    $cmdHistorialMembresia->execute(array($idMembresia, $result['nombre'], $body['fecha'], $body['hora'], $result['fechaInico'], $result['fechaFin']));
+
+                    $executeDetalleVenta->execute(
+                        array(
+                            $idVenta,
+                            $idMembresia,
+                            $result['cantidad'],
+                            $result['precio'],
+                            $result['descuento'],
+                            $result['procedencia']
+                        )
+                    );
+
+                    $countMem4++;
+                } else if ($result["procedencia"] == 5) {
+                    $membresiaValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb WHERE idMembresia = ?");
+                    $membresiaValidate->bindParam(1, $result['idPlan'], PDO::PARAM_STR);
+                    $membresiaValidate->execute();
+                    $resultMembresia = $membresiaValidate->fetchObject();
+
+                    $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaInicio = ?,fechaFin = ?,tipoMembresia = ?,cantidad = ?,precio = ?,descuento = ?,estado = 1 WHERE idMembresia  = ?");
+                    $cmdMembresia->execute(array(
+                        $result['fechaInico'],
+                        $result['fechaFin'],
+                        $result['membresia'],
+                        $result['cantidad'],
+                        $result['precio'],
+                        $result['descuento'],
+                        $resultMembresia->idMembresia
+                    ));
+
+                    $executeDetalleVenta->execute(
+                        array(
+                            $idVenta,
+                            $resultMembresia->idMembresia,
+                            $result['cantidad'],
+                            $result['precio'],
+                            $result['descuento'],
+                            $result['procedencia']
+                        )
+                    );
+
+                    $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                    $cmdHistorialMembresia->execute(array($resultMembresia->idMembresia, "RENOVACIÓN", $body['fecha'], $body['hora'], $result['fechaInico'], $result['fechaFin']));
+                    $countMem5++;
                 }
+            }
+
+            if ($countMem1 > 1) {
+                throw new Exception("No se puede registrar más de 2 planes a la vez.");
+            }
+            if ($countMem3 > 1) {
+                throw new Exception("No se puede registrar más de 2 traspasos a la vez.");
+            }
+            if ($countMem4 > 1) {
+                throw new Exception("No se puede registrar más de 2 activaciones a la vez.");
+            }
+            if ($countMem1 > 0 && $countMem3 > 0) {
+                throw new Exception("No se puede registrar una plan normal y un traspaso al mismo tiempo.");
+            }
+            if ($countMem4 > 0 && $countMem3 > 0) {
+                throw new Exception("No se puede registrar una activación y un traspaso al mismo tiempo.");
+            }
+            if ($countMem1 > 0 && $countMem4 > 0) {
+                throw new Exception("No se puede registrar un plan normal y una activación al mismo tiempo.");
             }
 
             if ($body['tipo'] == 2) {
@@ -333,7 +490,7 @@ class VentaAdo
                 $executeIngreso->execute(array(
                     $body["idVenta"],
                     $body["vendedor"],
-                    "COBRO DEL COMPROBANTE " . $venta->serie . "-" . $venta->numeracion,
+                    "PAGO DEL COMPROBANTE " . $venta->serie . "-" . $venta->numeracion,
                     2,
                     $body['fecha'],
                     $body['hora'],
@@ -355,9 +512,22 @@ class VentaAdo
 
     public static function getAll($tipo, $search, $fechaInicio, $fechaFin, $x, $y)
     {
-        $consulta = "SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,v.tipo,v.forma,v.numero,v.estado,
-        c.dni,c.apellidos,c.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total,
-        CASE WHEN e.apellidos IS NULL or e.apellidos = '' THEN 'SIN DATOS' ELSE e.apellidos END AS 	empleadoApellidos,
+        $consulta = "SELECT 
+        v.idVenta,
+        v.fecha,
+        v.hora,
+        t.nombre,
+        v.serie,
+        v.numeracion,
+        v.tipo,
+        v.forma,
+        v.numero,
+        v.estado,
+        c.dni,
+        c.apellidos,
+        c.nombres,
+        sum(d.cantidad*(d.precio-d.descuento)) as total,
+        CASE WHEN e.apellidos IS NULL OR e.apellidos = '' THEN 'SIN DATOS' ELSE e.apellidos END AS 	empleadoApellidos,
         CASE WHEN e.nombres IS NULL OR e.nombres = '' THEN 'SIN DATOS' ELSE e.nombres END AS empleadoNombres
         from ventatb as v 
         INNER JOIN clientetb as c on c.idCliente = v.cliente
@@ -433,7 +603,7 @@ class VentaAdo
             }
 
             $comando = Database::getInstance()->getDb()->prepare("SELECT COUNT(*)
-            from ventatb as v 
+            FROM ventatb AS v 
             INNER JOIN clientetb as c on c.idCliente = v.cliente
             INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento
             LEFT JOIN empleadotb as e on e.idEmpleado = v.vendedor
@@ -487,14 +657,26 @@ class VentaAdo
         try {
             $array = array();
             $venta = Database::getInstance()->getDb()->prepare("SELECT 
-            v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,
-            v.tipo,v.forma,v.numero,v.estado, c.apellidos,c.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total 
+            v.idVenta,
+            v.fecha,
+            v.hora,
+            t.nombre,
+            v.serie,
+            v.numeracion,
+            v.tipo,
+            v.forma,
+            v.numero,
+            v.estado, 
+            c.apellidos,
+            c.nombres,
+            sum(d.cantidad*(d.precio-d.descuento)) as total 
             from ventatb as v 
             INNER JOIN clientetb as c on c.idCliente = v.cliente 
             INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento 
             INNER JOIN detalleventatb as d on d.idVenta = v.idVenta 
             WHERE c.idCliente = ?
-            GROUP BY v.idVenta ORDER BY v.fecha DESC,v.hora");
+            GROUP BY v.idVenta 
+            ORDER BY v.fecha DESC,v.hora DESC");
             $venta->bindValue(1, $idCliente, PDO::PARAM_STR);
             $venta->execute();
             $count = 0;
@@ -527,23 +709,24 @@ class VentaAdo
         try {
             $array = array();
 
-            $cmdDetalleVenta = Database::getInstance()->getDb()->prepare("SELECT d.idVenta,
-            (case 
-            when not pl.idPlan is null then UPPER(pl.nombre)
-            when not pr.idProducto is null then UPPER(pr.nombre)
-            else 
-                concat(
-                    (select concat('TRASPASO DEL ',' ',pmm.nombre,' DE ') from plantb as pmm where pmm.idPlan = mm.idPlan),
-                    (select concat(cl.apellidos,' ',cl.nombres) from clientetb as cl where cl.idCliente = mm.idCliente)
-                    ) END) as detalle,
+            $cmdDetalleVenta = Database::getInstance()->getDb()->prepare("SELECT 
+            d.idVenta,
+            (CASE 
+            WHEN NOT muno.idMembresia IS NULL THEN (SELECT p.nombre FROM plantb AS p WHERE p.idPlan = muno.idPlan)
+            WHEN NOT pr.idProducto IS NULL THEN UPPER(pr.nombre)
+            WHEN NOT mtre.idMembresia IS NULL THEN (SELECT CONCAT('TRASPADO',': ',p.nombre) FROM plantb AS p WHERE p.idPlan = mtre.idPlan)
+            WHEN NOT mcua.idMembresia IS NULL THEN (SELECT CONCAT('ACTIVACIÓN',': ',p.nombre) FROM plantb AS p WHERE p.idPlan = mcua.idPlan)
+            ELSE (SELECT CONCAT('RENOVACIÓN',': ',p.nombre) FROM plantb AS p WHERE p.idPlan = mqui.idPlan) END) AS detalle,
             d.cantidad,
             d.precio,
             d.descuento
-            FROM detalleventatb as d 
-            left join plantb  as pl on pl.idPlan = d.idOrigen 
-            left join productotb as pr on pr.idProducto = d.idOrigen 
-            left join membresiatb as mm on mm.idMembresia  = d.idOrigen
-            where d.idVenta = ?");
+            FROM detalleventatb AS d 
+            LEFT JOIN membresiatb  AS muno ON muno.idMembresia = d.idOrigen AND d.procedencia = 1  
+            LEFT JOIN productotb AS pr ON pr.idProducto = d.idOrigen AND d.procedencia = 2        
+            LEFT JOIN membresiatb AS mtre ON mtre.idMembresia = d.idOrigen AND d.procedencia = 3
+            LEFT JOIN membresiatb AS mcua ON mcua.idMembresia = d.idOrigen AND d.procedencia = 4
+            LEFT JOIN membresiatb AS mqui ON mqui.idMembresia = d.idOrigen AND d.procedencia = 5
+            WHERE d.idVenta = ?");
             $cmdDetalleVenta->bindParam(1, $idVenta, PDO::PARAM_STR);
             $cmdDetalleVenta->execute();
 
@@ -602,7 +785,7 @@ class VentaAdo
         }
     }
 
-    public static function getAsistemcias($idCliente)
+    public static function getAsistencias($idCliente)
     {
         try {
             $array = array();
@@ -639,7 +822,8 @@ class VentaAdo
         try {
             $array = array();
 
-            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT i.idIngreso,
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT 
+            i.idIngreso,
             i.detalle,
             i.procedencia,
             i.fecha,
@@ -647,14 +831,38 @@ class VentaAdo
             i.forma,
             i.monto,
             e.apellidos,
-            e.nombres 
-            FROM ingresotb AS i INNER JOIN empleadotb AS e ON i.vendedor = e.idEmpleado
-            WHERE i.fecha BETWEEN ? and ?
+            e.nombres,
+            c.dni as dni,
+            c.apellidos as apcliente,
+            c.nombres as nmcliente
+            FROM ingresotb AS i 
+            INNER JOIN empleadotb AS e ON i.vendedor = e.idEmpleado
+            INNER JOIN ventatb AS v ON i.idPrecedencia = v.idVenta
+            INNER JOIN clientetb AS c ON v.cliente = c.idCliente
+            WHERE 
+            ? = 0 AND i.fecha BETWEEN ? AND ? 
+            OR 
+            ? = 1 AND c.dni LIKE CONCAT(?,'%')
+            OR 
+            ? = 1 AND c.apellidos LIKE CONCAT(?,'%')
+            OR 
+            ? = 1 AND c.nombres LIKE CONCAT(?,'%')
             ORDER BY i.fecha DESC,i.hora DESC LIMIT ?,?");
-            $cmdIngresos->bindParam(1, $fechaInicio, PDO::PARAM_STR);
-            $cmdIngresos->bindParam(2, $fechaFin, PDO::PARAM_STR);
-            $cmdIngresos->bindParam(3, $x, PDO::PARAM_INT);
-            $cmdIngresos->bindParam(4, $y, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(1, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(2, $fechaInicio, PDO::PARAM_STR);
+            $cmdIngresos->bindParam(3, $fechaFin, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(4, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(5, $search, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(6, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(7, $search, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(8, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(9, $search, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(10, $x, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(11, $y, PDO::PARAM_INT);
             $cmdIngresos->execute();
 
             $arrayIngresos = array();
@@ -672,14 +880,37 @@ class VentaAdo
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
                     "monto" => $row["monto"],
+                    "dni" => $row["dni"],
+                    "apcliente" => $row["apcliente"],
+                    "nmcliente" => $row["nmcliente"],
                 ));
             }
 
-            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT count(*) FROM ingresotb AS i 
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT count(*) 
+            FROM ingresotb AS i 
             INNER JOIN empleadotb AS e ON i.vendedor = e.idEmpleado
-            WHERE i.fecha BETWEEN ? and ?");
-            $cmdIngresos->bindParam(1, $fechaInicio, PDO::PARAM_STR);
-            $cmdIngresos->bindParam(2, $fechaFin, PDO::PARAM_STR);
+            INNER JOIN ventatb AS v ON i.idPrecedencia = v.idVenta
+            INNER JOIN clientetb AS c ON v.cliente = c.idCliente
+            WHERE 
+            ? = 0 AND i.fecha BETWEEN ? AND ? 
+            OR 
+            ? = 1 AND c.dni LIKE CONCAT(?,'%')
+            OR 
+            ? = 1 AND c.apellidos LIKE CONCAT(?,'%')
+            OR 
+            ? = 1 AND c.nombres LIKE CONCAT(?,'%')");
+            $cmdIngresos->bindParam(1, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(2, $fechaInicio, PDO::PARAM_STR);
+            $cmdIngresos->bindParam(3, $fechaFin, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(4, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(5, $search, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(6, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(7, $search, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(8, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(9, $search, PDO::PARAM_STR);
             $cmdIngresos->execute();
             $resultTotal = $cmdIngresos->fetchColumn();
 
@@ -747,6 +978,48 @@ class VentaAdo
         }
     }
 
+    public static function reporteIngreso($idIngreso)
+    {
+        try {
+            $array = array();
+
+            $cmdCabecera = Database::getInstance()->getDb()->prepare("SELECT 
+            v.serie,
+            v.numeracion,
+            i.procedencia,
+            i.idIngreso,
+            i.forma,
+            i.monto,
+            i.fecha,
+            i.hora,
+            c.apellidos,
+            c.nombres,
+            c.direccion,
+            c.celular
+            FROM ingresotb AS i
+            INNER JOIN ventatb AS v ON i.idPrecedencia = v.idVenta
+            INNER JOIN clientetb AS c ON v.cliente = c.idCliente
+            WHERE i.idIngreso = ?");
+            $cmdCabecera->bindParam(1, $idIngreso, PDO::PARAM_INT);
+            $cmdCabecera->execute();
+            $resultCabecera = $cmdCabecera->fetchObject();
+
+            $cmdDetalle = Database::getInstance()->getDb()->prepare("SELECT 
+            i.detalle,i.monto 
+            FROM ingresotb AS i
+            INNER JOIN ventatb AS v ON i.idPrecedencia = v.idVenta
+            WHERE i.idIngreso = ?");
+            $cmdDetalle->bindParam(1, $idIngreso, PDO::PARAM_INT);
+            $cmdDetalle->execute();
+            $resultDetalle = $cmdDetalle->fetchObject();
+
+            array_push($array, $resultCabecera, $resultDetalle);
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
     public static function AnularVenta($idVenta)
     {
         try {
@@ -781,9 +1054,35 @@ class VentaAdo
                         $cmdIngreso->bindParam(1, $idVenta, PDO::PARAM_STR);
                         $cmdIngreso->execute();
 
-                        $cmdMembresia = Database::getInstance()->getDb()->prepare("DELETE FROM membresiatb WHERE idVenta = ?");
-                        $cmdMembresia->bindParam(1, $idVenta, PDO::PARAM_STR);
-                        $cmdMembresia->execute();
+                        $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET estado = -1 WHERE idMembresia  = ?");
+
+                        $cmdDetalleVenta = Database::getInstance()->getDb()->prepare("UPDATE productotb SET cantidad = cantidad + ? WHERE idProducto = ?");
+
+                        $validateDetalleVenta = Database::getInstance()->getDb()->prepare("SELECT
+                        dv.idOrigen,
+                        dv.cantidad,
+                        dv.procedencia,
+                        p.inventario
+                        FROM detalleventatb AS dv 
+                        LEFT JOIN productotb AS p ON p.idProducto = dv.idOrigen 
+                        WHERE dv.idVenta = ?");
+                        $validateDetalleVenta->bindParam(1, $idVenta, PDO::PARAM_STR);
+                        $validateDetalleVenta->execute();
+                        while ($row = $validateDetalleVenta->fetchObject()) {
+                            if ($row->procedencia == 1) {
+                                $cmdMembresia->bindParam(1, $row->idOrigen, PDO::PARAM_STR);
+                                $cmdMembresia->execute();
+                            } else if ($row->procedencia == 2) {
+                                if ($row->inventario == 1) {
+                                    $cmdDetalleVenta->bindParam(1, $row->cantidad, PDO::PARAM_STR);
+                                    $cmdDetalleVenta->bindParam(2, $row->idOrigen, PDO::PARAM_STR);
+                                    $cmdDetalleVenta->execute();
+                                }
+                            } else if ($row->procedencia == 3) {
+                            } else if ($row->procedencia == 4) {
+                            } else if ($row->procedencia == 5) {
+                            }
+                        }
 
                         Database::getInstance()->getDb()->commit();
                         return "deleted";
@@ -801,14 +1100,26 @@ class VentaAdo
 
         try {
             $array = array();
-            $venta = Database::getInstance()->getDb()->prepare("SELECT v.idVenta,v.fecha,v.hora,t.nombre,v.serie,v.numeracion,
-            v.tipo,v.forma,v.numero,v.estado, e.apellidos,e.nombres,sum(d.cantidad*(d.precio-d.descuento)) as total 
+            $venta = Database::getInstance()->getDb()->prepare("SELECT 
+            v.idVenta,
+            v.fecha,
+            v.hora,
+            t.nombre,
+            v.serie,
+            v.numeracion,
+            v.tipo,
+            v.forma,
+            v.numero,
+            v.estado, 
+            e.apellidos,
+            e.nombres,
+            sum(d.cantidad*(d.precio-d.descuento)) as total 
             from ventatb as v 
             INNER JOIN empleadotb as e on e.idEmpleado = v.vendedor 
             INNER JOIN tipocomprobantetb as t ON t.idTipoComprobante = v.documento 
             INNER JOIN detalleventatb as d on d.idVenta = v.idVenta 
             WHERE v.vendedor = ?
-            GROUP BY v.idVenta ORDER BY v.fecha DESC,v.hora");
+            GROUP BY v.idVenta ORDER BY v.fecha DESC,v.hora DESC");
             $venta->bindValue(1, $idEmpleado, PDO::PARAM_STR);
             $venta->execute();
             $count = 0;

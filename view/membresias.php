@@ -20,7 +20,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <?php include "./layout/menu.php"; ?>
             <!-- Sidebar menu-->
             <?php include "./marcarentrada.php"; ?>
-            <!-- modal detelle de la venta -->
+            <!-- modal historial de membresia -->
             <div class="row">
                 <div class="modal fade show" id="modalDetalle" data-backdrop="static" aria-modal="true">
                     <div class="modal-dialog">
@@ -94,8 +94,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 </div>
             </div>
             <!--  -->
-
-            <!-- modal nuevo/update Productos  -->
+            <!-- modal ajuste de membresia -->
             <div class="row">
                 <div class="modal fade" id="modalAjuste" data-backdrop="static">
                     <div class="modal-dialog">
@@ -142,7 +141,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <p class="text-left text-info"><i class="fa fa-info text-danger"></i> Ajustar la membresia modificando la fecha de finalización</p>
                                             </div>
                                             <div class="col-md-6 text-right">
-                                                <button type="button" class="btn btn-success btn-sm" id="btnAjustarFecha">
+                                                <button type="button" class="btn btn-success" id="btnAjustarFecha">
                                                     <i class="fa fa-save"></i> Ajustar</button>
                                             </div>
                                         </div>
@@ -174,7 +173,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <p class="text-left text-info"><i class="fa fa-info text-danger"></i> Ajusta la membresia congelando sus días usando el freeze</p>
                                             </div>
                                             <div class="col-md-6 text-right">
-                                                <button type="button" class="btn btn-success btn-sm" id="btnAjustarFreeze">
+                                                <button type="button" class="btn btn-success" id="btnAjustarFreeze">
                                                     <i class="fa fa-save"></i> Ajustar</button>
                                             </div>
                                         </div>
@@ -185,7 +184,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-sm" id="btnCancelModal">
+                                <button type="button" class="btn btn-danger" id="btnCancelModal">
                                     <i class="fa fa-remove"></i> Cancelar</button>
                             </div>
 
@@ -196,7 +195,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <!--  -->
 
             <main class="app-content">
-
                 <div class="app-title">
                     <div>
                         <h1><i class="fa fa-wpforms"></i> Membresias</h1>
@@ -260,13 +258,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <thead>
                                             <tr>
                                                 <th class="sorting" style="width: 5%;">#</th>
-                                                <th class="sorting" style="width: 15%;">Cliente</th>
+                                                <th class="sorting" style="width: 20%;">Cliente</th>
                                                 <th class="sorting" style="width: 10%;">Membresia</th>
-                                                <th class="sorting" style="width: 10%;">Plan</th>
-                                                <th class="sorting" style="width: 10%;">Comprobante</th>
-                                                <th class="sorting" style="width: 10%;">Duración</th>
-                                                <th class="sorting" style="width: 10%;">Pago</th>
-                                                <th class="sorting" style="width: 10%;">Total</th>
+                                                <th class="sorting" style="width: 15%;">Plan</th>
+                                                <th class="sorting" style="width: 15%;">Duración</th>
                                                 <th class="sorting" style="width: 5%;">Ajustar</th>
                                                 <th class="sorting" style="width: 5%;">Historial</th>
                                             </tr>
@@ -412,7 +407,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             state = true;
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                             );
                             totalPaginacion = 0;
                         },
@@ -422,7 +417,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                 if (result.membresias.length == 0) {
                                     tbLista.append(
-                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>No hay datos para mostrar</p></td></tr>'
+                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>No hay datos para mostrar</p></td></tr>'
                                     );
                                     $("#lblPaginaActual").html(0);
                                     $("#lblPaginaSiguiente").html(0);
@@ -431,7 +426,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                                     for (let membresia of result.membresias) {
                                         let estadoMembresia = membresia.membresia == 1 ? '<span class="badge badge-pill badge-success">Activa</span>' : membresia.membresia == 2 ? '<span class="badge badge-pill badge-warning">Por Vencer</span>' : membresia.membresia == 3 ? '<span class="badge badge-pill badge-danger">Traspaso</span>' : '<span class="badge badge-pill badge-danger">Finalizada</span>';
-                                        let estado = membresia.estadoventa == 1 ? '<span class="badge badge-pill badge-success">PAGADO</span>' : '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
                                         let btnAjustar = '<button class="btn btn-success" onclick="openModalAjustar(\'' + membresia.idMembresia + '\')" ><i class="fa fa-sign-in"></i></button>';
                                         let btnHistorial = '<button class="btn btn-info" onclick="openModalDetalle(\'' + membresia.idMembresia + '\')"><i class="fa fa fa-eye"></i> </button>';
                                         tbLista.append('<tr role="row" class="odd">' +
@@ -439,10 +433,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             '<td>' + membresia.dni + '<br>' + membresia.apellidos + '<br>' + membresia.nombres + '</td>' +
                                             '<td class="text-center">' + estadoMembresia + '</td>' +
                                             '<td>' + membresia.nombrePlan + '</td>' +
-                                            '<td>' + membresia.serie + '-' + membresia.numeracion + '</td>' +
                                             '<td>' + 'Del ' + tools.getDateForma(membresia.fechaInicio) + ' al ' + tools.getDateForma(membresia.fechaFin) + '</td>' +
-                                            '<td>' + estado + '</td>' +
-                                            '<td>S/ ' + tools.formatMoney(membresia.total) + '</td>' +
                                             '<td class="text-center"> ' + btnAjustar + '</td>' +
                                             '<td class="text-center"> ' + btnHistorial + '</td>' +
                                             '</tr>');
@@ -456,7 +447,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             } else {
                                 tbLista.empty();
                                 tbLista.append(
-                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
+                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' +
                                     result.mensaje + '</p></td></tr>');
                                 $("#lblPaginaActual").html(0);
                                 $("#lblPaginaSiguiente").html(0);
@@ -466,7 +457,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         error: function(error) {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="10" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' +
                                 error.responseText + '</p></td></tr>');
                             $("#lblPaginaActual").html(0);
                             $("#lblPaginaSiguiente").html(0);

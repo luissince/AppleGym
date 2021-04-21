@@ -15,7 +15,16 @@ class ClienteAdo
         try {
             $array = array();
 
-            $clientes = Database::getInstance()->getDb()->prepare("SELECT * 
+            $clientes = Database::getInstance()->getDb()->prepare("SELECT 
+            idCliente,
+            dni,
+            apellidos,
+            nombres,
+            email,
+            celular,
+            direccion,
+            predeterminado,
+            descripcion
             FROM clientetb 
             WHERE 
             apellidos LIKE CONCAT('%',?,'%') 
@@ -37,10 +46,14 @@ class ClienteAdo
             $clientes->bindValue(7, $y, PDO::PARAM_INT);
             $clientes->execute();
 
-            $membresias = Database::getInstance()->getDb()->prepare("SELECT * FROM  membresiatb WHERE idCliente = ? AND estado = 1");
-
-            $membresiaActivas = Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb WHERE fechaFin > CURDATE()");
-            $membresiaVencidas = Database::getInstance()->getDb()->prepare("SELECT * FROM membresiatb WHERE fechaFin <= CURDATE()");
+            $membresias = Database::getInstance()->getDb()->prepare("SELECT 
+            CASE 
+            WHEN m.estado = 0 THEN 3
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 1
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 THEN 2
+            ELSE 0 END AS 'membresia'
+            FROM membresiatb as m
+            WHERE m.idCliente = ? AND m.estado <> -1");
 
             $deudas = Database::getInstance()->getDb()->prepare("SELECT * FROM ventatb as v INNER JOIN ventacreditotb as vc on v.idVenta = vc.idVenta
             WHERE v.estado <> 3 AND vc.estado = 0 AND v.cliente = ?");
@@ -49,13 +62,25 @@ class ClienteAdo
             $count = 0;
             while ($row = $clientes->fetch()) {
 
-                $total_membresias = 0;
+                $mem_activas = 0;
+                $mem_porvencer = 0;
+                $mem_vencidas = 0;
+                $mem_traspaso = 0;
                 $total_deudas = 0;
 
                 $membresias->execute(array($row["idCliente"]));
-                while ($rows = $membresias->fetch()) {
-                    $total_membresias++;
+                while ($rowm = $membresias->fetchObject()) {
+                    if ($rowm->membresia == 3) {
+                        $mem_traspaso++;
+                    } else if ($rowm->membresia == 2) {
+                        $mem_porvencer++;
+                    } else if ($rowm->membresia == 1) {
+                        $mem_activas++;
+                    } else {
+                        $mem_vencidas++;
+                    }
                 }
+
                 $deudas->execute(array($row["idCliente"]));
                 while ($rows = $deudas->fetch()) {
                     $total_deudas++;
@@ -73,12 +98,16 @@ class ClienteAdo
                     "direccion" => $row["direccion"],
                     "predeterminado" => $row["predeterminado"],
                     "descripcion" => $row["descripcion"],
-                    "membresia" => $total_membresias,
+                    "membresia" => $mem_activas,
+                    "porvencer" => $mem_porvencer,
+                    "vencidas" => $mem_vencidas,
+                    "traspado" => $mem_traspaso,
                     "deudas" => $total_deudas
                 ));
             }
 
-            $clientes = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) 
+            $clientes = Database::getInstance()->getDb()->prepare("SELECT 
+            COUNT(*) 
             FROM clientetb 
             WHERE  
             apellidos LIKE CONCAT(?,'%') 
@@ -148,11 +177,11 @@ class ClienteAdo
         try {
             $array = array();
 
-            $traspaso = Database::getInstance()->getDb()->prepare("SELECT m.idMembresia,
+            $traspaso = Database::getInstance()->getDb()->prepare("SELECT 
+            m.idMembresia,
             p.idPlan ,
             p.nombre,
             m.idCliente,
-            m.idVenta,
             m.fechaInicio,
             m.fechaFin,
             DATEDIFF(m.fechaFin,CURDATE()) AS Dias,
@@ -174,7 +203,6 @@ class ClienteAdo
                     "idPlan" => $row["idPlan"],
                     "plan" => $row["nombre"],
                     "idCliente" => $row["idCliente"],
-                    "idVenta" => $row["idVenta"],
                     "fechaInicio" => $row["fechaInicio"],
                     "fechaFin" => $row["fechaFin"],
                     "dias" => $row["Dias"],
@@ -184,19 +212,24 @@ class ClienteAdo
                 ));
             }
 
-            $membresia = Database::getInstance()->getDb()->prepare("SELECT m.idMembresia,
+            $membresia = Database::getInstance()->getDb()->prepare("SELECT 
+            m.idMembresia,
             p.idPlan ,
             p.nombre,
             m.idCliente,
-            m.idVenta,
             m.fechaInicio,
             m.fechaFin,
-            DATEDIFF(m.fechaFin,CURDATE()) AS Dias,
+            CASE 
+            WHEN m.estado = 0 THEN 3
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 1
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 THEN 2
+            ELSE 0 END AS 'membresia', 
             m.tipoMembresia, 
             m.cantidad, 
             m.precio 
-            FROM  membresiatb AS m INNER JOIN plantb AS p ON m.idPlan=p.idPlan
-            WHERE idCliente = ? AND m.fechafin > NOW() AND m.estado = 1");
+            FROM  membresiatb AS m 
+            INNER JOIN plantb AS p ON m.idPlan=p.idPlan
+            WHERE m.idCliente = ? AND m.estado <> -1");
             $membresia->bindValue(1, $idCliente, PDO::PARAM_STR);
             $membresia->execute();
 
@@ -211,10 +244,9 @@ class ClienteAdo
                     "idPlan" => $row["idPlan"],
                     "plan" => $row["nombre"],
                     "idCliente" => $row["idCliente"],
-                    "idVenta" => $row["idVenta"],
                     "fechaInicio" => $row["fechaInicio"],
                     "fechaFin" => $row["fechaFin"],
-                    "dias" => $row["Dias"],
+                    "membresia" => $row["membresia"],
                     "tipoMembresia" => $row["tipoMembresia"],
                     "cantidad" => $row["cantidad"],
                     "precio" => $row["precio"]
@@ -302,86 +334,7 @@ class ClienteAdo
         }
     }
 
-    public static function getMembresiaClienteById($idCliente)
-    {
-        $array = array();
-        try {
-            $membresia = Database::getInstance()->getDb()->prepare("SELECT 
-                c.idPlan,
-                m.idVenta,
-                c.nombre,
-                c.tipoDisciplina,
-                c.meses,
-                c.dias,
-                c.freeze,
-                c.precio,
-                c.descripcion,
-                m.fechaInicio,
-                m.horaInicio,
-                m.fechaFin,
-                m.horaFin,
-                m.estado
-                FROM
-                membresiatb AS m INNER JOIN plantb AS c ON m.idPlan = c.idPlan 
-                WHERE m.idCliente = ? ORDER BY m.fechaInicio DESC,m.horaInicio DESC");
-            $membresia->execute(array($idCliente['idCliente']));
 
-            $disciplina = Database::getInstance()->getDb()->prepare("SELECT 
-                    d.nombre,
-                    p.numero 
-                    FROM 
-                    plantb_disciplinatb AS p 
-                    INNER JOIN disciplinatb AS d 
-                    ON p.idDisciplina = d.idDisciplina WHERE p.idPlan = ?");
-
-            $venta = Database::getInstance()->getDb()->prepare("SELECT 
-                    idVentaCredito,
-                    monto,
-                    fechaRegistro,
-                    fechaPago,
-                    estado 
-                    FROM ventacreditotb 
-                    WHERE idVenta = ?");
-
-            while ($row = $membresia->fetch()) {
-
-                $array_disciplina = array();
-                $disciplina->execute(array($row["idPlan"]));
-                while ($rows = $disciplina->fetch()) {
-                    array_push($array_disciplina, array(
-                        "nombre" => $rows['nombre'],
-                        "numero" => $rows['numero']
-                    ));
-                }
-
-                $array_venta = array();
-                $venta->execute(array($row["idVenta"]));
-                while ($rowv = $venta->fetch()) {
-                    array_push($array_venta, $rowv);
-                }
-
-                array_push($array, array(
-                    "nombre" => $row["nombre"],
-                    "tipoDisciplina" => $row["tipoDisciplina"],
-                    "meses" => $row["meses"],
-                    "dias" => $row["dias"],
-                    "freeze" => $row["freeze"],
-                    "precio" => $row["precio"],
-                    "descripcion" => $row["descripcion"],
-                    "fechaInicio" => $row["fechaInicio"],
-                    "horaInicio" => $row["horaInicio"],
-                    "fechaFin" => $row["fechaFin"],
-                    "horaFin" => $row["horaFin"],
-                    "estado" => $row["estado"],
-                    "disciplinas" => $array_disciplina,
-                    "venta" => $array_venta
-                ));
-            }
-            return $array;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
-    }
 
     public static function insert($body)
     {
@@ -675,7 +628,7 @@ class ClienteAdo
         }
     }
 
-    public static function marcarEntredaSalida($idCliente)
+    public static function marcarEntredaSalida($idCliente, $estado, $tipopersona)
     {
         try {
             Database::getInstance()->getDb()->beginTransaction();
@@ -727,9 +680,9 @@ class ClienteAdo
                         $currenteDate->format('Y-m-d'),
                         $currenteDate->format('H:i:s'),
                         $currenteDate->format('H:i:s'),
-                        1,
+                        $estado,
                         $idCliente,
-                        1
+                        $tipopersona
                     )
                 );
 

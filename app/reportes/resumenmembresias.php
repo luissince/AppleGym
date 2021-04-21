@@ -110,7 +110,7 @@ if (!is_array($result)) {
             <th width="20%" rowspan="1">MEMBRESÍA</th>
             <th width="20%" rowspan="1">PLAN</th>        
             <th width="20%" rowspan="1">DURACIÓN</th>
-            <th width="20%" rowspan="1">PAGO</th>
+            <th width="20%" rowspan="1">TIPO</th>
         </tr>       
     </thead>
     <tbody>' ?>
@@ -124,7 +124,7 @@ if (!is_array($result)) {
                 <td align="left">' . $value["membresia"]  . '</td>
                 <td align="left">' . $value["nombrePlan"] . '</td>
                 <td align="left">DEL ' . $value["fechaInicio"] . '<br> AL ' . $value["fechaFin"] . '</td>
-                <td align="left">' . $value["estadoventa"] . '</td>
+                <td align="left"> ' . $value["tipo"]  . '</td>
             </tr>';
     }
     ?>

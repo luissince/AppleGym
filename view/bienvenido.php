@@ -34,7 +34,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
       <div class="tile mb-4 pt-xl-3 pb-xl-3 pl-xl-5">
         <div class="row">
           <div class="col-lg-12">
-            <label for="f-inicio">Bienvenido al Sistema de Gestión del Gimnasio Apple Gym Perú, donde podra agregar planes, cliente, membresias entre otras funcionalidad para tener una mejor administración. </label>        
+            <label for="f-inicio">Bienvenido al Sistema de Gestión del Gimnasio Apple Gym Perú, donde podra agregar planes, cliente, membresias entre otras funcionalidad para tener una mejor administración. </label>
           </div>
         </div>
 
@@ -43,6 +43,9 @@ if (!isset($_SESSION["IdEmpleado"])) {
     </main>
     <!-- Essential javascripts for application to work-->
     <?php include "./layout/footer.php"; ?>
+    <script>
+      let tools = new Tools();
+    </script>
   </body>
 
   </html>

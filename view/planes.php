@@ -5,7 +5,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
 } else {
     if ($_SESSION["Roles"][15]["ver"] == 1) {
 ?>
-
         <!DOCTYPE html>
         <html lang="en">
 
@@ -13,12 +12,216 @@ if (!isset($_SESSION["IdEmpleado"])) {
             <?php include './layout/head.php'; ?>
         </head>
 
-
         <body class="app sidebar-mini">
             <!-- Navbar-->
             <?php include "./layout/header.php"; ?>
             <!-- Sidebar menu-->
             <?php include "./layout/menu.php"; ?>
+            <!-- modal plaes  -->
+            <div class="row">
+                <div class="modal fade" id="modalPlan" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                </h4>
+                                <button type="button" class="close" id="btnCloseModal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="tile p-0">
+
+                                    <div class="overlay d-none" id="divOverlayPlanes">
+                                        <div class="m-loader mr-4">
+                                            <svg class="m-circular" viewBox="25 25 50 50">
+                                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"></circle>
+                                            </svg>
+                                        </div>
+                                        <h4 class="l-text" id="lblTextOverlayPlanes">Cargando información...</h4>
+                                    </div>
+
+                                    <div class="tile-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Básico</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-selected="false">Disciplinas</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="tab-content" id="pills-tabContent">
+                                                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label for="nombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                                        <input id="nombre" type="text" name="nombre" class="form-control" placeholder="Ingrese el nombre" required="" minlength="8">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                <input id="cbPlanLibre" class="form-check-input" type="checkbox">Plan libre
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="meses">Duración(Meses): <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                                        <input id="meses" type="text" class="form-control" placeholder="Ingrese la número de meses" required="" minlength="8">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="dias">Duración(Dias):</label>
+                                                                        <input id="dias" type="text" class="form-control" placeholder="Ingrese la número de dias" required="" minlength="8">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="freeze">Freeze:</label>
+                                                                        <input id="freeze" type="text" class="form-control" placeholder="Ingrese los dias libres" required="" minlength="8">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="precio">Precio: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                                                        <input id="precio" type="text" class="form-control" placeholder="Ingrese el precio" required="" minlength="8">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label for="descripcion">Descripción: </label>
+                                                                        <input id="descripcion" type="text" class="form-control" placeholder="Ingrese la descripción" required="" minlength="8">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" id="activo" type="checkbox" checked>Activo
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" id="prueba" type="checkbox">Prueba
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="pills-profile" role="tabpanel">
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-center">
+                                                                    <div class="form-group">
+                                                                        <label>Tipo de Plan</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" id="basico" type="radio" name="tipodisciplina" checked>Iliminato
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" id="disciplina" type="radio" name="tipodisciplina">Sujeto por Disciplina
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-9">
+                                                                    <div class="form-group">
+                                                                        <select id="estado" class="form-control">
+                                                                            <option value="">- Selecciona -</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <button type="button" class="btn btn-success" id="btnAgregar">Agregar</button>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <table class="table table-hover table-bordered dataTable no-footer" id="sampleTable" role="grid" aria-describedby="sampleTable_info">
+                                                                        <thead>
+                                                                            <tr role="row">
+                                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20px;">Nombre</th>
+                                                                                <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Sesiones
+                                                                                </th>
+                                                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 75px;">Opción
+                                                                                </th>
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="tvDisciplinas">
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
+                                <button type="button" class="btn btn-success" id="btnGuardarModal">
+                                    <i class="fa fa-save"></i> Guardar</button>
+                                <button type="button" class="btn btn-danger" id="btnCancelModal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <main class="app-content">
 
                 <!-- Sidebar menu-->
@@ -27,197 +230,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 <div class="app-title">
                     <div>
                         <h1><i class="fa fa-align-left"></i> Planes</h1>
-                    </div>
-                </div>
-
-                <!-- modal nuevo/update Productos  -->
-                <div class="row">
-                    <div class="modal fade" id="modalPlan" data-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="titulo-modal">
-                                    </h4>
-                                    <button type="button" class="close" id="btnCloseModal">
-                                        <i class="fa fa-close"></i>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Básico</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-selected="false">Disciplinas</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="tab-content" id="pills-tabContent">
-                                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
-                                                <div class="col-md-12">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="form-group">
-                                                                <label for="nombre">Nombre: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                                <input id="nombre" type="text" name="nombre" class="form-control" placeholder="Ingrese el nombre" required="" minlength="8">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="meses">Duración(Meses): <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                                <input id="meses" type="number" name="meses" class="form-control" placeholder="Ingrese la número de meses" required="" minlength="8">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="dias">Duración(Dias):</label>
-                                                                <input id="dias" type="number" name="dias" class="form-control" placeholder="Ingrese la número de dias" required="" minlength="8">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="freeze">Freeze:</label>
-                                                                <input id="freeze" type="number" name="freeze" class="form-control" placeholder="Ingrese los dias libres" required="" minlength="8">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="precio">Precio: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                                <input id="precio" type="number" name="precio" class="form-control" placeholder="Ingrese el precio" required="" minlength="8">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="form-group">
-                                                                <label for="descripcion">Descripción: </label>
-                                                                <input id="descripcion" type="text" name="descripcion" class="form-control" placeholder="Ingrese la descripción" required="" minlength="8">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <div class="form-check">
-                                                                    <label class="form-check-label">
-                                                                        <input class="form-check-input" id="activo" type="checkbox" checked>Activo
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <div class="form-check">
-                                                                    <label class="form-check-label">
-                                                                        <input class="form-check-input" id="prueba" type="checkbox">Prueba
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="tab-pane fade" id="pills-profile" role="tabpanel">
-                                                <div class="col-md-12">
-                                                    <div class="row">
-                                                        <div class="col-md-12 text-center">
-                                                            <div class="form-group">
-                                                                <label>Tipo de Plan</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <div class="form-check">
-                                                                    <label class="form-check-label">
-                                                                        <input class="form-check-input" id="basico" type="radio" name="tipodisciplina" checked>Iliminato
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <div class="form-check">
-                                                                    <label class="form-check-label">
-                                                                        <input class="form-check-input" id="disciplina" type="radio" name="tipodisciplina">Sujeto por Disciplina
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col-md-9">
-                                                            <div class="form-group">
-                                                                <select id="estado" class="form-control">
-                                                                    <option value="">- Selecciona -</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="form-group">
-                                                                <button type="button" class="btn btn-success" id="btnAgregar">Agregar</button>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <table class="table table-hover table-bordered dataTable no-footer" id="sampleTable" role="grid" aria-describedby="sampleTable_info">
-                                                                <thead>
-                                                                    <tr role="row">
-                                                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20px;">Nombre</th>
-                                                                        <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">Sesiones
-                                                                        </th>
-                                                                        <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 75px;">Opción
-                                                                        </th>
-
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody id="">
-                                                                    <!-- tbLista -->
-                                                                    <tr>
-                                                                        <td>maquinas</td>
-
-                                                                        <td>
-                                                                            <input type="number" class="form-control" placeholder="Ingrese el # de sesiones">
-                                                                        </td>
-                                                                        <td>
-                                                                            <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <p class="text-left text-danger">Todos los campos marcados con <i class="fa fa-fw fa-asterisk text-danger"></i> son obligatorios</p>
-                                    <button type="button" class="btn btn-success" id="btnGuardarModal">
-                                        <i class="fa fa-save"></i> Guardar</button>
-                                    <button type="button" class="btn btn-danger" id="btnCancelModal">
-                                        <i class="fa fa-remove"></i> Cancelar</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -267,7 +279,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr role="row">
-                                                <th width="5%;">#</th>
+                                                <th class="text-center" width="5%;">#</th>
                                                 <th width="18%;">Nombre</th>
                                                 <th width="10%;">Precio</th>
                                                 <th width="15%;">Tiempo</th>
@@ -275,8 +287,8 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th width="25%;">Descripción</th>
                                                 <th width="10%;">Estado</th>
                                                 <th width="10%;">Prueba</th>
-                                                <th width="10%;">Editar</th>
-                                                <th width="10%;">Eliminar</th>
+                                                <th class="text-center" width="5%;">Editar</th>
+                                                <th class="text-center" width="5%;">Eliminar</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbLista">
@@ -301,13 +313,68 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 let state = false;
 
                 let idPlan = "";
+                let arrayDisciplinas = [];
+                let listaDisciplinas = []
 
 
                 $(document).ready(function() {
 
+                    $("#meses").keypress(function() {
+                        var key = window.Event ? event.which : event.keyCode;
+                        var c = String.fromCharCode(key);
+                        if ((c < '0' || c > '9') && (c != '\b')) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    $("#dias").keypress(function() {
+                        var key = window.Event ? event.which : event.keyCode;
+                        var c = String.fromCharCode(key);
+                        if ((c < '0' || c > '9') && (c != '\b')) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    $("#freeze").keypress(function() {
+                        var key = window.Event ? event.which : event.keyCode;
+                        var c = String.fromCharCode(key);
+                        if ((c < '0' || c > '9') && (c != '\b')) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    $("#precio").keypress(function() {
+                        var key = window.Event ? event.which : event.keyCode;
+                        var c = String.fromCharCode(key);
+                        if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
+                            event.preventDefault();
+                        }
+                        if (c == '.' && $("#precio").val().includes(".")) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    $("#cbPlanLibre").change(function(event) {
+                        if (event.currentTarget.checked) {
+                            $("#meses").prop("disabled", true);
+                            $("#dias").prop("disabled", true);
+                            $("#freeze").prop("disabled", true);
+                            $("#precio").prop("disabled", true);
+
+                            $("#meses").val("");
+                            $("#dias").val("");
+                            $("#freeze").val("");
+                            $("#precio").val("");
+                        } else {
+                            $("#meses").prop("disabled", false);
+                            $("#dias").prop("disabled", false);
+                            $("#freeze").prop("disabled", false);
+                            $("#precio").prop("disabled", false);
+                        }
+                    });
+
                     $("#btnAdd").click(function() {
-                        $("#modalPlan").modal("show");
-                        $("#titulo-modal").append('<i class="fa fa-align-left"></i> Registrar Plan')
+                        openPlan();
                     });
 
                     $("#btnGuardarModal").click(function() {
@@ -353,6 +420,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         }
                     });
 
+                    $("#btnAgregar").click(function() {
+                        for (let i = 0; i < listaDisciplinas.length; i++) {
+                            if (listaDisciplinas[i].idDisciplina == $("#estado").val()) {
+                                arrayDisciplinas.push(listaDisciplinas[i]);
+                                break;
+                            }
+                        }
+                        renderTableDisciplinas();
+                    });
+
                     loadInitPlanes();
 
                 });
@@ -377,12 +454,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 }
 
-
                 function loadTablePlanes(datos) {
                     $.ajax({
-                        url: "../app/plan/Obtener_Planes.php",
+                        url: "../app/plan/PlanController.php",
                         method: "GET",
                         data: {
+                            "type": "lista",
                             "page": paginacion,
                             "datos": datos
                         },
@@ -401,21 +478,17 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     let freeze = plan.freeze == 1 ? plan.freeze + " día" : plan.freeze + " dias";
                                     let estado = plan.estado == 1 ? '<span class="badge badge-pill badge-success">Activo</span>' : '<span class="badge badge-pill badge-danger">Inactivo</span>';
                                     tbLista.append('<tr>' +
-                                        '<td>' + plan.id + '</td>' +
-                                        '               <td>' + plan.nombre + '</td>' +
-                                        '               <td>S/ ' + tools.formatMoney(plan.precio) + '</td>' +
-                                        '               <td>' + tiempo + '</td>' +
-                                        '               <td>' + freeze + '</td>' +
-                                        '               <td>' + plan.descripcion + '</td>' +
-                                        '               <td>' + estado + '</td>' +
-                                        '               <td>' + (plan.prueba == 1 ? "Si" : "No") + '</td>' +
-                                        '               <td>' +
-                                        '                   <button class="btn btn-warning btn-sm" onclick="updateplan(\'' + plan.idPlan + '\')"><i class="fa fa-wrench"></i> Editar</button>' +
-                                        '               </td>' +
-                                        '               <td>' +
-                                        '                   <button class="btn btn-danger btn-sm" onclick="deleteplan(\'' + plan.idPlan + '\')"><i class="fa fa-trash"></i> Eliminar</button>' +
-                                        '               </td>' +
-                                        '           </tr>');
+                                        '<td class="text-center">' + plan.id + '</td>' +
+                                        '<td>' + plan.nombre + '</td>' +
+                                        '<td>S/ ' + tools.formatMoney(plan.precio) + '</td>' +
+                                        '<td>' + tiempo + '</td>' +
+                                        '<td>' + freeze + '</td>' +
+                                        '<td>' + plan.descripcion + '</td>' +
+                                        '<td>' + estado + '</td>' +
+                                        '<td>' + (plan.prueba == 1 ? "Si" : "No") + '</td>' +
+                                        '<td class="text-center"><button class="btn btn-warning" onclick="updatePlan(\'' + plan.idPlan + '\')"><i class="fa fa-wrench"></i></button></td>' +
+                                        '<td class="text-center"><button class="btn btn-danger" onclick="deletePlan(\'' + plan.idPlan + '\')"><i class="fa fa-trash"></i></button></td>' +
+                                        '</tr>');
                                 }
 
                                 totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
@@ -441,26 +514,90 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     });
                 }
 
+                function openPlan() {
+                    $("#modalPlan").modal("show");
+                    $("#titulo-modal").append('<i class="fa fa-align-left"></i> Registrar Plan');
+                    $.ajax({
+                        url: "../app/plan/PlanController.php",
+                        method: 'GET',
+                        data: {
+                            "type": "getbyid",
+                            "idPlan": id
+                        },
+                        beforeSend: function() {
+                            $("#divOverlayPlanes").removeClass("d-none");
+                            $("#lblTextOverlayPlanes").html("Cargando información...");
+                            $("#estado").empty();
+                        },
+                        success: function(result) {
+                            if (result.estado == 1) {
+                                idPlan = id;
+                                $("#nombre").val(result.planes.nombre);
+                                $("#meses").val(result.planes.meses);
+                                $("#dias").val(result.planes.dias);
+                                $("#freeze").val(result.planes.freeze);
+                                $("#precio").val(result.planes.precio);
+                                $("#descripcion").val(result.planes.descripcion);
+                                $("#activo").prop("checked", result.planes.estado == 1 ? true : false);
+                                $("#prueba").prop("checked", result.planes.prueba == 1 ? true : false);
+                                $("#basico").attr("checked", true);
+                                $("#cbPlanLibre").prop("checked", result.planes.tipoPlan == 1 ? true : false);
+                                if (result.planes.tipoPlan == 0) {
+                                    $("#meses").prop("disabled", false);
+                                    $("#dias").prop("disabled", false);
+                                    $("#freeze").prop("disabled", false);
+                                    $("#precio").prop("disabled", false);
+                                } else {
+                                    $("#meses").prop("disabled", true);
+                                    $("#dias").prop("disabled", true);
+                                    $("#freeze").prop("disabled", true);
+                                    $("#precio").prop("disabled", true);
+                                }
+
+                                listaDisciplinas = result.disciplinas;
+                                $("#estado").append('<option value="">- Seleccione -</option>');
+                                for (let value of listaDisciplinas) {
+                                    $("#estado").append('<option value="' + value.idDisciplina + '">' + value.nombre + '</option>');
+                                }
+
+                                $("#divOverlayPlanes").addClass("d-none");
+                            } else {
+                                $("#estado").append('<option value="">- Seleccione -</option>');
+                                $("#lblTextOverlayPlanes").html(result.mensaje);
+                            }
+                        },
+                        error: function(error) {
+                            $("#estado").append('<option value="">- Seleccione -</option>');
+                            $("#lblTextOverlayPlanes").html(error.responseText);
+                        }
+                    });
+                }
+
                 function crudPlan() {
                     if ($("#nombre").val().trim() == '') {
                         tools.AlertWarning("Planes: ", "Ingrese el nombre del plan.");
                         $("#nombre").focus();
-                    } else if (!tools.isNumeric($("#meses").val())) {
+                    } else if (!$("#cbPlanLibre").is(":checked") && !tools.isNumeric($("#meses").val())) {
                         tools.AlertWarning("Planes: ", "Ingrese el tiempo de duración en meses.");
                         $("#meses").focus();
-                    } else if (!tools.isNumeric($("#precio").val().trim())) {
+                    } else if (!$("#cbPlanLibre").is(":checked") && !tools.isNumeric($("#precio").val().trim())) {
                         tools.AlertWarning("Planes: ", "Ingrese el precio del plan.");
+                        $("#precio").focus();
+                    } else if (!$("#cbPlanLibre").is(":checked") && parseFloat($("#precio").val().trim()) <= 0) {
+                        tools.AlertWarning("Planes: ", "El precio del plan no puede ser menor que 0.");
                         $("#precio").focus();
                     } else {
                         $.ajax({
-                            url: "../app/plan/Crud_Planes.php",
+                            url: "../app/plan/PlanController.php",
                             method: "POST",
                             accepts: "application/json",
                             contentType: "application/json",
                             data: JSON.stringify({
+                                "type": "crud",
                                 "idPlan": idPlan,
                                 "nombre": $("#nombre").val(),
                                 "tipoDisciplina": $("#basico").is(":checked"),
+                                "tipoPlan": $("#cbPlanLibre").is(":checked"),
                                 "sesiones": 0,
                                 "meses": $("#meses").val().trim(),
                                 "dias": !tools.isNumeric($("#dias").val()) ? 0 : $("#dias").val(),
@@ -490,39 +627,23 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 }
 
-                function closeClearModal() {
-                    $("#modalPlan").modal("hide");
-                    $("#titulo-modal").empty();
-
-                    $("#nombre").val("");
-                    $("#meses").val("");
-                    $("#dias").val("");
-                    $("#freeze").val("");
-                    $("#precio").val("");
-                    $("#descripcion").val("");
-                    $("#activo").attr("checked", true);
-                    $("#prueba").attr("checked", false);
-                    $("#basico").attr("checked", true);
-                    idPlan = "";
-                }
-
-                function updateplan(id) {
+                function updatePlan(id) {
                     $("#modalPlan").modal('show');
                     $("#titulo-modal").append('<i class="fa fa-align-left"></i> Actualizar Plan')
                     $.ajax({
-                        url: "../app/plan/Obtener_Planes_By_Id.php",
-                        method: 'POST',
-                        accepts: "application/json",
-                        contentType: "application/json",
-                        data: JSON.stringify({
+                        url: "../app/plan/PlanController.php",
+                        method: 'GET',
+                        data: {
+                            "type": "getbyid",
                             "idPlan": id
-                        }),
+                        },
                         beforeSend: function() {
-                            tools.AlertInfo("Planes", "Cargando datos..");
+                            $("#divOverlayPlanes").removeClass("d-none");
+                            $("#lblTextOverlayPlanes").html("Cargando información...");
+                            $("#estado").empty();
                         },
                         success: function(result) {
                             if (result.estado == 1) {
-                                tools.AlertSuccess("Planes", "Se cargo correctamento los datos.");
                                 idPlan = id;
                                 $("#nombre").val(result.planes.nombre);
                                 $("#meses").val(result.planes.meses);
@@ -533,25 +654,48 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 $("#activo").prop("checked", result.planes.estado == 1 ? true : false);
                                 $("#prueba").prop("checked", result.planes.prueba == 1 ? true : false);
                                 $("#basico").attr("checked", true);
+                                $("#cbPlanLibre").prop("checked", result.planes.tipoPlan == 1 ? true : false);
+                                if (result.planes.tipoPlan == 0) {
+                                    $("#meses").prop("disabled", false);
+                                    $("#dias").prop("disabled", false);
+                                    $("#freeze").prop("disabled", false);
+                                    $("#precio").prop("disabled", false);
+                                } else {
+                                    $("#meses").prop("disabled", true);
+                                    $("#dias").prop("disabled", true);
+                                    $("#freeze").prop("disabled", true);
+                                    $("#precio").prop("disabled", true);
+                                }
+
+                                listaDisciplinas = result.disciplinas;
+                                $("#estado").append('<option value="">- Seleccione -</option>');
+                                for (let value of listaDisciplinas) {
+                                    $("#estado").append('<option value="' + value.idDisciplina + '">' + value.nombre + '</option>');
+                                }
+
+                                $("#divOverlayPlanes").addClass("d-none");
                             } else {
-                                tools.AlertWarning("Planes", result.mensaje);
+                                $("#estado").append('<option value="">- Seleccione -</option>');
+                                $("#lblTextOverlayPlanes").html(result.mensaje);
                             }
                         },
                         error: function(error) {
-                            tools.AlertError("Planes", error.responseText);
+                            $("#estado").append('<option value="">- Seleccione -</option>');
+                            $("#lblTextOverlayPlanes").html(error.responseText);
                         }
                     });
                 }
 
-                function deleteplan(id) {
+                function deletePlan(id) {
                     tools.ModalDialog('Planes', '¿Desea eliminar el plan?', 'question', function(value) {
                         if (value) {
                             $.ajax({
-                                url: "../app/plan/Eliminar_Planes.php",
+                                url: "../app/plan/PlanController.php",
                                 method: 'POST',
                                 accepts: "application/json",
                                 contentType: "application/json",
                                 data: JSON.stringify({
+                                    "type": "deleted",
                                     "idPlan": id
                                 }),
                                 beforeSend: function() {
@@ -571,7 +715,50 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             });
                         }
                     });
+                }
 
+                function renderTableDisciplinas() {
+                    $("#tvDisciplinas").empty()
+                    for (let value of arrayDisciplinas) {
+                        $("#tvDisciplinas").append('<tr>' +
+                            '<td> ' + value.nombre + '</td>' +
+                            '<td> <input type="number" class="form-control" placeholder="Ingrese el # de sesiones"> </td>' +
+                            '<td> <button class="btn btn-danger btn-sm" onclick="removeDisciplina(\'' + value.idDisciplina + '\')"><i class="fa fa-times"></i></button>' +
+                            '</td>' +
+                            '</tr>');
+                    }
+                }
+
+                function removeDisciplina(idDisciplina) {
+                    for (let i = 0; i < arrayDisciplinas.length; i++) {
+                        if (arrayDisciplinas[i].idDisciplina == idDisciplina) {
+                            arrayDisciplinas.splice(i, 1);
+                            i--;
+                            break;
+                        }
+                    }
+                    renderTableDisciplinas();
+                }
+
+                function closeClearModal() {
+                    $("#modalPlan").modal("hide");
+                    $("#titulo-modal").empty();
+
+                    $("#nombre").val("");
+                    $("#meses").val("");
+                    $("#dias").val("");
+                    $("#freeze").val("");
+                    $("#precio").val("");
+                    $("#descripcion").val("");
+                    $("#activo").attr("checked", true);
+                    $("#prueba").attr("checked", false);
+                    $("#basico").attr("checked", true);
+                    idPlan = "";
+                    listaDisciplinas = [];
+                    arrayDisciplinas = [];
+                    $("#estado").empty();
+                    $("#estado").append('<option value="">- Seleccione -</option>');
+                    renderTableDisciplinas();
                 }
             </script>
         </body>

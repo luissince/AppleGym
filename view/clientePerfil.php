@@ -17,65 +17,62 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <?php include "./layout/header.php"; ?>
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
-        <main class="app-content">
+        <!-- modal detelle de la venta -->
+        <div class="row">
+            <div class="modal fade show" id="modalDetalle" data-backdrop="static" aria-modal="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="titulo-modal">
+                                <i class="fa fa-bandcamp"></i> Detalle de la venta
+                            </h4>
+                            <button type="button" class="close" id="btnCloseModalDetalle">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
 
-            <!-- Sidebar menu-->
-            <?php include "./marcarentrada.php"; ?>
+                            <div class="row">
+                                <div class="col-md-12 ">
 
-            <!-- modal detelle de la venta -->
-            <div class="row">
-                <div class="modal fade show" id="modalDetalle" data-backdrop="static" aria-modal="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="titulo-modal">
-                                    <i class="fa fa-bandcamp"></i> Detalle de la venta
-                                </h4>
-                                <button type="button" class="close" id="btnCloseModalDetalle">
-                                    <i class="fa fa-close"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
+                                    <div class="tile-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="sorting" width="5%">#</th>
+                                                        <th class="sorting" width="50%">Descripción</th>
+                                                        <th class="sorting" width="15%">Cantidad</th>
+                                                        <th class="sorting" width="15%">Precio</th>
+                                                        <th class="sorting" width="15%">Descuento</th>
+                                                        <th class="sorting" width="15%">Importe</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbDetalleVenta">
 
-                                <div class="row">
-                                    <div class="col-md-12 ">
-
-                                        <div class="tile-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="sorting" width="5%">#</th>
-                                                            <th class="sorting" width="50%">Descripción</th>
-                                                            <th class="sorting" width="15%">Cantidad</th>
-                                                            <th class="sorting" width="15%">Precio</th>
-                                                            <th class="sorting" width="15%">Descuento</th>
-                                                            <th class="sorting" width="15%">Importe</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbDetalleVenta">
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                </tbody>
+                                            </table>
                                         </div>
-
                                     </div>
-                                </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" id="btnCerrarModalDetalle">
-                                        <i class="fa fa-check"></i> Cerrar</button>
                                 </div>
+                            </div>
 
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" id="btnCerrarModalDetalle">
+                                    <i class="fa fa-check"></i> Cerrar</button>
                             </div>
 
                         </div>
+
                     </div>
                 </div>
             </div>
-            <!--  -->
-
+        </div>
+        <!--  -->
+        <main class="app-content">
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
             <!--  -->
             <div class="row">
                 <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12 col-12 bg-secondary text-center">
@@ -200,13 +197,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <table class="table table-hover table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 5%;">#</th>
-                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Membresia</th>
-                                                    <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Plan</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Comprobante</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20%;">Duración</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 10%;">Pago</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 15%;">Total</th>
+                                                    <th class="sorting" style="width: 5%;">#</th>
+                                                    <th class="sorting" style="width: 15%;">Membresia</th>
+                                                    <th class="sorting" style="width: 15%;">Plan</th>
+                                                    <th class="sorting" style="width: 20%;">Duración</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbListaMembresia">
@@ -372,7 +366,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     beforeSend: function() {
                         tbListaMembresia.empty();
                         tbListaMembresia.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="3" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                         );
                     },
                     success: function(result) {
@@ -387,23 +381,20 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     '<td class="sorting_1">' + count + '</td>' +
                                     '<td>' + estadoMembresia + '</td>' +
                                     '<td>' + membresia.nombre + '</td>' +
-                                    '<td>' + membresia.serie + "-" + membresia.numeracion + '</td>' +
                                     '<td>Del ' + tools.getDateForma(membresia.fechaInicio) + ' al ' + tools.getDateForma(membresia.fechaFin) + '</td>' +
-                                    '<td>' + estado + '</td>' +
-                                    '<td>S/ ' + tools.formatMoney(membresia.total, 2) + '</td>' +
                                     '</tr>');
                             }
                         } else {
                             tbListaMembresia.empty();
                             tbListaMembresia.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="3" style="text-align:center"><p>' +
                                 result.mensaje + '</p></td></tr>');
                         }
                     },
                     error: function(error) {
                         tbListaMembresia.empty();
                         tbListaMembresia.append(
-                            '<tr role="row" class="odd"><td class="sorting_1" colspan="9" style="text-align:center"><p>' +
+                            '<tr role="row" class="odd"><td class="sorting_1" colspan="3" style="text-align:center"><p>' +
                             error.responseText + '</p></td></tr>');
                     }
                 });

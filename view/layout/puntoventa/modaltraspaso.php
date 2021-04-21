@@ -45,19 +45,13 @@
                                         <table class="table table-hover table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20px;">#</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">
-                                                        Plan</th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Fecha Inicio
-                                                    </th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Fecha Fin
-                                                    </th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Dias activo
-                                                    </th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 20px;">Precio/Traspaso
-                                                    </th>
-                                                    <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1">Opciones
-                                                    </th>
+                                                    <th class="sorting" style="width: 20px;">#</th>
+                                                    <th class="sorting"> Plan</th>
+                                                    <th class="sorting">Fecha Inicio</th>
+                                                    <th class="sorting">Fecha Fin</th>
+                                                    <th class="sorting">Dias activo</th>
+                                                    <th class="sorting" style="width: 20px;">Precio/Traspaso</th>
+                                                    <th class="sorting">Opciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbMembresiaTraspaso">

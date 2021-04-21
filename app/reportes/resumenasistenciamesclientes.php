@@ -18,9 +18,9 @@ $start = intval($dateStart->format('d'));
 $dateEnd = new DateTime($fechaFinal);
 $dateEnd->setDate($dateEnd->format("Y"), $dateEnd->format("m"), 1);
 $dateEnd->modify('last day of this month');
-$end = intval($dateEnd->format('d'));
+$end = intval($dateEnd->format('d')) + 1;
 
-$fechaIngreso = $dateStart->format('d-m-Y') . ' / ' . $dateEnd->format('d-m-Y');
+$fechaIngreso = $dateStart->format('d/m/Y') . ' - ' . $dateEnd->format('d/m/Y');
 
 $listaAsistencia = AsistenciaAdo::ListarAsistenciaClientesPorMes($_GET["month"], $_GET["year"]);
 
@@ -121,7 +121,11 @@ mpdf-->
      
     <?php
     for ($i = $start; $i <= $end; $i++) {
-        $html .= '<th width="5px">' . $i . '</th>';
+        if ($end == $i) {
+            $html .= '<th width="5px">T</th>';
+        } else {
+            $html .= '<th width="5px">' . $i . '</th>';
+        }
     }
     ?>
     <?php
@@ -131,14 +135,110 @@ mpdf-->
 
 <?php
     foreach ($listaAsistencia as $value) {
+        $countmarca = 0;
         $html .= '<tr>';
         $html .= '<td>' . $value["id"] . '</td>';
         $html .= '<td>' . $value["dni"] . '<br>' . $value["cliente"] . '</td>';
         for ($i = $start; $i <= $end; $i++) {
-            if ($i === intval($value["dia"])) {
-                $html .= '<td><span><b style="font-size:17px; color:green;">*</b><span></td>';
+            if ($end == $i) {
+                $html .= '<td> ' . $countmarca . ' </td>';
             } else {
-                $html .= '<td> </td>';
+                if ($i === intval($value["dia1"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia2"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia3"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia4"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia5"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia6"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia7"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia8"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia9"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia10"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia11"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia12"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia13"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia14"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia15"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia16"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia17"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia18"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia19"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia20"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia21"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia22"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia23"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia24"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia25"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia26"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia27"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia28"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia29"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia30"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else if ($i === intval($value["dia31"])) {
+                    $html .= '<td><span><b style="font-size:15px; color:green;">(*)</b><span></td>';
+                    $countmarca++;
+                } else {
+                    $html .= '<td> </td>';
+                }
             }
         }
         $html .= '</tr>';

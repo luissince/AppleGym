@@ -7,13 +7,13 @@ function ModalListaProductos() {
     let opcionProducto = 0;
     let stateProducto = false;
 
-    this.init = function () {
+    this.init = function() {
 
-        $("#modalProductos").on('shown.bs.modal', function () {
+        $("#modalProductos").on('shown.bs.modal', function() {
             $("#txtSearProducto").focus();
         });
 
-        $("#txtSearProducto").keyup(function () {
+        $("#txtSearProducto").keyup(function() {
             if ($("#txtSearProducto").val().trim() != '') {
                 if (!stateProducto) {
                     paginacionProducto = 1;
@@ -23,16 +23,16 @@ function ModalListaProductos() {
             }
         });
 
-        $("#btnReloadProductos").click(function () {
+        $("#btnReloadProductos").click(function() {
             loadInitProductos();
         });
 
-        $("#btnProductos").click(function () {
+        $("#btnProductos").click(function() {
             $("#modalProductos").modal("show")
             loadTableProductos($("#txtSearProducto").val())
         });
 
-        $("#btnAnteriorProductos").click(function () {
+        $("#btnAnteriorProductos").click(function() {
             if (!stateProducto) {
                 if (paginacionProducto > 1) {
                     paginacionProducto--;
@@ -41,7 +41,7 @@ function ModalListaProductos() {
             }
         });
 
-        $("#btnSiguienteProductos").click(function () {
+        $("#btnSiguienteProductos").click(function() {
             if (!stateProducto) {
                 if (paginacionProducto < totalPaginacionProducto) {
                     paginacionProducto++;
@@ -51,7 +51,7 @@ function ModalListaProductos() {
         });
 
 
-        $("#btnCloseModalProductos").click(function () {
+        $("#btnCloseModalProductos").click(function() {
             $("#modalProductos").modal("hide")
         });
 
@@ -88,15 +88,15 @@ function ModalListaProductos() {
                 "page": paginacionProducto,
                 "datos": text
             },
-            beforeSend: function () {
+            beforeSend: function() {
                 stateProducto = true;
                 totalPaginacionProducto = 0;
                 tbListaProductos.empty();
                 tbListaProductos.append(
-                    '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><img src="./images/loading.gif" width="100"/>p>Cargando información...</p></td></tr>'
+                    '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                 );
             },
-            success: function (result) {
+            success: function(result) {
                 tbListaProductos.empty();
                 let data = result;
                 if (data.estado == 1) {
@@ -134,7 +134,7 @@ function ModalListaProductos() {
                     stateProducto = false;
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 tbListaProductos.empty();
                 tbListaProductos.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="5" style="text-align:center"><p>' +
@@ -147,7 +147,7 @@ function ModalListaProductos() {
     }
 
 
-    onSelectProducto = function (idProducto, nombre, precio) {
+    onSelectProducto = function(idProducto, nombre, precio) {
         if (!validateDatelleVenta(idProducto)) {
             listaVenta.push({
                 "idPlan": idProducto,
@@ -167,7 +167,7 @@ function ModalListaProductos() {
 
             for (let i = 0; i < listaVenta.length; i++) {
                 if (listaVenta[i].idPlan == idProducto) {
-                    let currenteObject = listaVenta[i];                 
+                    let currenteObject = listaVenta[i];
                     currenteObject.cantidad += 1;
                     break;
                 }

@@ -6,22 +6,22 @@ function ModalCliente() {
     let paginacionCliente = 0;
     let opcionCliente = 0;
 
-    this.init = function () {
+    this.init = function() {
 
-        $('#modalLista').on('shown.bs.modal', function () {
+        $('#modalLista').on('shown.bs.modal', function() {
             $('#txtSearchLista').trigger('focus')
-          })
+        })
 
-        $("#btnListaCliente").click(function () {
+        $("#btnListaCliente").click(function() {
             $("#modalLista").modal("show");
             loadInitClientes();
         });
 
-        $("#btnCloseModalClientes").click(function () {
+        $("#btnCloseModalClientes").click(function() {
             clearModalClientes();
         });
 
-        $("#txtSearchLista").keypress(function () {
+        $("#txtSearchLista").keypress(function() {
             if ($("#txtSearchLista").val().trim() != '') {
                 if (!stateCliente) {
                     paginacionCliente = 1;
@@ -31,11 +31,11 @@ function ModalCliente() {
             }
         });
 
-        $("#btnReloadCliente").click(function () {
+        $("#btnReloadCliente").click(function() {
             loadInitClientes();
         });
 
-        $("#btnAnteriorCliente").click(function () {
+        $("#btnAnteriorCliente").click(function() {
             if (!stateCliente) {
                 if (paginacionCliente > 1) {
                     paginacionCliente--;
@@ -44,7 +44,7 @@ function ModalCliente() {
             }
         });
 
-        $("#btnSiguienteCliente").click(function () {
+        $("#btnSiguienteCliente").click(function() {
             if (!stateCliente) {
                 if (paginacionCliente < totalPaginacionCliente) {
                     paginacionCliente++;
@@ -83,7 +83,7 @@ function ModalCliente() {
                 "page": paginacionCliente,
                 "datos": text
             },
-            beforeSend: function () {
+            beforeSend: function() {
                 stateCliente = true;
                 totalPaginacionCliente = 0;
                 tbListaCliente.empty();
@@ -91,7 +91,7 @@ function ModalCliente() {
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                 );
             },
-            success: function (result) {
+            success: function(result) {
                 let data = result;
                 if (data.estado == 1) {
                     tbListaCliente.empty();
@@ -104,14 +104,18 @@ function ModalCliente() {
                         stateCliente = false;
                     } else {
                         for (let cliente of data.clientes) {
+
+                            let membresia = cliente.membresia >= 1 ? '<span class="badge badge-pill badge-success">' + cliente.membresia + " ACTIVA(S)" + '</span><br>' : '';
+                            let porvencer = cliente.porvencer >= 1 ? '<span class="badge badge-pill badge-warning">' + cliente.porvencer + " POR VENCER" + '</span><br>' : '';
+                            let vencidas = cliente.vencidas >= 1 ? '<span class="badge badge-pill badge-danger">' + cliente.porvencer + " VENCIDA(S)" + '</span>' : '';
+                            let traspaso = cliente.traspado >= 1 ? '<span class="badge badge-pill badge-danger">' + cliente.traspado + " TRASPASO(S)" + '</span>' : '';
+
                             tbListaCliente.append('<tr ondblclick="onSelectCliente(\'' + cliente.idCliente + '\',\'' + cliente.apellidos + '\',\'' + cliente.nombres + '\')" role="row" >' +
                                 '<td class="sorting_1">' + cliente.id + '</td>' +
                                 '<td>' + cliente.dni + '<br>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                                 '<td>' + cliente.celular + '</td>' +
-                                '<td><span class="badge badge-pill badge-success">Activo</span></td>' +
-                                '<td>' + (cliente.membresia >= 1 ? cliente.membresia + " MEMBRESIA(S)" :
-                                    "NINGUNA") + "<br>" + (cliente.venta == 1 ? cliente.venta +
-                                        " deuda(s)" : "0 deudas") + '</td>' +
+                                '<td>' + membresia + ' ' + porvencer + ' ' + vencidas + ' ' + traspaso + '</td>' +
+                                '<td>' + (cliente.venta == 1 ? cliente.venta + " deuda(s)" : "0 deudas") + '</td>' +
                                 '<td>' + cliente.descripcion + '</td>' +
                                 '</tr>');
                         }
@@ -133,7 +137,7 @@ function ModalCliente() {
                     stateCliente = false;
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 tbListaCliente.empty();
                 tbListaCliente.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="6" style="text-align:center"><p>' +
@@ -145,7 +149,7 @@ function ModalCliente() {
         });
     }
 
-    onSelectCliente =  function(id, apellidos, nombres) {
+    onSelectCliente = function(id, apellidos, nombres) {
         idCliente = id;
         $("#clienteDatos").val(apellidos + " " + nombres)
         $("#modalLista").modal("hide")

@@ -63,6 +63,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "mensaje" => $result
             ));
         }
+    } else if ($_GET["type"] == "getmembycliente") {
+        $result = MembresiaAdo::getMembresiaClienteRenovacion($_GET["idCliente"]);
+        if (is_array($result)) {
+            print json_encode(array(
+                "estado" => 1,
+                "membresias" => $result
+            ));
+        } else {
+            print json_encode(array(
+                "estado" => 2,
+                "mensaje" => $result
+            ));
+        }
     }
 
     exit();

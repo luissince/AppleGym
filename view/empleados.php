@@ -319,14 +319,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr role="row">
-                                                <th class="sorting" width="5%;">#</th>
+                                                <th class="sorting text-center" width="5%;">#</th>
                                                 <th class="sorting" width="10%;">Dni</th>
                                                 <th class="sorting" width="20%;">Apellidos y Nombres</th>
                                                 <th class="sorting" width="10%;">Celular</th>
                                                 <th class="sorting" width="10%;">Ocupación</th>
-                                                <th class="sorting" width="5%;">Perfil</th>
-                                                <th class="sorting" width="5%;">Editar</th>
-                                                <th class="sorting" width="5%;">Eliminar</th>
+                                                <th class="sorting text-center" width="5%;">Perfil</th>
+                                                <th class="sorting text-center" width="5%;">Editar</th>
+                                                <th class="sorting text-center" width="5%;">Eliminar</th>
                                             </tr>
                                         </thead>
 
@@ -481,14 +481,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             '</button>' : '-';
 
                                         tbLista.append('<tr role="row" class="odd">' +
-                                            '<td>' + count + '</td>' +
+                                            '<td class="text-center">' + count + '</td>' +
                                             '<td>' + empleado.numeroDocumento + '</td>' +
                                             '<td>' + empleado.apellidos + " " + empleado.nombres + '</td>' +
                                             '<td>' + empleado.celular + '</td>' +
                                             '<td>' + empleado.ocupacion + '</td>' +
-                                            '<td>' + btnPerfil + '</td>' +
-                                            '<td>' + btnUpdate + '</td>' +
-                                            '<td>' + btnDelete + '</td>' +
+                                            '<td class="text-center">' + btnPerfil + '</td>' +
+                                            '<td class="text-center">' + btnUpdate + '</td>' +
+                                            '<td class="text-center">' + btnDelete + '</td>' +
                                             '</tr>');
                                     }
 

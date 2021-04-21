@@ -20,9 +20,6 @@ class MembresiaAdo
             c.apellidos,
             c.nombres,
             p.nombre AS 'nombrePlan',  
-            v.serie, 
-            v.numeracion, 
-            v.estado AS 'estadoventa',
             m.tipoMembresia,
             m.fechaInicio, 
             m.fechaFin, 
@@ -35,31 +32,25 @@ class MembresiaAdo
             m.cantidad, 
             m.precio, 
             SUM(m.cantidad*m.precio) AS 'total' 
-            FROM membresiatb AS m
-            INNER JOIN ventatb AS v ON v.idVenta = m.idVenta
+            FROM membresiatb AS m 
             INNER JOIN plantb AS p ON p.idPlan = m.idPlan
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
             WHERE 
-            ? = 0
+            ? = 0 AND m.estado <> -1
             OR
-            ? = 1 AND c.dni LIKE CONCAT(?,'%')
+            ? = 1 AND c.dni LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND c.apellidos LIKE CONCAT(?,'%')
+            ? = 1 AND c.apellidos LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND c.nombres LIKE CONCAT(?,'%')
+            ? = 1 AND c.nombres LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND CONCAT(c.apellidos,' ', c.nombres) LIKE CONCAT(?,'%')
+            ? = 1 AND CONCAT(c.apellidos,' ', c.nombres) LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND CONCAT(c.nombres,' ',c.apellidos) LIKE CONCAT(?,'%')
+            ? = 1 AND CONCAT(c.nombres,' ',c.apellidos) LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND v.serie = ?
+            ? = 1 AND p.nombre LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND v.numeracion = ?
-            OR
-            ? = 1 AND CONCAT(v.serie,'-',v.numeracion) = ?
-            OR
-           /* ? = 2 AND ? = 1 AND CAST(PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM NOW()), EXTRACT(YEAR_MONTH FROM m.fechaFin)) AS INT) < 0*/
-            ? = 2 AND ? = 1 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 AND m.estado = 1
+            ? = 2 AND ? = 1 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 AND m.estado = 1 
             OR
             ? = 2 AND ? = 2 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10 AND m.estado = 1
             OR
@@ -67,7 +58,6 @@ class MembresiaAdo
             OR
             ? = 2 AND ? = 4 AND m.estado = 0
             GROUP BY m.idMembresia
-            ORDER BY v.fecha desc, v.hora desc
             LIMIT ?,?");
             $membresia->bindParam(1, $opcion, PDO::PARAM_INT); //0
 
@@ -86,14 +76,14 @@ class MembresiaAdo
             $membresia->bindParam(10, $opcion, PDO::PARAM_INT); //nombres Y apellidos
             $membresia->bindParam(11, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(12, $opcion, PDO::PARAM_INT); //serie
+            $membresia->bindParam(12, $opcion, PDO::PARAM_INT); //plan
             $membresia->bindParam(13, $buscar, PDO::PARAM_STR);
 
-            $membresia->bindParam(14, $opcion, PDO::PARAM_INT); //numeracion
-            $membresia->bindParam(15, $buscar, PDO::PARAM_STR);
+            $membresia->bindParam(14, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(15, $tipo, PDO::PARAM_INT);
 
-            $membresia->bindParam(16, $opcion, PDO::PARAM_INT); //serie y numeracion
-            $membresia->bindParam(17, $buscar, PDO::PARAM_STR);
+            $membresia->bindParam(16, $opcion, PDO::PARAM_INT);
+            $membresia->bindParam(17, $tipo, PDO::PARAM_INT);
 
             $membresia->bindParam(18, $opcion, PDO::PARAM_INT);
             $membresia->bindParam(19, $tipo, PDO::PARAM_INT);
@@ -101,14 +91,8 @@ class MembresiaAdo
             $membresia->bindParam(20, $opcion, PDO::PARAM_INT);
             $membresia->bindParam(21, $tipo, PDO::PARAM_INT);
 
-            $membresia->bindParam(22, $opcion, PDO::PARAM_INT);
-            $membresia->bindParam(23, $tipo, PDO::PARAM_INT);
-
-            $membresia->bindParam(24, $opcion, PDO::PARAM_INT);
-            $membresia->bindParam(25, $tipo, PDO::PARAM_INT);
-
-            $membresia->bindParam(26, $x, PDO::PARAM_INT);
-            $membresia->bindParam(27, $y, PDO::PARAM_INT);
+            $membresia->bindParam(22, $x, PDO::PARAM_INT);
+            $membresia->bindParam(23, $y, PDO::PARAM_INT);
             $membresia->execute();
 
             $count = 0;
@@ -120,40 +104,33 @@ class MembresiaAdo
                     "idMembresia" => $row["idMembresia"],
                     "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
-                    "nombres" => $row["nombres"],                   
+                    "nombres" => $row["nombres"],
                     "membresia" => $row["membresia"],
                     "nombrePlan" => $row["nombrePlan"],
-                    "serie" => $row["serie"],
-                    "numeracion" => $row["numeracion"],
                     "fechaInicio" => $row["fechaInicio"],
                     "fechaFin" => $row["fechaFin"],
-                    "estadoventa" => $row["estadoventa"],
                     "total" => floatval($row["total"]),
                 ));
             }
 
-            $total = Database::getInstance()->getDb()->prepare("SELECT count(m.idMembresia) FROM membresiatb as m
-            INNER JOIN ventatb as v ON v.idVenta = m.idVenta
-            INNER JOIN plantb as p ON p.idPlan = m.idPlan
-            INNER JOIN clientetb as c ON c.idCliente  = m.idCliente
+            $total = Database::getInstance()->getDb()->prepare("SELECT count(m.idMembresia) 
+            FROM membresiatb AS m 
+            INNER JOIN plantb AS p ON p.idPlan = m.idPlan
+            INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
             WHERE 
-            ? = 0
+            ? = 0 AND m.estado <> -1
             OR
-            ? = 1 AND c.dni LIKE CONCAT(?,'%')
+            ? = 1 AND c.dni LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND c.apellidos LIKE CONCAT(?,'%')
+            ? = 1 AND c.apellidos LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND c.nombres LIKE CONCAT(?,'%')
+            ? = 1 AND c.nombres LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND CONCAT(c.apellidos,' ', c.nombres) LIKE CONCAT(?,'%')
+            ? = 1 AND CONCAT(c.apellidos,' ', c.nombres) LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND CONCAT(c.nombres,' ',c.apellidos) LIKE CONCAT(?,'%')
+            ? = 1 AND CONCAT(c.nombres,' ',c.apellidos) LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
-            ? = 1 AND v.serie = ?
-            OR
-            ? = 1 AND v.numeracion = ?
-            OR
-            ? = 1 AND CONCAT(v.serie,'-',v.numeracion) = ?
+            ? = 1 AND p.nombre LIKE CONCAT(?,'%') AND m.estado <> -1
             OR
             ? = 2 AND ? = 1 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 AND m.estado = 1
             OR
@@ -179,26 +156,20 @@ class MembresiaAdo
             $total->bindParam(10, $opcion, PDO::PARAM_INT); //nombres Y apellidos
             $total->bindParam(11, $buscar, PDO::PARAM_STR);
 
-            $total->bindParam(12, $opcion, PDO::PARAM_INT);
+            $total->bindParam(12, $opcion, PDO::PARAM_INT); //plan
             $total->bindParam(13, $buscar, PDO::PARAM_STR);
 
             $total->bindParam(14, $opcion, PDO::PARAM_INT);
-            $total->bindParam(15, $buscar, PDO::PARAM_STR);
+            $total->bindParam(15, $tipo, PDO::PARAM_INT);
 
             $total->bindParam(16, $opcion, PDO::PARAM_INT);
-            $total->bindParam(17, $buscar, PDO::PARAM_STR);
+            $total->bindParam(17, $tipo, PDO::PARAM_INT);
 
             $total->bindParam(18, $opcion, PDO::PARAM_INT);
             $total->bindParam(19, $tipo, PDO::PARAM_INT);
 
             $total->bindParam(20, $opcion, PDO::PARAM_INT);
             $total->bindParam(21, $tipo, PDO::PARAM_INT);
-
-            $total->bindParam(22, $opcion, PDO::PARAM_INT);
-            $total->bindParam(23, $tipo, PDO::PARAM_INT);
-
-            $total->bindParam(24, $opcion, PDO::PARAM_INT);
-            $total->bindParam(25, $tipo, PDO::PARAM_INT);
 
             $total->execute();
             $resultTotal = $total->fetchColumn();
@@ -218,13 +189,7 @@ class MembresiaAdo
             c.dni,
             c.apellidos,
             c.nombres,
-            p.nombre AS 'nombrePlan',  
-            v.serie, 
-            v.numeracion, 
-            CASE v.estado
-            WHEN 1 THEN 'PAGADO'
-            WHEN 2 THEN 'PENDIENTE'
-            ELSE 'ANULADO' END AS 'estadoventa',
+            p.nombre AS 'nombrePlan', 
             m.tipoMembresia,
             m.fechaInicio, 
             m.fechaFin, 
@@ -232,18 +197,27 @@ class MembresiaAdo
             WHEN m.estado = 0 THEN 'Traspaso'
             WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 'Activa'
             WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 THEN 'Por Vencer'
-            ELSE 'Finalizada' END AS 'membresia', 
-            m.cantidad, 
-            m.precio, 
-            SUM(m.cantidad*m.precio) AS 'total' 
-            FROM membresiatb AS m
-            INNER JOIN ventatb AS v ON v.idVenta = m.idVenta
+            ELSE 'Finalizada' END AS 'membresia',
+            CASE
+            WHEN m.tipoMembresia = '2' THEN 'RECUPERACIÓN'
+            WHEN m.tipoMembresia = '3' THEN 'TRASPASO'
+            WHEN m.tipoMembresia = '4' THEN 'ACTIVACIÓN'
+            WHEN m.tipoMembresia = '5' THEN 'RENOVACIÓN'
+            ELSE 'NUEVO' END AS 'tipo'
+            FROM detalleventatb as dv
+            INNER JOIN membresiatb AS m ON m.idMembresia = dv.idOrigen 
             INNER JOIN plantb AS p ON p.idPlan = m.idPlan
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
             WHERE 
-            MONTH(v.fecha) = ? AND YEAR(v.fecha) = ?
-            GROUP BY m.idMembresia
-            ORDER BY v.fecha desc, v.hora desc");
+            ? = (SELECT MONTH(v.fecha) 
+            FROM ventatb AS v 
+            WHERE dv.idVenta =  v.idVenta)
+            AND 
+            ? = (SELECT YEAR(v.fecha)
+            FROM ventatb AS v 
+            WHERE dv.idVenta =  v.idVenta)
+            AND m.estado <> -1 
+            GROUP BY m.idMembresia");
             $membresia->bindParam(1, $month, PDO::PARAM_INT);
             $membresia->bindParam(2, $year, PDO::PARAM_INT);
             $membresia->execute();
@@ -257,15 +231,12 @@ class MembresiaAdo
                     "idMembresia" => $row["idMembresia"],
                     "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
-                    "nombres" => $row["nombres"],                    
+                    "nombres" => $row["nombres"],
                     "membresia" => $row["membresia"],
                     "nombrePlan" => $row["nombrePlan"],
-                    "serie" => $row["serie"],
-                    "numeracion" => $row["numeracion"],
-                    "fechaInicio" => $row["fechaInicio"],
-                    "fechaFin" => $row["fechaFin"],
-                    "estadoventa" => $row["estadoventa"],
-                    "total" => floatval($row["total"]),
+                    "fechaInicio" => date("d/m/Y", strtotime($row["fechaInicio"])),
+                    "fechaFin" => date("d/m/Y", strtotime($row["fechaFin"])),
+                    "tipo" => $row["tipo"],
                 ));
             }
 
@@ -282,14 +253,8 @@ class MembresiaAdo
             $array = array();
             // Preparar sentencia
             $comando = Database::getInstance()->getDb()->prepare("SELECT 
-            v.idVenta, 
-            v.cliente, 
             m.idMembresia, 
-            p.nombre, 
-            v.documento, 
-            v.serie, 
-            v.numeracion, 
-            v.estado as 'estadoventa',
+            p.nombre,
             m.tipoMembresia,
             m.fechaInicio, 
             m.fechaFin, 
@@ -302,29 +267,27 @@ class MembresiaAdo
             m.precio, 
             SUM(m.cantidad*m.precio) as 'total' 
             FROM membresiatb as m
-            INNER JOIN ventatb as v ON v.idVenta = m.idVenta
             INNER JOIN plantb as p ON p.idPlan = m.idPlan
-            where v.cliente=?
-            GROUP BY m.idMembresia
-            ORDER BY v.fecha desc, v.hora desc");
+            WHERE m.idCliente = ? AND m.estado <> -1 
+            GROUP BY m.idMembresia");
             $comando->bindValue(1, $idCliente, PDO::PARAM_STR);
             $comando->execute();
             $arrayDetalle = array();
-            while ($row = $comando->fetch()) {
+            while ($row = $comando->fetchObject()) {
                 array_push($arrayDetalle, $row);
             }
 
-            $comando = Database::getInstance()->getDb()->prepare("SELECT count(*) FROM membresiatb as m
-            INNER JOIN ventatb as v ON v.idVenta = m.idVenta
+            $comando = Database::getInstance()->getDb()->prepare("SELECT count(*) 
+            FROM membresiatb as m
             INNER JOIN plantb as p ON p.idPlan = m.idPlan
-            where v.cliente=?");
+            WHERE m.idCliente = ? AND m.estado <> -1");
             $comando->bindValue(1, $idCliente, PDO::PARAM_STR);
             $comando->execute();
             $resulTotal = $comando->fetchColumn();
 
             array_push($array, $arrayDetalle, $resulTotal);
             return $array;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -332,7 +295,14 @@ class MembresiaAdo
     public static function GetByIdHistorialMembresia($idMembresia)
     {
         try {
-            $historialMembresia = Database::getInstance()->getDb()->prepare("SELECT * FROM historialmembresia WHERE idMembresia = ?");
+            $historialMembresia = Database::getInstance()->getDb()->prepare("SELECT 
+            descripcion,
+            fecha,
+            hora,
+            fechaInicio,
+            fechaFinal
+            FROM historialmembresia 
+            WHERE idMembresia = ?");
             $historialMembresia->bindValue(1, $idMembresia, PDO::PARAM_STR);
             $historialMembresia->execute();
 
@@ -346,8 +316,7 @@ class MembresiaAdo
                     "fecha" => $row["fecha"],
                     "hora" => $row["hora"],
                     "fechaInicio" => $row["fechaInicio"],
-                    "fechaFinal" => $row["fechaFinal"],
-
+                    "fechaFinal" => $row["fechaFinal"]
                 ));
             }
 
@@ -365,7 +334,6 @@ class MembresiaAdo
             m.idMembresia ,
             m.idPlan,
             m.idCliente,
-            m.idVenta,
             m.fechaInicio,
             m.horaInicio,
             m.fechaFin,
@@ -384,7 +352,7 @@ class MembresiaAdo
             $cmdMembresia->execute();
             $membresia = $cmdMembresia->fetchObject();
             if (!$membresia) {
-                throw new Exception("Producto no encontrado, intente nuevamente.");
+                throw new Exception("Membresía no encontrada, intente nuevamente.");
             }
             return $membresia;
         } catch (Exception $ex) {
@@ -463,4 +431,39 @@ class MembresiaAdo
             return $ex->getMessage();
         }
     }
+
+    public static function getMembresiaClienteRenovacion($idCliente)
+    {
+        try {
+            $comando = Database::getInstance()->getDb()->prepare("SELECT 
+            m.idMembresia,
+            m.fechaInicio,
+            m.fechaFin,
+            CASE 
+            WHEN m.estado = 0 THEN 3
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) > 10 THEN 1
+            WHEN CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) <=10 THEN 2
+            ELSE 0 END AS 'estado', 
+            p.idPlan,
+            p.nombre,
+            p.meses,
+            p.dias,
+            p.freeze,
+            p.precio
+            FROM membresiatb AS m 
+            INNER JOIN plantb AS p ON p.idPlan = m.idPlan
+            WHERE m.idCliente = ? AND m.estado <> -1");
+            $comando->bindParam(1, $idCliente, PDO::PARAM_STR);
+            $comando->execute();
+
+            $arrayDetalle = array();
+            while ($row = $comando->fetchObject()) {
+                array_push($arrayDetalle, $row);
+            }
+            return $arrayDetalle;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
 }

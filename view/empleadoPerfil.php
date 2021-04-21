@@ -17,160 +17,158 @@ if (!isset($_SESSION["IdEmpleado"])) {
         <?php include "./layout/header.php"; ?>
         <!-- Sidebar menu-->
         <?php include "./layout/menu.php"; ?>
-        <main class="app-content">
+        <!-- modal detelle del credito -->
+        <div class="row">
+            <div class="modal fade show" id="modalCredito" data-backdrop="static" aria-modal="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="titulo-modal">
+                                <i class="fa fa-bandcamp"></i> Detalle del Crédito
+                            </h4>
+                            <button type="button" class="close" id="btnCloseModalCredito">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
 
-            <!-- Sidebar menu-->
-            <?php include "./marcarentrada.php"; ?>
-
-            <!-- modal detelle de la venta -->
-            <div class="row">
-                <div class="modal fade show" id="modalDetalle" data-backdrop="static" aria-modal="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="titulo-modal">
-                                    <i class="fa fa-bandcamp"></i> Detalle de la venta
-                                </h4>
-                                <button type="button" class="close" id="btnCloseModalDetalle">
-                                    <i class="fa fa-close"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-
-                                <div class="row">
-                                    <div class="col-md-12 ">
-
-                                        <div class="tile-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="sorting" width="5%">#</th>
-                                                            <th class="sorting" width="50%">Descripción</th>
-                                                            <th class="sorting" width="15%">Cantidad</th>
-                                                            <th class="sorting" width="15%">Precio </th>
-                                                            <th class="sorting" width="15%">Importe</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbDetalleVenta">
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group text-center">
+                                        <p class="h6">MONTO TOTAL</p>
+                                        <b class="h6 text-info" id="lblMontoTotal">S/ 0.00</b>
                                     </div>
                                 </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" id="btnCerrarModalDetalle">
-                                        <i class="fa fa-check"></i> Cerrar</button>
+                                <div class="col-md-4">
+                                    <div class="form-group text-center">
+                                        <p class="h6">MONTO COBRADO</p>
+                                        <b class="h6 text-info" id="lblMontoCobrado">S/ 0.00</b>
+                                    </div>
                                 </div>
-
+                                <div class="col-md-4">
+                                    <div class="form-group text-center">
+                                        <p class="h6">DIFERENCIA</p>
+                                        <b class="h6 text-danger" id="lblDiferencia">S/ 0.00</b>
+                                    </div>
+                                </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Forma de Pago:</label>
+                                    <div class="form-group">
+                                        <select id="formapagocredito" class="form-control form-control-sm">
+                                            <option value="">- Selecciona -</option>
+                                            <option value="1">EFECTIVO</option>
+                                            <option value="2">TARJETA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label>N° Operación: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
+                                            <div class="form-group">
+                                                <input id="numerocreditotarjeta" type="text" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <div class="tile-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>
+                                                        <th width="20%">Monto</th>
+                                                        <th width="20%">Fecha Cobro</th>
+                                                        <th width="20%">Fecha Registro</th>
+                                                        <th width="20%">Opción </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbDetalleCredito">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" id="btnAceptarModalCredito">
+                                <i class="fa fa-check"></i> Aceptar</button>
+                            <button type="button" class="btn btn-danger" id="btnCerrarModalCredito">
+                                <i class="fa fa-check"></i> Cerrar</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <!--  -->
+        </div>
+        <!--  -->
+        <!-- modal detelle de la venta -->
+        <div class="row">
+            <div class="modal fade show" id="modalDetalle" data-backdrop="static" aria-modal="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="titulo-modal">
+                                <i class="fa fa-bandcamp"></i> Detalle de la venta
+                            </h4>
+                            <button type="button" class="close" id="btnCloseModalDetalle">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
 
-            <!-- modal detelle del credito -->
-            <div class="row">
-                <div class="modal fade show" id="modalCredito" data-backdrop="static" aria-modal="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="titulo-modal">
-                                    <i class="fa fa-bandcamp"></i> Detalle del Crédito
-                                </h4>
-                                <button type="button" class="close" id="btnCloseModalCredito">
-                                    <i class="fa fa-close"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12 ">
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group text-center">
-                                            <p class="h6">MONTO TOTAL</p>
-                                            <b class="h6 text-info" id="lblMontoTotal">S/ 0.00</b>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group text-center">
-                                            <p class="h6">MONTO COBRADO</p>
-                                            <b class="h6 text-info" id="lblMontoCobrado">S/ 0.00</b>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group text-center">
-                                            <p class="h6">DIFERENCIA</p>
-                                            <b class="h6 text-danger" id="lblDiferencia">S/ 0.00</b>
-                                        </div>
-                                    </div>
-                                </div>
+                                    <div class="tile-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="sorting" width="5%">#</th>
+                                                        <th class="sorting" width="50%">Descripción</th>
+                                                        <th class="sorting" width="15%">Cantidad</th>
+                                                        <th class="sorting" width="15%">Precio </th>
+                                                        <th class="sorting" width="15%">Descuento </th>
+                                                        <th class="sorting" width="15%">Importe</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbDetalleVenta">
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Forma de Pago:</label>
-                                        <div class="form-group">
-                                            <select id="formapagocredito" class="form-control form-control-sm">
-                                                <option value="">- Selecciona -</option>
-                                                <option value="1">EFECTIVO</option>
-                                                <option value="2">TARJETA</option>
-                                            </select>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label>N° Operación: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
-                                                <div class="form-group">
-                                                    <input id="numerocreditotarjeta" type="text" class="form-control form-control-sm">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-12 ">
-                                        <div class="tile-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="sorting" width="5%">#</th>
-                                                            <th class="sorting" width="20%">Monto</th>
-                                                            <th class="sorting" width="20%">Fecha Cobro</th>
-                                                            <th class="sorting" width="20%">Fecha Registro</th>
-                                                            <th class="sorting" width="20%">Opción </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbDetalleCredito">
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-success" id="btnAceptarModalCredito">
-                                    <i class="fa fa-check"></i> Aceptar</button>
-                                <button type="button" class="btn btn-danger" id="btnCerrarModalCredito">
+                                <button type="button" class="btn btn-danger" id="btnCerrarModalDetalle">
                                     <i class="fa fa-check"></i> Cerrar</button>
                             </div>
 
                         </div>
+
                     </div>
                 </div>
             </div>
-            <!--  -->
+        </div>
+        <!--  -->
 
+        <main class="app-content">
+            <!-- Sidebar menu-->
+            <?php include "./marcarentrada.php"; ?>
             <!--  -->
             <div class="row">
                 <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12 col-12 bg-secondary text-center">
@@ -253,13 +251,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <table class="table table-hover table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th class="sorting" style="width: 5%;">#</th>
-                                                    <th class="sorting_asc" style="width: 15%;">Fecha</th>
-                                                    <th class="sorting_asc" style="width: 20%;">Comprobante</th>
-                                                    <th class="sorting" style="width: 10%;">Tipo</th>
-                                                    <th class="sorting" style="width: 10%;">Estado</th>
-                                                    <th class="sorting" style="width: 15%;">Total</th>
-                                                    <th class="sorting" style="width: 10%;">Detalle</th>                                                   
+                                                    <th style="width: 5%;">#</th>
+                                                    <th style="width: 15%;">Fecha</th>
+                                                    <th style="width: 20%;">Comprobante</th>
+                                                    <th style="width: 10%;">Tipo</th>
+                                                    <th style="width: 10%;">Estado</th>
+                                                    <th style="width: 15%;">Total</th>
+                                                    <th style="width: 10%;">Detalle</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbListaVentas">

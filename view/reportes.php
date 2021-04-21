@@ -526,7 +526,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             </button>
                         </div>
 
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <!-- <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
                             <button class="btn btn-default" id="btnReporteServicio">
                                 <div class="bs-component">
                                     <div class="card">
@@ -541,7 +541,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     </div>
                                 </div>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
 
             </main>

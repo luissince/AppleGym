@@ -50,17 +50,12 @@
                                     <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">#</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 250px;">
-                                                    Cliente</th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 72px;">Celular
-                                                </th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 59px;">Estado
-                                                </th>
-                                                <th class="sorting" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 69px;">Membresia
-                                                </th>
-                                                <th class="sorting_asc" aria-controls="sampleTable" rowspan="1" colspan="1" style="width: 107px;">Descripción
-                                                </th>
+                                                <th class="sorting" style="width: 5%;">#</th>
+                                                <th class="sorting" style="width: 35%;">Cliente</th>
+                                                <th class="sorting" style="width: 15%;">Celular</th>
+                                                <th class="sorting" style="width: 15%;">Membresia</th>
+                                                <th class="sorting" style="width: 15%;">Deuda</th>
+                                                <th class="sorting_asc" style="width: 20%;">Descripción</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbListaCliente">
