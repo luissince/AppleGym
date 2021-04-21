@@ -73,8 +73,8 @@ class PlanAdo
                                 $executePlanDisciplina->execute(
                                     array(
                                         $body['idPlan'],
-                                        $result['id'],
-                                        $result['sesiones']
+                                        $result['idDisciplina'],
+                                        $result['monto']
                                     )
                                 );
                             }
@@ -134,8 +134,8 @@ class PlanAdo
                             $executePlanDisciplina->execute(
                                 array(
                                     $idPlan,
-                                    $result['id'],
-                                    $result['sesiones']
+                                    $result['idDisciplina'],
+                                    $result['monto']
                                 )
                             );
                         }
@@ -248,13 +248,14 @@ class PlanAdo
             $queryplan->bindValue(1, $idPlan, PDO::PARAM_STR);
             $queryplan->execute();
             if ($rowp = $queryplan->fetch()) {
+                
                 $queryplandisciplina->bindValue(1, $idPlan, PDO::PARAM_STR);
                 $queryplandisciplina->execute();
                 $arr_tarnos = array();
                 while ($rowpd = $queryplandisciplina->fetch()) {
                     array_push($arr_tarnos, array(
-                        "id" => $rowpd['idDisciplina'],
-                        "name" => $rowpd['nombre'],
+                        "idDisciplina" => $rowpd['idDisciplina'],
+                        "nombre" => $rowpd['nombre'],
                         "sesiones" => $rowpd['numero']
                     ));
                 }
@@ -288,6 +289,22 @@ class PlanAdo
             } else {
                 throw new Exception("No se encontro el plan, intente nuevamente.");
             }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+    public static function getPlanCrud()
+    {
+        try {
+            $querydisciplina = Database::getInstance()->getDb()->prepare("SELECT idDisciplina, nombre FROM disciplinatb");
+            $querydisciplina->execute();
+            $arrayDisciplina = array();
+            while ($row = $querydisciplina->fetchObject()) {
+                array_push($arrayDisciplina, $row);
+            }
+            return $arrayDisciplina;
         } catch (Exception $e) {
             return $e->getMessage();
         }

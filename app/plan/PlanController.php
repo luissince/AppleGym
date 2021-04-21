@@ -50,6 +50,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "mensaje" => $result
             ));
         }
+    }else if ($_GET["type"] == "getbycrud") {
+        $result = PlanAdo::getPlanCrud();
+        if (is_array($result)) {
+            $datos["estado"] = 1;
+            $datos["disciplinas"] = $result;
+            print json_encode($datos);
+        } else {
+            print json_encode(array(
+                "estado" => 2,
+                "mensaje" => $result
+            ));
+        }
     }
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $body = json_decode(file_get_contents("php://input"), true);

@@ -167,7 +167,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                                 </div>
                                                             </div>
 
-                                                            <div class="row">
+                                                            <div class="row" id="divDisciplina" style="display: none;">
                                                                 <div class="col-md-9">
                                                                     <div class="form-group">
                                                                         <select id="estado" class="form-control">
@@ -180,9 +180,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                                         <button type="button" class="btn btn-success" id="btnAgregar">Agregar</button>
                                                                     </div>
                                                                 </div>
-
-                                                            </div>
-                                                            <div class="row">
                                                                 <div class="col-md-12">
                                                                     <table class="table table-hover table-bordered dataTable no-footer" id="sampleTable" role="grid" aria-describedby="sampleTable_info">
                                                                         <thead>
@@ -319,6 +316,18 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 $(document).ready(function() {
 
+                    $("#basico").change(function() {
+                        $("#divDisciplina").css({
+                            "display": "none"
+                        });
+                    });
+
+                    $("#disciplina").change(function() {
+                        $("#divDisciplina").css({
+                            "display": "flex"
+                        });
+                    });
+
                     $("#meses").keypress(function() {
                         var key = window.Event ? event.which : event.keyCode;
                         var c = String.fromCharCode(key);
@@ -423,7 +432,13 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#btnAgregar").click(function() {
                         for (let i = 0; i < listaDisciplinas.length; i++) {
                             if (listaDisciplinas[i].idDisciplina == $("#estado").val()) {
-                                arrayDisciplinas.push(listaDisciplinas[i]);
+                                if (!validateDisciplina(listaDisciplinas[i].idDisciplina)) {
+                                    arrayDisciplinas.push({
+                                        "idDisciplina": listaDisciplinas[i].idDisciplina,
+                                        "nombre": listaDisciplinas[i].nombre,
+                                        "monto": 0
+                                    });
+                                }
                                 break;
                             }
                         }
@@ -521,8 +536,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         url: "../app/plan/PlanController.php",
                         method: 'GET',
                         data: {
-                            "type": "getbyid",
-                            "idPlan": id
+                            "type": "getbycrud"
                         },
                         beforeSend: function() {
                             $("#divOverlayPlanes").removeClass("d-none");
@@ -531,35 +545,11 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         },
                         success: function(result) {
                             if (result.estado == 1) {
-                                idPlan = id;
-                                $("#nombre").val(result.planes.nombre);
-                                $("#meses").val(result.planes.meses);
-                                $("#dias").val(result.planes.dias);
-                                $("#freeze").val(result.planes.freeze);
-                                $("#precio").val(result.planes.precio);
-                                $("#descripcion").val(result.planes.descripcion);
-                                $("#activo").prop("checked", result.planes.estado == 1 ? true : false);
-                                $("#prueba").prop("checked", result.planes.prueba == 1 ? true : false);
-                                $("#basico").attr("checked", true);
-                                $("#cbPlanLibre").prop("checked", result.planes.tipoPlan == 1 ? true : false);
-                                if (result.planes.tipoPlan == 0) {
-                                    $("#meses").prop("disabled", false);
-                                    $("#dias").prop("disabled", false);
-                                    $("#freeze").prop("disabled", false);
-                                    $("#precio").prop("disabled", false);
-                                } else {
-                                    $("#meses").prop("disabled", true);
-                                    $("#dias").prop("disabled", true);
-                                    $("#freeze").prop("disabled", true);
-                                    $("#precio").prop("disabled", true);
-                                }
-
                                 listaDisciplinas = result.disciplinas;
                                 $("#estado").append('<option value="">- Seleccione -</option>');
                                 for (let value of listaDisciplinas) {
                                     $("#estado").append('<option value="' + value.idDisciplina + '">' + value.nombre + '</option>');
                                 }
-
                                 $("#divOverlayPlanes").addClass("d-none");
                             } else {
                                 $("#estado").append('<option value="">- Seleccione -</option>');
@@ -596,7 +586,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 "type": "crud",
                                 "idPlan": idPlan,
                                 "nombre": $("#nombre").val(),
-                                "tipoDisciplina": $("#basico").is(":checked"),
+                                "tipoDisciplina": $("#basico").is(":checked") ? 1 : 2,
                                 "tipoPlan": $("#cbPlanLibre").is(":checked"),
                                 "sesiones": 0,
                                 "meses": $("#meses").val().trim(),
@@ -606,7 +596,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 "descripcion": $("#descripcion").val(),
                                 "estado": $("#activo").is(":checked"),
                                 "prueba": $("#prueba").is(":checked"),
-                                "arrdisciplinas": []
+                                "arrdisciplinas": arrayDisciplinas
                             }),
                             beforeSend: function() {
                                 closeClearModal();
@@ -644,6 +634,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         },
                         success: function(result) {
                             if (result.estado == 1) {
+                                console.log(result.planes)
                                 idPlan = id;
                                 $("#nombre").val(result.planes.nombre);
                                 $("#meses").val(result.planes.meses);
@@ -665,6 +656,26 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     $("#dias").prop("disabled", true);
                                     $("#freeze").prop("disabled", true);
                                     $("#precio").prop("disabled", true);
+                                }
+
+                                if (result.planes.tipoDisciplina == 1) {
+                                    $("#basico").prop("checked", true);
+                                    $("#divDisciplina").css({
+                                        "display": "none"
+                                    });
+                                } else {
+                                    $("#disciplina").prop("checked", true);
+                                    $("#divDisciplina").css({
+                                        "display": "flex"
+                                    });
+                                    for (let dis of result.planes.disciplinas) {
+                                        arrayDisciplinas.push({
+                                            "idDisciplina": dis.idDisciplina,
+                                            "nombre": dis.nombre,
+                                            "monto": dis.sesiones
+                                        });
+                                    }
+                                    renderTableDisciplinas();
                                 }
 
                                 listaDisciplinas = result.disciplinas;
@@ -722,7 +733,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     for (let value of arrayDisciplinas) {
                         $("#tvDisciplinas").append('<tr>' +
                             '<td> ' + value.nombre + '</td>' +
-                            '<td> <input type="number" class="form-control" placeholder="Ingrese el # de sesiones"> </td>' +
+                            '<td> <input type="text" value="' + value.monto + '" onkeypress="onKeyPressTable(this)" onkeyup="onKeyUpTable(this,\'' + value.idDisciplina + '\')" class="form-control" placeholder="Ingrese el # de sesiones"> </td>' +
                             '<td> <button class="btn btn-danger btn-sm" onclick="removeDisciplina(\'' + value.idDisciplina + '\')"><i class="fa fa-times"></i></button>' +
                             '</td>' +
                             '</tr>');
@@ -740,9 +751,50 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     renderTableDisciplinas();
                 }
 
+                onKeyUpTable = function(value, idDisciplina) {
+                    for (let i = 0; i < arrayDisciplinas.length; i++) {
+                        if (arrayDisciplinas[i].idDisciplina == idDisciplina) {
+                            arrayDisciplinas[i].monto = tools.isNumeric(value.value) ? value.value : 0;
+                            break;
+                        }
+                    }
+                }
+
+                onKeyPressTable = function(value) {
+                    var key = window.Event ? event.which : event.keyCode;
+                    var c = String.fromCharCode(key);
+                    if ((c < '0' || c > '9') && (c != '\b')) {
+                        event.preventDefault();
+                    }
+                }
+
+                function validateDisciplina(idDisciplina) {
+                    let ret = false;
+                    for (let i = 0; i < arrayDisciplinas.length; i++) {
+                        if (arrayDisciplinas[i].idDisciplina == idDisciplina) {
+                            ret = true;
+                            break;
+                        }
+                    }
+                    return ret;
+                }
+
                 function closeClearModal() {
                     $("#modalPlan").modal("hide");
                     $("#titulo-modal").empty();
+                    $("#pills-home-tab").removeClass("active");
+                    $("#pills-profile-tab").removeClass("active");
+                    $("#pills-home-tab").addClass("active");
+
+                    $("#pills-home").removeClass("active show");
+                    $("#pills-profile").removeClass("active show");
+                    $("#pills-home").addClass("active show");
+
+                    $("#basico").prop("checked", true);
+                    $("#divDisciplina").css({
+                        "display": "none"
+                    });
+
 
                     $("#nombre").val("");
                     $("#meses").val("");
