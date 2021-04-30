@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         } elseif ($retorno == "registrado") {
             print json_encode(array("estado" => 2, "mensaje" => "No se puede eliminar la disciplina porque está ligada a un plan."));
         } else {
-            print json_encode(array("estado" => 0, "mensaje" => $body));
+            print json_encode(array("estado" => 0, "mensaje" => $retorno));
         }
     }
 }
