@@ -56,7 +56,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     <div class="row">
                         <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
                             <div class="form-group">
-                                <input type="search" class="form-control" placeholder="Buscar por nombre" id="txtSearch">
+                                <input type="search" class="form-control" placeholder="Buscar por N° de transacción y datos del cliente" id="txtSearch">
                             </div>
                         </div>
                         <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
@@ -177,7 +177,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         }
                     });
 
-                    $("#txtSearch").keypress(function() {
+                    $("#txtSearch").keyup(function() {
                         if ($("#txtSearch").val().trim() != '') {
                             if (!state) {
                                 paginacion = 1;
@@ -253,7 +253,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         tbLista.append('<tr>' +
                                             '<td>' + ingreso.id + '</td>' +
                                             '<td>' + ingreso.dni + '<br>' + ingreso.apcliente + ' ' + ingreso.nmcliente + '</td>' +
-                                            '<td>' + procedencia + '</td>' +
+                                            '<td>' + 'N° '+ingreso.idIngreso + '<br>' + procedencia + '</td>' +
                                             '<td>' + tools.getDateForma(ingreso.fecha) + '<br>' + tools.getTimeForma(ingreso.hora, true) + '</td>' +
                                             '<td>' + ingreso.detalle + '</td>' +
                                             '<td>' + metodo + '</td>' +

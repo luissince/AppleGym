@@ -842,6 +842,8 @@ class VentaAdo
             WHERE 
             ? = 0 AND i.fecha BETWEEN ? AND ? 
             OR 
+            ? = 1 and i.idIngreso = ?
+            OR
             ? = 1 AND c.dni LIKE CONCAT(?,'%')
             OR 
             ? = 1 AND c.apellidos LIKE CONCAT(?,'%')
@@ -861,8 +863,11 @@ class VentaAdo
             $cmdIngresos->bindParam(8, $tipo, PDO::PARAM_INT);
             $cmdIngresos->bindParam(9, $search, PDO::PARAM_STR);
 
-            $cmdIngresos->bindParam(10, $x, PDO::PARAM_INT);
-            $cmdIngresos->bindParam(11, $y, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(10, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(11, $search, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(12, $x, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(13, $y, PDO::PARAM_INT);
             $cmdIngresos->execute();
 
             $arrayIngresos = array();
@@ -894,6 +899,8 @@ class VentaAdo
             WHERE 
             ? = 0 AND i.fecha BETWEEN ? AND ? 
             OR 
+            ? = 1 and i.idIngreso = ?
+            OR 
             ? = 1 AND c.dni LIKE CONCAT(?,'%')
             OR 
             ? = 1 AND c.apellidos LIKE CONCAT(?,'%')
@@ -911,6 +918,9 @@ class VentaAdo
 
             $cmdIngresos->bindParam(8, $tipo, PDO::PARAM_INT);
             $cmdIngresos->bindParam(9, $search, PDO::PARAM_STR);
+
+            $cmdIngresos->bindParam(10, $tipo, PDO::PARAM_INT);
+            $cmdIngresos->bindParam(11, $search, PDO::PARAM_STR);
             $cmdIngresos->execute();
             $resultTotal = $cmdIngresos->fetchColumn();
 
@@ -1032,8 +1042,8 @@ class VentaAdo
             c.direccion,
             c.celular,
             tc.nombre,
-            tc.serie,
-            tc.numeracion,
+            v.serie,
+            v.numeracion,
             v.fecha,
             v.hora,
             v.tipo,
@@ -1080,11 +1090,28 @@ class VentaAdo
             $cmdCredito->bindParam(1, $idVenta, PDO::PARAM_STR);
             $cmdCredito->execute();
             $arrayCredito = array();
-            while($row = $cmdCredito->fetchObject()){
+            while ($row = $cmdCredito->fetchObject()) {
                 array_push($arrayCredito, $row);
             }
 
-            array_push($array,$resultVenta,$arraDetalle, $resultEmpresa, $arrayCredito );
+            $cmdIngresos = Database::getInstance()->getDb()->prepare("SELECT 
+            i.idIngreso,
+            i.detalle,
+            i.procedencia,
+            i.fecha,
+            i.hora,
+            i.forma,
+            i.monto
+            FROM ingresotb AS i 
+            WHERE i.idPrecedencia = ?");
+            $cmdIngresos->bindParam(1, $idVenta, PDO::PARAM_STR);
+            $cmdIngresos->execute();
+            $arrayIngresos = array();
+            while ($row = $cmdIngresos->fetchObject()) {
+                array_push($arrayIngresos, $row);
+            }
+
+            array_push($array, $resultVenta, $arraDetalle, $resultEmpresa, $arrayCredito, $arrayIngresos);
             return $array;
         } catch (Exception $ex) {
             return $ex->getMessage();

@@ -17,6 +17,7 @@ if (!is_array($result)) {
     $detalleVenta = $result[1];
     $empresa = $result[2];
     $credito = $result[3];
+    $ingresos = $result[4];
 
     $html = '
 <html>
@@ -166,22 +167,22 @@ if (!is_array($result)) {
             $count++;
             $html .= '
             <tr>
-               <td width="" style="background-color:#ffffff;padding:10px;text-align:left;border-right:1px solid #888888;">
+               <td style="background-color:#ffffff;padding:10px;text-align:left;border-right:1px solid #888888;">
                    ' . $count . '
                </td>
-               <td width="" style="background-color:#ffffff;padding:10px;text-align:left;border-right:1px solid #888888;">
+               <td style="background-color:#ffffff;padding:10px;text-align:left;border-right:1px solid #888888;">
                     ' . $value->detalle . '
                </td>
-               <td width="" style="background-color:#ffffff;padding:10px;text-align:right;border-right:1px solid #888888;">
+               <td style="background-color:#ffffff;padding:10px;text-align:right;border-right:1px solid #888888;">
                     ' . number_format(round($value->cantidad, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '
                </td>
-               <td width="" style="background-color:#ffffff;padding:10px;text-align:right;border-right:1px solid #888888;">
+               <td style="background-color:#ffffff;padding:10px;text-align:right;border-right:1px solid #888888;">
                     ' . number_format(round($value->precio, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '
                </td>
-               <td width="" style="background-color:#ffffff;padding:10px;text-align:right;border-right:1px solid #888888;">
+               <td style="background-color:#ffffff;padding:10px;text-align:right;border-right:1px solid #888888;">
                     ' . number_format(round($value->descuento, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '
                </td>
-               <td width="" style="background-color:#ffffff;padding:10px;text-align:right;">
+               <td style="background-color:#ffffff;padding:10px;text-align:right;">
                     ' . number_format(round((($value->precio - $value->descuento) * $value->cantidad), 2, PHP_ROUND_HALF_UP), 2, '.', '') . '
                </td>
             </tr>';
@@ -236,22 +237,21 @@ if (!is_array($result)) {
             </thead>
             <tbody>';
 
-            $plazo = 0;
-            foreach ($credito as $value) {
-                $plazo++;
-                if($value->estado == 0){
-                    $html .= '
+        $plazo = 0;
+        foreach ($credito as $value) {
+            $plazo++;
+            if ($value->estado == 0) {
+                $html .= '
                     <tr>
-                        <td style="text-align:left;padding:5px;color:red;font-weight:normal;">CUOTA N° '.$plazo.' POR PAGAR POR EL MONDO DE S/ '.number_format(round($value->monto, 2, PHP_ROUND_HALF_UP), 2, '.', '') .'</td>
+                        <td style="text-align:left;padding:5px;color:red;font-weight:normal;">CUOTA N° ' . $plazo . ' POR PAGAR POR EL MONDO DE S/ ' . number_format(round($value->monto, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</td>
                     </tr>';
-                }else{
-                    $html .= '
+            } else {
+                $html .= '
                     <tr>
-                        <td style="text-align:left;padding:5px;color:black;font-weight:normal;">CUOTA N° '.$plazo.' PAGADO POR EL MONDO DE S/ '.number_format(round($value->monto, 2, PHP_ROUND_HALF_UP), 2, '.', '') .'</td>
+                        <td style="text-align:left;padding:5px;color:black;font-weight:normal;">CUOTA N° ' . $plazo . ' PAGADO POR EL MONDO DE S/ ' . number_format(round($value->monto, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</td>
                     </tr>';
-                }
-                
             }
+        }
 
         $html .= '</tbody>
         </table>';
@@ -260,7 +260,54 @@ if (!is_array($result)) {
     ?>
 
 <?php
-    $html .= '<table width="100%" style="font-family: Arial;font-size:11px;border-spacing: 0;border-collapse: collapse;margin-bottom:20px;" >
+
+
+
+    $html .= '
+    
+    <div style="background-color:#aba8a8;padding:5px;text-align:center;border:1px solid #888888;font-weight:bold;font-size:11px;margin-bottom:5px;">
+        <span>PAGOS ASOCIADOS</span>
+    </div>
+    
+    <table width="100%" style="font-family: Arial;font-size:11px;border-spacing: 0;border-collapse: collapse;margin-bottom:20px;border:1px solid  #888888;">
+        <thead>
+            <tr>
+                <th width="5%" style="background-color:#aba8a8;padding:5px;text-align:center;font-weight:bold;">
+                        #
+                </th>
+                <th width="15%" style="background-color:#aba8a8;padding:5px;text-align:center;font-weight:bold;">
+                        TRANSACCIÓN
+                </th>
+                <th width="30%" style="background-color:#aba8a8;padding:5px;text-align:center;font-weight:bold;">
+                        CONCEPTO
+                </th>
+                <th width="10%" style="background-color:#aba8a8;padding:5px;text-align:center;font-weight:bold;">
+                        FECHA PAGO
+                </th>
+                <th width="10%" style="background-color:#aba8a8;padding:5px;text-align:center;font-weight:bold;">
+                        IMPORTE
+                </th>
+            </tr> 
+        </thead>
+        <tbody>';
+?>
+        <?php
+        foreach ($ingresos as $value) {
+            $html .= '<tr>
+                <td style="text-align:center;padding:10px;border-right:1px solid #888888;">1</td>
+                <td style="text-align:left;padding:10px;border-right:1px solid #888888;">N° ' . $value->idIngreso . '<br>' . ($value->procedencia == 1 ? "VENTAS" : "CUENTAS POR COBRAR") . '</td>
+                <td style="text-align:left;padding:10px;border-right:1px solid #888888;">' . $value->detalle . '</td>
+                <td style="text-align:center;padding:10px;border-right:1px solid #888888;">' . date("d/m/Y", strtotime($value->fecha)) . '<br>' . $value->hora . '</td>
+                <td style="text-align:right;padding:10px;">' . number_format(round($value->monto, 2, PHP_ROUND_HALF_UP), 2, '.', '') . '</td>
+            </tr>';
+        }
+
+        ?>
+<?php
+    $html .= '</tbody>
+    </table>    
+    
+    <table width="100%" style="font-family: Arial;font-size:11px;border-spacing: 0;border-collapse: collapse;margin-bottom:20px;" >
         <thead>
             <tr>
                 <th colspan="6" style="text-align:left;padding:5px;font-weight:bold;">TÉRMINOS Y CONDICIONES</th>
