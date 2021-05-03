@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION["IdEmpleado"])) {
     echo '<script>location.href = "./login.php";</script>';
 } else {
-    if ($_SESSION["Roles"][20]["ver"] == 1) {
+    if ($_SESSION["Roles"][21]["ver"] == 1) {
 ?>
 
         <!DOCTYPE html>
