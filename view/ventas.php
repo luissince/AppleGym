@@ -247,28 +247,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th class="sorting" width="59px">Detelle</th>
                                                 <th class="sorting" width="59px">Cuotas</th>
                                                 <th class="sorting" width="59px">Anular</th>
-                                                <!-- <th class="sorting" rowspan="1" colspan="1" style="width: 59px;">Eliminar</th>  -->
+                                                <th class="sorting" Width="59px">Imprimir</th>  
 
                                             </tr>
                                         </thead>
                                         <tbody id="tbLista">
-                                            <!-- tbLista -->
-                                            <!-- <tr>
-                                        <td>1</td>
-                                        <td>13/12/2020</td>
-                                        <td>B001-12345678</td>
-                                        <td>CL0001 - Usuario usuario</td>
-                                        <td>Contado</td>
-                                        <td>Pagado</td>
-                                        <td>Tarjeta</td>
-                                        <td>S/ 10.00</td>                                
-                                        <td>
-                                            <button class="btn btn-warning btn-sm"><i class="fa fa-wrench"></i> Editar</button>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Eliminar</button>
-                                        </td>
-                                    </tr> -->
+        
                                         </tbody>
                                     </table>
                                 </div>
@@ -436,7 +420,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             state = true;
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
+                                '<tr role="row" class="odd"><td class="sorting_1" colspan="12" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>cargando información...</p></td></tr>'
                             );
                             totalPaginacion = 0;
                         },
@@ -445,7 +429,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 tbLista.empty();
                                 if (result.ventas.length == 0) {
                                     tbLista.append(
-                                        '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
+                                        '<tr role="row" class="odd"><td colspan="12" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
                                     );
                                     $("#lblPaginaActual").html(paginacion);
                                     $("#lblPaginaSiguiente").html(totalPaginacion);
@@ -457,6 +441,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         let brnDetalle = '<button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button>';
                                         let brnCuotas = editView == 1 ? '<button class="btn btn-primary" onclick="detallePagos(\'' + venta.idVenta + '\')"><i class="fa fa-briefcase"></i></button>' : '-';
                                         let btnAnular = deleteView == 1 ? '<button class="btn btn-danger" onclick="anularVenta(\'' + venta.idVenta + '\')"><i class="fa fa-trash"></i></button>' : '-';
+                                        let brnImprimir = '<button class="btn btn-dark" onclick="imprimirVenta(\'' + venta.idVenta + '\')"><i class="fa fa-print"></i></button>';
                                         tbLista.append('<tr>' +
                                             '<td>' + venta.id + '</td>' +
                                             '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora, true) + '</td>' +
@@ -466,9 +451,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             '<td>' + estado + '</td>' +
                                             '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
                                             '<td>' + venta.empleadoNombres + '<br>' + venta.empleadoApellidos + '</td>' +
-                                            '<td>' + brnDetalle + '</td>' +
-                                            '<td>' + brnCuotas + '</td>' +
-                                            '<td>' + btnAnular + '</td>' +
+                                            '<td class="text-center">' + brnDetalle + '</td>' +
+                                            '<td class="text-center">' + brnCuotas + '</td>' +
+                                            '<td class="text-center">' + btnAnular + '</td>' +
+                                            '<td class="text-center">' + brnImprimir + '</td>' +
                                             '</tr>');
                                     }
                                     totalPaginacion = parseInt(Math.ceil((parseFloat(result.total) / parseInt(
@@ -481,7 +467,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             } else {
                                 tbLista.empty();
                                 tbLista.append(
-                                    '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><p>' +
+                                    '<tr role="row" class="odd"><td colspan="12" style="text-align:center"><p>' +
                                     result.mensaje + '</p></td></tr>');
                                 state = false;
                             }
@@ -489,7 +475,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         error: function(error) {
                             tbLista.empty();
                             tbLista.append(
-                                '<tr role="row" class="odd"><td class="sorting_1" colspan="11" style="text-align:center"><p>' +
+                                '<tr role="row" class="odd"><td colspan="12" style="text-align:center"><p>' +
                                 error.responseText + '</p></td></tr>');
                             state = false;
                         }
@@ -678,6 +664,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                             });
                         }
                     }
+                }
+
+                function imprimirVenta(idVenta){
+                    window.open("../app/reportes/comprobanteventa.php?idVenta=" + idVenta, "_blank");
                 }
 
                 function clearModalCredito() {

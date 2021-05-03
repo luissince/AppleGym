@@ -1020,6 +1020,77 @@ class VentaAdo
         }
     }
 
+    public static function repoteVenta($idVenta)
+    {
+        try {
+            $array = array();
+
+            $cmdVenta = Database::getInstance()->getDb()->prepare("SELECT 
+            c.dni,
+            c.apellidos,
+            c.nombres,
+            c.direccion,
+            c.celular,
+            tc.nombre,
+            tc.serie,
+            tc.numeracion,
+            v.fecha,
+            v.hora,
+            v.tipo,
+            v.forma,
+            v.estado
+            FROM ventatb AS v
+            INNER JOIN clientetb AS c ON c.idCliente = v.cliente 
+            INNER JOIN tipocomprobantetb AS tc ON tc.idTipoComprobante  = v.documento
+            WHERE v.idVenta = ? ");
+            $cmdVenta->bindParam(1, $idVenta, PDO::PARAM_STR);
+            $cmdVenta->execute();
+            $resultVenta = $cmdVenta->fetchObject();
+
+            $cmdDetalleVenta = Database::getInstance()->getDb()->prepare("SELECT 
+            d.idVenta,
+            (CASE 
+            WHEN NOT muno.idMembresia IS NULL THEN (SELECT p.nombre FROM plantb AS p WHERE p.idPlan = muno.idPlan)
+            WHEN NOT pr.idProducto IS NULL THEN UPPER(pr.nombre)
+            WHEN NOT mtre.idMembresia IS NULL THEN (SELECT CONCAT('TRASPADO',': ',p.nombre) FROM plantb AS p WHERE p.idPlan = mtre.idPlan)
+            WHEN NOT mcua.idMembresia IS NULL THEN (SELECT CONCAT('ACTIVACIÓN',': ',p.nombre) FROM plantb AS p WHERE p.idPlan = mcua.idPlan)
+            ELSE (SELECT CONCAT('RENOVACIÓN',': ',p.nombre) FROM plantb AS p WHERE p.idPlan = mqui.idPlan) END) AS detalle,
+            d.cantidad,
+            d.precio,
+            d.descuento
+            FROM detalleventatb AS d 
+            LEFT JOIN membresiatb  AS muno ON muno.idMembresia = d.idOrigen AND d.procedencia = 1  
+            LEFT JOIN productotb AS pr ON pr.idProducto = d.idOrigen AND d.procedencia = 2        
+            LEFT JOIN membresiatb AS mtre ON mtre.idMembresia = d.idOrigen AND d.procedencia = 3
+            LEFT JOIN membresiatb AS mcua ON mcua.idMembresia = d.idOrigen AND d.procedencia = 4
+            LEFT JOIN membresiatb AS mqui ON mqui.idMembresia = d.idOrigen AND d.procedencia = 5
+            WHERE d.idVenta = ?");
+            $cmdDetalleVenta->bindParam(1, $idVenta, PDO::PARAM_STR);
+            $cmdDetalleVenta->execute();
+            $arraDetalle = array();
+            while ($row = $cmdDetalleVenta->fetchObject()) {
+                array_push($arraDetalle, $row);
+            }
+
+            $cmdEmpresa = Database::getInstance()->getDb()->prepare("SELECT nombreEmpresa,ruc,telefono,celular,email,paginaWeb,direccion,terminos FROM mi_empresatb LIMIT 1");
+            $cmdEmpresa->execute();
+            $resultEmpresa = $cmdEmpresa->fetchObject();
+
+            $cmdCredito = Database::getInstance()->getDb()->prepare("SELECT fechaPago,monto,estado FROM ventacreditotb WHERE idVenta = ?");
+            $cmdCredito->bindParam(1, $idVenta, PDO::PARAM_STR);
+            $cmdCredito->execute();
+            $arrayCredito = array();
+            while($row = $cmdCredito->fetchObject()){
+                array_push($arrayCredito, $row);
+            }
+
+            array_push($array,$resultVenta,$arraDetalle, $resultEmpresa, $arrayCredito );
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
     public static function AnularVenta($idVenta)
     {
         try {
