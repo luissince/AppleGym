@@ -15,7 +15,7 @@ if (!is_array($asistencia)) {
 <html>
 <head>
 <style>
-    body {
+    body {   
         font-family: Arial;
         font-size: 10pt;
     }
@@ -101,9 +101,7 @@ mpdf-->
             <th width="5%">N°</th>
             <th width="30%">Cliente</th>
             <th width="12%">Fecha Entrada</th>
-            <th width="12%">Hora Entrada</th>
-            <th width="12%">Fecha Salida</th>
-            <th width="12%">Hora Salida</th>
+            <th width="12%">Hora Entrada</th>           
         </tr>
     </thead>
     <tbody>';
@@ -116,8 +114,6 @@ mpdf-->
             <td>' . $value["dni"] . '<br>' . $value["cliente"] . '</td>
             <td>' . ($value["fechaEntrada"] == null ? "" : date('d-m-Y', strtotime($value["fechaEntrada"]))) . '</td>
             <td>' . ($value["horaEntrada"] == null ? "" : date('h:i A', strtotime($value["horaEntrada"]))) . '</td>
-            <td>' . ($value["fechaSalida"] == null ? "" : date('d-m-Y', strtotime($value["fechaSalida"]))) . '</td>
-            <td>' . ($value["horaSalida"] == null ? "" : date('h:i A', strtotime($value["horaSalida"]))) . '</td>
         </tr>';
     }
 

@@ -161,7 +161,7 @@ class AsistenciaAdo
             FROM clientetb AS c INNER JOIN asistenciatb as a 
             ON a.idPersona = c.idCliente 
             WHERE fechaApertura BETWEEN ? AND ? AND tipoPersona = 1
-            ORDER BY a.fechaApertura DESC, a.horaApertura DESC");
+            ORDER BY a.fechaApertura DESC, a.horaApertura ASC");
             $comando->bindValue(1, $fechaInicio, PDO::PARAM_STR);
             $comando->bindValue(2, $fechaFinal, PDO::PARAM_STR);
             $comando->execute();
