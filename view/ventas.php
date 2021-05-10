@@ -178,53 +178,73 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                 <div class="tile mb-4">
                     <div class="row">
-                        <div class="col-lg-4">
-                            <label for="f-inicio">Fecha de inicio: </label>
+                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                            <label for="f-inicio">Fecha de Inicio: </label>
                             <div class="form-group">
                                 <input class="form-control" id="fechaInicio" type="date">
                             </div>
                         </div>
-                        <div class="col-lg-4">
-                            <label for="f-fin">Fecha de fin: </label>
+                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                            <label for="f-fin">Fecha de Fin: </label>
                             <div class="form-group">
                                 <input class="form-control" id="fechaFin" type="date">
                             </div>
                         </div>
-                        <div class="col-lg-4">
-                            <label for="f-fin">Opciones: </label>
+                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                            <label for="f-fin">Tipo de Venta </label>
                             <div class="form-group">
+                                <select class="form-control" id="cbTipo">
+                                    <option value="0">- Tipo de Venta -</option>
+                                    <option value="1">CONTADO</option>
+                                    <option value="2">CRÉDITO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                            <label for="f-fin">Estado de Venta </label>
+                            <div class="form-group">
+                                <select class="form-control" id="cbEstado">
+                                    <option value="0">- Estado de Venta -</option>
+                                    <option value="1">COBRADO</option>
+                                    <option value="2">POR COBRAR</option>
+                                    <option value="3">ANULADO</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                            <label for="f-fin">Buscar: </label>
+                            <div class="form-group">
+                                <input type="search" class="form-control" placeholder="Buscar por nombre" id="txtSearch">
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                            <label for="f-fin">Opciones: </label>
+                            <div class="form-group ">
                                 <button class="btn btn-info" type="button" id="btnReporte"><i class="fa fa-file"></i>
                                     Reporte</button>
                                 <button class="btn btn-secondary" type="button" id="btnReload"><i class="fa fa-refresh"></i>
                                     Recargar</button>
                             </div>
                         </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                            <label for="f-fin">Paginación: </label>
                             <div class="form-group">
-                                <input type="search" class="form-control" placeholder="Buscar por nombre" id="txtSearch">
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                            <div class="form-group">
-                                <div class="text-right">
-                                    <button class="btn btn-primary" id="btnAnterior">
-                                        <i class="fa fa-arrow-circle-left"></i>
-                                    </button>
-                                    <span class="m-2" id="lblPaginaActual">0
-                                    </span>
-                                    <span class="m-2">
-                                        de
-                                    </span>
-                                    <span class="m-2" id="lblPaginaSiguiente">0
-                                    </span>
-                                    <button class="btn btn-primary" id="btnSiguiente">
-                                        <i class="fa fa-arrow-circle-right"></i>
-                                    </button>
-                                </div>
+                                <button class="btn btn-primary" id="btnAnterior">
+                                    <i class="fa fa-arrow-circle-left"></i>
+                                </button>
+                                <span class="m-2" id="lblPaginaActual">0
+                                </span>
+                                <span class="m-2">
+                                    de
+                                </span>
+                                <span class="m-2" id="lblPaginaSiguiente">0
+                                </span>
+                                <button class="btn btn-primary" id="btnSiguiente">
+                                    <i class="fa fa-arrow-circle-right"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -247,12 +267,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <th class="sorting" width="59px">Detelle</th>
                                                 <th class="sorting" width="59px">Cuotas</th>
                                                 <th class="sorting" width="59px">Anular</th>
-                                                <th class="sorting" Width="59px">Imprimir</th>  
+                                                <th class="sorting" Width="59px">Imprimir</th>
 
                                             </tr>
                                         </thead>
                                         <tbody id="tbLista">
-        
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -324,7 +344,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
                             if (!state) {
                                 paginacion = 1;
-                                loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
+                                loadTableIngresos(0, 0, 0, "", fechaInicio.val(), fechaFinal.val());
                                 opcion = 0;
                             }
                         }
@@ -334,7 +354,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
                             if (!state) {
                                 paginacion = 1;
-                                loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
+                                loadTableIngresos(0, 0, 0, "", fechaInicio.val(), fechaFinal.val());
                                 opcion = 0;
                             }
                         }
@@ -344,9 +364,25 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         if ($("#txtSearch").val().trim() != '') {
                             if (!state) {
                                 paginacion = 1;
-                                loadTableIngresos(1, $("#txtSearch").val().trim(), "", "");
+                                loadTableIngresos(1, 0, 0, $("#txtSearch").val().trim(), "", "");
                                 opcion = 1;
                             }
+                        }
+                    });
+
+                    $("#cbTipo").change(function() {
+                        if (!state) {
+                            paginacion = 1;
+                            loadTableIngresos(2, $("#cbTipo").val(), 0, "", "", "");
+                            opcion = 2;
+                        }
+                    });
+
+                    $("#cbEstado").change(function() {
+                        if (!state) {
+                            paginacion = 1;
+                            loadTableIngresos(3, 0, $("#cbEstado").val(), "", "", "");
+                            opcion = 3;
                         }
                     });
 
@@ -384,10 +420,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 function onEventPaginacion() {
                     switch (opcion) {
                         case 0:
-                            loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
+                            loadTableIngresos(0, 0, 0, "", fechaInicio.val(), fechaFinal.val());
                             break;
                         case 1:
-                            loadTableIngresos(1, $("#txtSearch").val().trim(), "", "");
+                            loadTableIngresos(1, 0, 0, $("#txtSearch").val().trim(), "", "");
+                            break;
+                        case 2:
+                            loadTableIngresos(2, $("#cbTipo").val(), 0, "", "", "");
+                            break;
+                        case 2:
+                            loadTableIngresos(3, 0, $("#cbEstado").val(), "", "", "");
                             break;
                     }
                 }
@@ -397,20 +439,22 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     if (tools.validateDate(fechaInicio.val()) && tools.validateDate(fechaFinal.val())) {
                         if (!state) {
                             paginacion = 1;
-                            loadTableIngresos(0, "", fechaInicio.val(), fechaFinal.val());
+                            loadTableIngresos(0, 0, 0, "", fechaInicio.val(), fechaFinal.val());
                             opcion = 0;
                         }
                     }
                 }
 
 
-                function loadTableIngresos(tipo, datos, fechaInicio, fechaFinal) {
+                function loadTableIngresos(uso, tipo, estado, datos, fechaInicio, fechaFinal) {
                     $.ajax({
                         url: "../app/venta/Listar_Venta.php",
                         method: "GET",
                         data: {
                             "opcion": 1,
+                            "uso": uso,
                             "tipo": tipo,
+                            "estado": estado,
                             "page": paginacion,
                             "datos": datos,
                             "fechaInicial": fechaInicio,
@@ -431,12 +475,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     tbLista.append(
                                         '<tr role="row" class="odd"><td colspan="12" style="text-align:center"><p>No hay datos para mostrar.</p></td></tr>'
                                     );
-                                    $("#lblPaginaActual").html(paginacion);
-                                    $("#lblPaginaSiguiente").html(totalPaginacion);
+                                    $("#lblPaginaActual").html(0);
+                                    $("#lblPaginaSiguiente").html(0);
                                     state = false;
                                 } else {
                                     for (let venta of result.ventas) {
-                                        let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR PAGAR</span>' : '<span class="badge badge-pill badge-success">PAGADO</span>';
+                                        let estado = venta.estado == 3 ? '<span class="badge badge-pill badge-danger">ANULADO</span>' : venta.estado == 2 ? '<span class="badge badge-pill badge-warning">POR COBRAR</span>' : '<span class="badge badge-pill badge-success">COBRADO</span>';
                                         let metodo = venta.forma == 1 ? '<i class="fa fa-money"></i> EFECTIVO' : '<i class="fa fa-credit-card-alt"></i> TARJETA';
                                         let brnDetalle = '<button class="btn btn-info" onclick="detalleVenta(\'' + venta.idVenta + '\')"><i class="fa fa-eye"></i></button>';
                                         let brnCuotas = editView == 1 ? '<button class="btn btn-primary" onclick="detallePagos(\'' + venta.idVenta + '\')"><i class="fa fa-briefcase"></i></button>' : '-';
@@ -446,7 +490,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             '<td>' + venta.id + '</td>' +
                                             '<td>' + tools.getDateForma(venta.fecha) + '<br>' + tools.getTimeForma(venta.hora, true) + '</td>' +
                                             '<td>' + venta.nombre + '<br>' + venta.serie + '-' + venta.numeracion + '</td>' +
-                                            '<td>' + venta.dni+'<br>'+venta.apellidos + '<br>' + venta.nombres + '</td>' +
+                                            '<td>' + venta.dni + '<br>' + venta.apellidos + '<br>' + venta.nombres + '</td>' +
                                             '<td>' + (venta.tipo == 1 ? "CONTADO" : "CRÉDITO") + '</td>' +
                                             '<td>' + estado + '</td>' +
                                             '<td>S/ ' + tools.formatMoney(venta.total) + '</td>' +
@@ -463,7 +507,6 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     $("#lblPaginaSiguiente").html(totalPaginacion);
                                     state = false;
                                 }
-
                             } else {
                                 tbLista.empty();
                                 tbLista.append(
@@ -666,7 +709,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     }
                 }
 
-                function imprimirVenta(idVenta){
+                function imprimirVenta(idVenta) {
                     window.open("../app/reportes/comprobanteventa.php?idVenta=" + idVenta, "_blank");
                 }
 

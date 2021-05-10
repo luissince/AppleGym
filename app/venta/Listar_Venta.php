@@ -12,12 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if ($opcion == 1) {
         $body = $_GET['page'];
+        $uso = $_GET['uso'];
         $tipo = $_GET['tipo'];
+        $estado = $_GET['estado'];
         $search = $_GET['datos'];
         $fechaInicial = $_GET["fechaInicial"];
         $fechaFinal = $_GET["fechaFinal"];
-
-        $ventas = VentaAdo::getAll($tipo, $search, $fechaInicial, $fechaFinal, ($body - 1) * 10, 10);
+        $ventas = VentaAdo::getAll($uso, $tipo, $estado, $search, $fechaInicial, $fechaFinal, ($body - 1) * 10, 10);
         if (is_array($ventas)) {
             $datos["estado"] = 1;
             $datos["total"] = $ventas[1];
@@ -128,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "mensaje" => $venta
             ));
         }
-    } else if ($opcion == 8){
+    } else if ($opcion == 8) {
         $ventas = VentaAdo::getVentaByEmpleado($_GET["idEmpleado"]);
         if (is_array($ventas)) {
             $datos["estado"] = 1;
@@ -140,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 "mensaje" => $ventas
             ));
         }
-    } else if($opcion == 9){
+    } else if ($opcion == 9) {
         $asistencias = VentaAdo::getAsistenciaByEmpleado($_GET["idEmpleado"]);
         if (is_array($asistencias)) {
             $datos["estado"] = 1;

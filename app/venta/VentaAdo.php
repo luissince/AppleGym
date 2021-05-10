@@ -510,7 +510,7 @@ class VentaAdo
         }
     }
 
-    public static function getAll($tipo, $search, $fechaInicio, $fechaFin, $x, $y)
+    public static function getAll($opcion, $tipo, $estado, $search, $fechaInicio, $fechaFin, $x, $y)
     {
         $consulta = "SELECT 
         v.idVenta,
@@ -546,7 +546,10 @@ class VentaAdo
         ? = 1 AND c.apellidos LIKE CONCAT(?,'%') 
         OR 
         ? = 1 AND c.nombres LIKE CONCAT(?,'%')
-
+        OR 
+        ? = 2 AND v.tipo = ?
+        OR 
+        ? = 3 AND v.estado = ?
         GROUP BY v.idVenta
         ORDER BY v.fecha DESC,v.hora DESC LIMIT ?,?";
         try {
@@ -554,28 +557,35 @@ class VentaAdo
             $array = array();
 
             $comando = Database::getInstance()->getDb()->prepare($consulta);
-            $comando->bindParam(1, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(1, $opcion, PDO::PARAM_INT);
 
             $comando->bindParam(2, $fechaInicio, PDO::PARAM_STR);
             $comando->bindParam(3, $fechaFin, PDO::PARAM_STR);
 
-            $comando->bindParam(4, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(4, $opcion, PDO::PARAM_INT);
             $comando->bindParam(5, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(6, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(6, $opcion, PDO::PARAM_INT);
             $comando->bindParam(7, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(8, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(8, $opcion, PDO::PARAM_INT);
             $comando->bindParam(9, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(10, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(10, $opcion, PDO::PARAM_INT);
             $comando->bindParam(11, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(12, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(12, $opcion, PDO::PARAM_INT);
             $comando->bindParam(13, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(14, $x, PDO::PARAM_INT);
-            $comando->bindParam(15, $y, PDO::PARAM_INT);
+            $comando->bindParam(14, $opcion, PDO::PARAM_INT);
+            $comando->bindParam(15, $tipo, PDO::PARAM_INT);
+
+            $comando->bindParam(16, $opcion, PDO::PARAM_INT);
+            $comando->bindParam(17, $estado, PDO::PARAM_INT);
+
+            $comando->bindParam(18, $x, PDO::PARAM_INT);
+            $comando->bindParam(19, $y, PDO::PARAM_INT);
+
             $comando->execute();
             $count = 0;
             $arrayVentas = array();
@@ -618,26 +628,36 @@ class VentaAdo
             OR
             ? = 1 AND c.apellidos LIKE CONCAT(?,'%') 
             OR 
-            ? = 1 AND c.nombres LIKE CONCAT(?,'%')");
-            $comando->bindParam(1, $tipo, PDO::PARAM_INT);
+            ? = 1 AND c.nombres LIKE CONCAT(?,'%')
+            OR 
+            ? = 2 AND v.tipo = ?
+            OR 
+            ? = 3 AND v.estado = ?");
+            $comando->bindParam(1, $opcion, PDO::PARAM_INT);
 
             $comando->bindParam(2, $fechaInicio, PDO::PARAM_STR);
             $comando->bindParam(3, $fechaFin, PDO::PARAM_STR);
 
-            $comando->bindParam(4, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(4, $opcion, PDO::PARAM_INT);
             $comando->bindParam(5, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(6, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(6, $opcion, PDO::PARAM_INT);
             $comando->bindParam(7, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(8, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(8, $opcion, PDO::PARAM_INT);
             $comando->bindParam(9, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(10, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(10, $opcion, PDO::PARAM_INT);
             $comando->bindParam(11, $search, PDO::PARAM_STR);
 
-            $comando->bindParam(12, $tipo, PDO::PARAM_INT);
+            $comando->bindParam(12, $opcion, PDO::PARAM_INT);
             $comando->bindParam(13, $search, PDO::PARAM_STR);
+
+            $comando->bindParam(14, $opcion, PDO::PARAM_INT);
+            $comando->bindParam(15, $tipo, PDO::PARAM_INT);
+
+            $comando->bindParam(16, $opcion, PDO::PARAM_INT);
+            $comando->bindParam(17, $estado, PDO::PARAM_INT);
 
             $comando->execute();
             $totalVentas =  $comando->fetchColumn();
