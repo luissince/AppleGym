@@ -658,11 +658,19 @@ class ClienteAdo
                 return "salida";
             } else {
 
-                $codigoAsistencia = Database::getInstance()->getDb()->prepare("SELECT Fc_Asistencia_Codigo_Almanumerico();");
-                $codigoAsistencia->execute();
-                $idAsistencia = $codigoAsistencia->fetchColumn();
+                $cmdValidate = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? and tipoPersona = 1 and fechaApertura = CAST(CURDATE() AS DATE)");
+                $cmdValidate->bindValue(1, $idCliente, PDO::PARAM_STR);
+                $cmdValidate->execute();
+                if ($row = $cmdValidate->fetch()) {
+                    Database::getInstance()->getDb()->rollback();
+                    return "marco";
+                } else {
 
-                $cmdRgister = Database::getInstance()->getDb()->prepare("INSERT INTO asistenciatb ( 
+                    $codigoAsistencia = Database::getInstance()->getDb()->prepare("SELECT Fc_Asistencia_Codigo_Almanumerico();");
+                    $codigoAsistencia->execute();
+                    $idAsistencia = $codigoAsistencia->fetchColumn();
+
+                    $cmdRgister = Database::getInstance()->getDb()->prepare("INSERT INTO asistenciatb ( 
                     idAsistencia,
                     fechaApertura,
                     fechaCierre,
@@ -673,21 +681,22 @@ class ClienteAdo
                     tipoPersona)
                     VALUES(?,?,?,?,?,?,?,?)");
 
-                $cmdRgister->execute(
-                    array(
-                        $idAsistencia,
-                        $currenteDate->format('Y-m-d'),
-                        $currenteDate->format('Y-m-d'),
-                        $currenteDate->format('H:i:s'),
-                        $currenteDate->format('H:i:s'),
-                        $estado,
-                        $idCliente,
-                        $tipopersona
-                    )
-                );
+                    $cmdRgister->execute(
+                        array(
+                            $idAsistencia,
+                            $currenteDate->format('Y-m-d'),
+                            $currenteDate->format('Y-m-d'),
+                            $currenteDate->format('H:i:s'),
+                            $currenteDate->format('H:i:s'),
+                            $estado,
+                            $idCliente,
+                            $tipopersona
+                        )
+                    );
 
-                Database::getInstance()->getDb()->commit();
-                return "entrada";
+                    Database::getInstance()->getDb()->commit();
+                    return "entrada";
+                }
             }
         } catch (PDOException $e) {
             Database::getInstance()->getDb()->rollback();
