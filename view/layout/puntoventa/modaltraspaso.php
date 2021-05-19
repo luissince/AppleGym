@@ -32,7 +32,6 @@
                             </div>
                         </div>
 
-
                         <div class="row">
                             <div class="col-xl-12">
                                 <div class="form-group">
@@ -40,42 +39,46 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-sm-12 col-12">
-                                <div class="tile-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th class="sorting" style="width: 20px;">#</th>
-                                                    <th class="sorting"> Plan</th>
-                                                    <th class="sorting">Fecha Inicio</th>
-                                                    <th class="sorting">Fecha Fin</th>
-                                                    <th class="sorting">Dias activo</th>
-                                                    <th class="sorting" style="width: 20px;">Precio/Traspaso</th>
-                                                    <th class="sorting">Opciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tbMembresiaTraspaso">
-                                                <!-- tbLista -->
-                                            </tbody>
-                                        </table>
+                                <div class="form-group">
+                                    <div class="tile-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="sorting" style="width: 20px;">#</th>
+                                                        <th class="sorting"> Plan</th>
+                                                        <th class="sorting">Fecha Inicio</th>
+                                                        <th class="sorting">Fecha Fin</th>
+                                                        <th class="sorting">Dias activo</th>
+                                                        <th class="sorting" style="width: 20px;">Precio/Traspaso</th>
+                                                        <th class="sorting">Opciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbMembresiaTraspaso">
+                                                    <!-- tbLista -->
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- <div class="col-md-12 ">
-                                        <label class="text-danger">Para seleccione un cliente hacer doble click en la lista.</label>
-                                    </div> -->
+                            </div>                           
                         </div>
 
                         <div class="row">
-                            <div class="col-xl-12">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Lista de membresias del cliente</label>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" id="cbUsarMembresia" type="checkbox" checked>Agregar a una membresía el traspaso
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <select class="form-control select2" style="width: 100%;" id="cbListaMembresiaCliente">
                                     </select>
                                 </div>
                             </div>
                         </div>
-
 
                     </div>
                 </div>

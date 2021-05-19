@@ -3,12 +3,12 @@ function ModalTraspaso() {
     let tbMembresiaTraspaso = $("#tbMembresiaTraspaso");
     let cbListaMembresiaCliente = $("#cbListaMembresiaCliente");
 
-    this.init = function() {
-        $("#btnCloseModalTraspaso").click(function() {
+    this.init = function () {
+        $("#btnCloseModalTraspaso").click(function () {
             $("#modalTraspaso").modal("hide")
         });
 
-        $("#btnTraspaso").click(function() {
+        $("#btnTraspaso").click(function () {
             if (idCliente == '') {
                 tools.AlertWarning("Ventas: ", "Seleccione un cliente.");
             } else {
@@ -19,11 +19,18 @@ function ModalTraspaso() {
 
         $("#cbClienteTraspaso").append('<option value="">- Seleccione un Cliente-</option>');
 
-        $('#cbClienteTraspaso').on('select2:select', function(e) {
+        $('#cbClienteTraspaso').on('select2:select', function (e) {
             var data = e.params.data;
             tablaCLienteTraspaso(data.id);
         });
 
+        $("#cbUsarMembresia").change(function () {
+            if ($("#cbUsarMembresia").is(":checked")) {
+                $("#cbListaMembresiaCliente").prop("disabled", false);
+            } else {
+                $("#cbListaMembresiaCliente").prop("disabled", true);
+            }
+        });
 
     }
 
@@ -35,14 +42,14 @@ function ModalTraspaso() {
                 "type": "listatraspaso",
                 "idCliente": idCliente
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 $("#lblTextOverlayTraspaso").html("Cargando información...");
                 $("#divOverlayTraspaso").removeClass("d-none");
                 $('#cbClienteTraspaso').empty();
                 tbMembresiaTraspaso.empty();
                 cbListaMembresiaCliente.empty();
             },
-            success: function(result) {
+            success: function (result) {
                 let data = result;
                 if (data.estado == 1) {
                     $("#cbClienteTraspaso").append('<option value="">- Seleccione un Cliente -</option>');
@@ -57,7 +64,7 @@ function ModalTraspaso() {
                     $("#lblTextOverlayTraspaso").html(result.mensaje);
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 $("#cbClienteTraspaso").append('<option value="">- Seleccione un Cliente -</option>');
                 $("#lblTextOverlayTraspaso").html(error.responseText);
             }
@@ -73,14 +80,14 @@ function ModalTraspaso() {
                 "dni": dni,
                 "idCliente": idCliente
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 tbMembresiaTraspaso.empty();
                 tbMembresiaTraspaso.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><img src="./images/loading.gif" width="100"/><p>Cargando información...</p></td></tr>'
                 );
                 cbListaMembresiaCliente.empty();
             },
-            success: function(result) {
+            success: function (result) {
                 let data = result;
                 tbMembresiaTraspaso.empty();
                 if (data.estado == 1) {
@@ -115,7 +122,7 @@ function ModalTraspaso() {
                     );
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 tbMembresiaTraspaso.empty();
                 tbMembresiaTraspaso.append(
                     '<tr role="row" class="odd"><td class="sorting_1" colspan="7" style="text-align:center"><p>' + error.responseText + '</p></td></tr>'
@@ -124,7 +131,7 @@ function ModalTraspaso() {
         });
     }
 
-    onKeyPressTable = function(value) {
+    onKeyPressTable = function (value) {
         var key = window.Event ? event.which : event.keyCode;
         var c = String.fromCharCode(key);
         if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
@@ -136,12 +143,11 @@ function ModalTraspaso() {
     }
 
 
-    addTraspaso = function(idMembresia, plan, fechaInicio, fechaFinal) {
-        let txtCosto = $("#" + idMembresia);
+    addTraspaso = function (idMembresia, plan, fechaInicio, fechaFinal) {
         if (!tools.isNumeric(txtCosto.val())) {
             tools.AlertWarning("Traspaso: ", "Ingrese un Precio.")
             txtCosto.focus();
-        } else if ($('#cbListaMembresiaCliente').has('option').length <= 0 || $('#cbListaMembresiaCliente').val() == '') {
+        } else if ($("#cbUsarMembresia").is(":checked") && $('#cbListaMembresiaCliente').has('option').length <= 0 || $("#cbUsarMembresia").is(":checked") && $('#cbListaMembresiaCliente').val() == '') {
             tools.AlertWarning("Traspaso: ", "Seleccione la membresia a utilizar.")
             $('#cbListaMembresiaCliente').focus();
         } else {
@@ -149,7 +155,7 @@ function ModalTraspaso() {
                 listaVenta.push({
                     "idPlan": idMembresia,
                     "nombre": "Traspaso de " + plan,
-                    "membresia": $('#cbListaMembresiaCliente').val(),
+                    "membresia": $("#cbUsarMembresia").is(":checked") ? $('#cbListaMembresiaCliente').val() : "",
                     "cantidad": 1,
                     "precio": parseFloat(txtCosto.val()),
                     "descuento": 0,

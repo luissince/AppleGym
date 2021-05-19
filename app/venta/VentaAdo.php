@@ -214,75 +214,134 @@ class VentaAdo
                     }
                 } else if ($result["procedencia"] == 3) {
 
-                    $trasValidate = Database::getInstance()->getDb()->prepare("SELECT fechaFin FROM membresiatb WHERE idMembresia  = ? AND fechaFin >= NOW() AND estado = 1");
+                    $trasValidate = Database::getInstance()->getDb()->prepare("SELECT fechaFin FROM membresiatb WHERE idMembresia  = ?");
                     $trasValidate->bindValue(1, $result['membresia'], PDO::PARAM_STR);
                     $trasValidate->execute();
-                    if ($rowm = $trasValidate->fetch()) {
-                        $fechaFin = $rowm["fechaFin"];
+                    if ($trasValidate->fetch()) {
 
-                        $trasValidate = Database::getInstance()->getDb()->prepare("SELECT DATEDIFF(fechaFin,CURDATE()) AS Dias
-                        FROM membresiatb 
-                        WHERE idMembresia = ?");
-                        $trasValidate->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
+                        $trasValidate = Database::getInstance()->getDb()->prepare("SELECT fechaFin FROM membresiatb WHERE idMembresia  = ? AND fechaFin >= NOW() AND estado = 1");
+                        $trasValidate->bindValue(1, $result['membresia'], PDO::PARAM_STR);
                         $trasValidate->execute();
+                        if ($rowm = $trasValidate->fetch()) {
+                            $fechaFin = $rowm["fechaFin"];
 
-                        $rowt =  $trasValidate->fetch();
-                        $dias = $rowt["Dias"];
+                            $trasValidate = Database::getInstance()->getDb()->prepare("SELECT DATEDIFF(fechaFin,CURDATE()) AS Dias
+                            FROM membresiatb 
+                            WHERE idMembresia = ?");
+                            $trasValidate->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
+                            $trasValidate->execute();
 
-                        $date = new DateTime($fechaFin);
-                        $date->modify("+" .  $dias . " day");
+                            $rowt =  $trasValidate->fetch();
+                            $dias = $rowt["Dias"];
 
-                        $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaFin = ?,tipoMembresia =3,estado = 1 WHERE idMembresia = ?");
-                        $cmdMembresia->bindValue(1, $date->format('Y-m-d'), PDO::PARAM_STR);
-                        $cmdMembresia->bindValue(2, $result['membresia'], PDO::PARAM_STR);
-                        $cmdMembresia->execute();
+                            $date = new DateTime($fechaFin);
+                            $date->modify("+" .  $dias . " day");
 
-                        $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
-                        $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
-                        $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
-                        $cmdTraspaso->execute();
+                            $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaFin = ?,tipoMembresia =3,estado = 1 WHERE idMembresia = ?");
+                            $cmdMembresia->bindValue(1, $date->format('Y-m-d'), PDO::PARAM_STR);
+                            $cmdMembresia->bindValue(2, $result['membresia'], PDO::PARAM_STR);
+                            $cmdMembresia->execute();
 
-                        $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
-                        $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $fechaFin, $date->format('Y-m-d')));
+                            $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
+                            $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
+                            $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
+                            $cmdTraspaso->execute();
 
-                        $executeDetalleVenta->execute(
-                            array(
-                                $idVenta,
-                                $result['idPlan'],
-                                $result['cantidad'],
-                                $result['precio'],
-                                $result['descuento'],
-                                $result['procedencia']
-                            )
-                        );
+                            $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                            $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $fechaFin, $date->format('Y-m-d')));
 
-                        $countMem3++;
+                            $executeDetalleVenta->execute(
+                                array(
+                                    $idVenta,
+                                    $result['idPlan'],
+                                    $result['cantidad'],
+                                    $result['precio'],
+                                    $result['descuento'],
+                                    $result['procedencia']
+                                )
+                            );
+
+                            $countMem3++;
+                        } else {
+
+                            $trasValidate = Database::getInstance()->getDb()->prepare("SELECT DATEDIFF(fechaFin,CURDATE()) AS Dias
+                            FROM membresiatb 
+                            WHERE idMembresia = ?");
+                            $trasValidate->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
+                            $trasValidate->execute();
+                            $rowt =  $trasValidate->fetch();
+                            $dias = $rowt["Dias"];
+
+                            $date = new DateTime($body['fecha']);
+                            $date->modify("+" .  $dias . " day");
+
+                            $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaInicio = ?,fechaFin = ?,estado = 1 WHERE idMembresia = ?");
+                            $cmdMembresia->bindValue(1, $body['fecha'], PDO::PARAM_STR);
+                            $cmdMembresia->bindValue(2, $date->format('Y-m-d'), PDO::PARAM_STR);
+                            $cmdMembresia->bindValue(3, $result['membresia'], PDO::PARAM_STR);
+                            $cmdMembresia->execute();
+
+                            $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
+                            $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
+                            $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
+                            $cmdTraspaso->execute();
+
+                            $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
+                            $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $body['fecha'], $date->format('Y-m-d')));
+
+                            $executeDetalleVenta->execute(
+                                array(
+                                    $idVenta,
+                                    $result['idPlan'],
+                                    $result['cantidad'],
+                                    $result['precio'],
+                                    $result['descuento'],
+                                    $result['procedencia']
+                                )
+                            );
+
+                            $countMem3++;
+                        }
                     } else {
 
-                        $trasValidate = Database::getInstance()->getDb()->prepare("SELECT DATEDIFF(fechaFin,CURDATE()) AS Dias
-                        FROM membresiatb 
-                        WHERE idMembresia = ?");
-                        $trasValidate->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
-                        $trasValidate->execute();
-                        $rowt =  $trasValidate->fetch();
-                        $dias = $rowt["Dias"];
-
-                        $date = new DateTime($body['fecha']);
-                        $date->modify("+" .  $dias . " day");
-
-                        $cmdMembresia = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET fechaInicio = ?,fechaFin = ?,estado = 1 WHERE idMembresia = ?");
-                        $cmdMembresia->bindValue(1, $body['fecha'], PDO::PARAM_STR);
-                        $cmdMembresia->bindValue(2, $date->format('Y-m-d'), PDO::PARAM_STR);
-                        $cmdMembresia->bindValue(3, $result['membresia'], PDO::PARAM_STR);
-                        $cmdMembresia->execute();
-
-                        $cmdTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
-                        $cmdTraspaso->bindValue(1, $dias, PDO::PARAM_INT);
-                        $cmdTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
+                        $cmdTraspaso =  Database::getInstance()->getDb()->prepare("SELECT idMembresia,idPlan,fechaInicio,horaInicio,fechaFin,horaFin,estado,cantidad,precio,descuento FROM membresiatb WHERE idMembresia = ?");
+                        $cmdTraspaso->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
                         $cmdTraspaso->execute();
+                        $resultTraspaso =  $cmdTraspaso->fetchObject();
+
+                        $cmdMembresia = Database::getInstance()->getDb()->prepare($membresia);
+                        $cmdMembresia->execute(array(
+                            $resultTraspaso->idMembresia,
+                            $resultTraspaso->idPlan,
+                            $body['cliente'],
+                            $resultTraspaso->fechaInicio,
+                            $resultTraspaso->horaInicio,
+                            $resultTraspaso->fechaFin,
+                            $resultTraspaso->horaFin,
+                            $result['procedencia'],
+                            1,
+                            $result['cantidad'],
+                            $result['descuento'],
+                            $result['procedencia'],
+                            0
+                        ));
+
+                        $cmdUpdateTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
+                        $cmdUpdateTraspaso->bindValue(1, 0, PDO::PARAM_INT);
+                        $cmdUpdateTraspaso->bindValue(2, $result['idPlan'], PDO::PARAM_STR);
+                        $cmdUpdateTraspaso->execute();
 
                         $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
-                        $cmdHistorialMembresia->execute(array($result['membresia'], "TRANSFERENCIA DE MEMBRESÍA", $body['fecha'], $body['hora'], $body['fecha'], $date->format('Y-m-d')));
+                        $cmdHistorialMembresia->execute(
+                            array(
+                                $resultTraspaso->idMembresia,
+                                "TRANSFERENCIA DE MEMBRESÍA",
+                                $body['fecha'],
+                                $body['hora'],
+                                $body['fecha'],
+                                $resultTraspaso->fechaFin
+                            )
+                        );
 
                         $executeDetalleVenta->execute(
                             array(
@@ -470,7 +529,7 @@ class VentaAdo
                     $totalMonto += $row["monto"];
                 }
 
-                if ($totalMonto ==  $totalCobrado) {
+                if (floatval($totalMonto) ==  floatval($totalCobrado)) {
                     $cmdValidate = Database::getInstance()->getDb()->prepare("UPDATE ventatb SET estado = 1 WHERE idVenta = ?");
                     $cmdValidate->bindParam(1, $body["idVenta"], PDO::PARAM_STR);
                     $cmdValidate->execute();

@@ -428,7 +428,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         case 2:
                             loadTableIngresos(2, $("#cbTipo").val(), 0, "", "", "");
                             break;
-                        case 2:
+                        case 3:
                             loadTableIngresos(3, 0, $("#cbEstado").val(), "", "", "");
                             break;
                     }
