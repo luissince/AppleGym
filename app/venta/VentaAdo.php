@@ -304,14 +304,19 @@ class VentaAdo
                         }
                     } else {
 
+                        $codigoMembresia = Database::getInstance()->getDb()->prepare($quey_codigo_membresia);
+                        $codigoMembresia->execute();
+                        $idMembresia = $codigoMembresia->fetchColumn();
+
                         $cmdTraspaso =  Database::getInstance()->getDb()->prepare("SELECT idMembresia,idPlan,fechaInicio,horaInicio,fechaFin,horaFin,estado,cantidad,precio,descuento FROM membresiatb WHERE idMembresia = ?");
                         $cmdTraspaso->bindValue(1, $result['idPlan'], PDO::PARAM_STR);
                         $cmdTraspaso->execute();
                         $resultTraspaso =  $cmdTraspaso->fetchObject();
 
+
                         $cmdMembresia = Database::getInstance()->getDb()->prepare($membresia);
                         $cmdMembresia->execute(array(
-                            $resultTraspaso->idMembresia,
+                            $idMembresia,
                             $resultTraspaso->idPlan,
                             $body['cliente'],
                             $resultTraspaso->fechaInicio,
@@ -322,8 +327,7 @@ class VentaAdo
                             1,
                             $result['cantidad'],
                             $result['descuento'],
-                            $result['procedencia'],
-                            0
+                            $result['procedencia']
                         ));
 
                         $cmdUpdateTraspaso = Database::getInstance()->getDb()->prepare("UPDATE membresiatb SET congelar = ?,estado = 0 WHERE idMembresia = ?");
@@ -334,7 +338,7 @@ class VentaAdo
                         $cmdHistorialMembresia = Database::getInstance()->getDb()->prepare("INSERT INTO historialmembresia(idMembresia,descripcion,fecha,hora,fechaInicio,fechaFinal) VALUES(?,?,?,?,?,?)");
                         $cmdHistorialMembresia->execute(
                             array(
-                                $resultTraspaso->idMembresia,
+                                $idMembresia,
                                 "TRANSFERENCIA DE MEMBRESÍA",
                                 $body['fecha'],
                                 $body['hora'],

@@ -97,7 +97,7 @@ function ModalTraspaso() {
                         );
                     } else {
                         for (let value of data.traspasos) {
-                            let Costo = '<input class= "form-control" type="text" onkeypress="onKeyPressTable(this)" placeholder="Precio S/." id="' + value.idMembresia + '">';
+                            let Costo = '<input class= "form-control" type="text" onkeypress="onKeyPressTable(this)" placeholder="Precio S/." id="txt' + value.idMembresia + '">';
                             let traspaso = '<button class="btn btn-success" type="button" onclick="addTraspaso(\'' + value.idMembresia + '\',\'' + value.plan + '\',\'' + value.fechaInicio + '\',\'' + value.fechaFin + '\')"><i class="fa fa-sign-in"></i>Traspaso</button>';
                             tbMembresiaTraspaso.append('<tr role="row" class="odd">' +
                                 '<td>' + value.id + '</td>' +
@@ -144,6 +144,7 @@ function ModalTraspaso() {
 
 
     addTraspaso = function (idMembresia, plan, fechaInicio, fechaFinal) {
+        let txtCosto = $("#txt" + idMembresia);
         if (!tools.isNumeric(txtCosto.val())) {
             tools.AlertWarning("Traspaso: ", "Ingrese un Precio.")
             txtCosto.focus();
