@@ -83,6 +83,7 @@ if (isset($_SESSION["IdEmpleado"])) {
                             login();
                         }
                     }
+                    event.preventDefault();
                 });
 
                 $("#txtClave").keyup(function(event) {
@@ -91,6 +92,7 @@ if (isset($_SESSION["IdEmpleado"])) {
                             login();
                         }
                     }
+                    event.preventDefault();
                 });
 
             });
