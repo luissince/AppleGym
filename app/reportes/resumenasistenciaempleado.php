@@ -104,6 +104,7 @@ mpdf-->
             <th width="12%">Hora Entrada</th>
             <th width="12%">Fecha Salida</th>
             <th width="12%">Hora Salida</th>
+            <th width="12%">Estado</th>
         </tr>
     </thead>
     <tbody>';
@@ -111,13 +112,19 @@ mpdf-->
      
     <?php
     foreach ($asistencia as $value) {
+        $fechaIni = ($value["fechaEntrada"] == null ? "" : date('d-m-Y', strtotime($value["fechaEntrada"])));
+        $hotaIni = ($value["horaEntrada"] == null ? "" : date('h:i A', strtotime($value["horaEntrada"])));
+        $fechaFin = ($value["estado"] == "1" ? "" : date('d-m-Y', strtotime($value["fechaSalida"])));
+        $horaFin = ($value["estado"] == "1" ? "" : date('h:i A', strtotime($value["horaSalida"])));
+        $estado = $value["estado"] == "0" ? "CERRADO" : "APERTURADO";
         $html .= '<tr>
             <td>' . $value["id"] . '</td>
             <td>' . $value["dni"] . '<br>' . $value["personal"] . '</td>
-            <td>' . ($value["fechaEntrada"] == null ? "" : date('d-m-Y', strtotime($value["fechaEntrada"]))) . '</td>
-            <td>' . ($value["horaEntrada"] == null ? "" : date('h:i A', strtotime($value["horaEntrada"]))) . '</td>
-            <td>' . ($value["fechaSalida"] == null ? "" : date('d-m-Y', strtotime($value["fechaSalida"]))) . '</td>
-            <td>' . ($value["horaSalida"] == null ? "" : date('h:i A', strtotime($value["horaSalida"]))) . '</td>
+            <td>' . $fechaIni . '</td>
+            <td>' . $hotaIni  . '</td>
+            <td>' . $fechaFin . '</td>
+            <td>' . $horaFin . '</td>
+            <td>' . $estado . '</td>
         </tr>';
     }
 

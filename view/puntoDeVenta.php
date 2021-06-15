@@ -175,14 +175,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </main>
             <!-- Essential javascripts for application to work-->
             <?php include "./layout/footer.php"; ?>
-            <script src="js/puntoventa/modalcliente.js"></script>
-            <script src="js/puntoventa/modaladdcliente.js"></script>
-            <script src="js/puntoventa/modallistaplanes.js"></script>
-            <script src="js/puntoventa/modallistaproductos.js"></script>
-            <script src="js/puntoventa/modaltraspaso.js"></script>
-            <script src="js/puntoventa/modalactivacion.js"></script>
-            <script src="js/puntoventa/modalrenovacion.js"></script>
-            <script src="js/puntoventa/modalpagar.js"></script>
+            <script src="js/puntoventa/modalactivacion-v5.js"></script>
+            <script src="js/puntoventa/modaladdcliente-v5.js"></script>
+            <script src="js/puntoventa/modalcliente-v5.js"></script>
+            <script src="js/puntoventa/modallistaplanes-v5.js"></script>
+            <script src="js/puntoventa/modallistaproductos-v5.js"></script>
+            <script src="js/puntoventa/modalpagar-v5.js"></script>
+            <script src="js/puntoventa/modalrenovacion-v5.js"></script>
+            <script src="js/puntoventa/modaltraspaso-v5.js"></script>
             <script>
                 let tools = new Tools();
                 let modalCliente = new ModalCliente();

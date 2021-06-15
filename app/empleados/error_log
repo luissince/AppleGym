@@ -1,0 +1,468 @@
+[29-May-2021 12:09:56 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:10:18 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:10:35 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'galeo2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:11:03 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:11:22 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:12:08 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:12:25 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'galeo2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:23:08 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:23:31 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:26:11 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:54:03 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:54:13 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:57:15 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:57:29 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:57:40 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Ejd', 'sjj')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:58:02 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:05:39 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:07:16 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:07:50 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:08:43 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO246/8')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:22:33 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:22:59 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:43:28 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:54:42 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:58:51 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:59:03 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:00:10 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:01:02 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:10:32 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:11:05 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:34:44 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:39:34 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 15:00:51 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 15:02:38 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 15:25:35 UTC] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:41:52 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:42:40 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:42:52 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:43:25 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:45:24 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:45:28 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:46:28 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('amdin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:46:41 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 11:59:54 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:00:04 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:00:44 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:05:44 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('nicolas', 'joao17')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:06:55 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:26:53 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:27:06 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:35:21 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('46872455', 'GALEO2468')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 12:54:54 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('Admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:22:08 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 13:22:15 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:14:42 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('41726854', '141926')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:15:07 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('41726854', '141926')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:26:48 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[29-May-2021 14:36:39 America/Santiago] PHP Fatal error:  Uncaught Error: Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php:48
+Stack trace:
+#0 /home/intranetnet/public_html/app/database/DataBaseConexion.php(24): Database->getDb()
+#1 /home/intranetnet/public_html/app/database/DataBaseConexion.php(36): Database->__construct()
+#2 /home/intranetnet/public_html/app/empleados/EmpleadoAdo.php(358): Database::getInstance()
+#3 /home/intranetnet/public_html/app/empleados/Obtener_Empleados_For_Login.php(14): EmpleadoAdo::getEmpleadoForLogin('admin', 'admin')
+#4 {main}
+  thrown in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[09-Jun-2021 19:05:13 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_oci.so' (tried: /opt/alt/php74/usr/lib64/php/modules/pdo_oci.so (libclntsh.so.12.1: cannot open shared object file: No such file or directory), /opt/alt/php74/usr/lib64/php/modules/pdo_oci.so.so (/opt/alt/php74/usr/lib64/php/modules/pdo_oci.so.so: cannot open shared object file: No such file or directory)) in Unknown on line 0
+[09-Jun-2021 19:11:20 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_oci.so' (tried: /opt/alt/php74/usr/lib64/php/modules/pdo_oci.so (libclntsh.so.12.1: cannot open shared object file: No such file or directory), /opt/alt/php74/usr/lib64/php/modules/pdo_oci.so.so (/opt/alt/php74/usr/lib64/php/modules/pdo_oci.so.so: cannot open shared object file: No such file or directory)) in Unknown on line 0
+[09-Jun-2021 22:03:28 UTC] PHP Fatal error:  Class 'PDO' not found in /home/intranetnet/public_html/app/database/DataBaseConexion.php on line 48
+[11-Jun-2021 11:32:08 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_oci.so' (tried: /opt/alt/php74/usr/lib64/php/modules/pdo_oci.so (libclntsh.so.12.1: cannot open shared object file: No such file or directory), /opt/alt/php74/usr/lib64/php/modules/pdo_oci.so.so (/opt/alt/php74/usr/lib64/php/modules/pdo_oci.so.so: cannot open shared object file: No such file or directory)) in Unknown on line 0

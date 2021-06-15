@@ -196,7 +196,8 @@ class AsistenciaAdo
             a.fechaApertura,
             a.horaApertura,
             a.fechaCierre,
-            a.horaCierre
+            a.horaCierre,
+            a.estado
             FROM empleadotb AS c INNER JOIN asistenciatb as a 
             ON a.idPersona = c.idEmpleado  
             WHERE fechaApertura BETWEEN ? AND ? AND tipoPersona = 2
@@ -214,7 +215,8 @@ class AsistenciaAdo
                     "fechaEntrada" => $row["fechaApertura"],
                     "horaEntrada" => $row["horaApertura"],
                     "fechaSalida" => $row["fechaCierre"],
-                    "horaSalida" => $row["horaCierre"]
+                    "horaSalida" => $row["horaCierre"],
+                    "estado" => $row["estado"]
                 ));
             }
             return $array;

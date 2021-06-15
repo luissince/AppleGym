@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo json_encode(array("estado" => 1, "message" => "Se marco su salida correctamente."));
         } else if ($result == "entrada") {
             echo json_encode(array("estado" => 2, "message" => "Se marco su ingreso correctamente."));
-        } else if ($result == "marco") {
+        } else if ($result == "marcar") {
             echo json_encode(array("estado" => 3, "message" => "El cliente ya registró un ingreso."));
         } else {
             echo json_encode(array("estado" => 0, "message" => $result));

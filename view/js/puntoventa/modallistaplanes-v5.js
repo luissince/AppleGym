@@ -41,8 +41,6 @@ function ModalListaPlanes() {
                     $("#lblDescripcionPlan").html("Descripcion: " + listarPlanes[i].descripcion);
                     $("#lblTiempoPlan").html("Tiempo: " + (mesesPlan == 1 ? mesesPlan + " Mes y " + (diasPlan == 1 ? diasPlan + " día" : diasPlan + " días") : mesesPlan + " Meses y " + (diasPlan == 1 ? diasPlan + " día" : diasPlan + " días")) + " Libre: " + freezePlan + " día(s)");
                     $("#lblDisciplinasPlan").html("Disciplinas: Ilimitadas");
-
-                    console.log(listarPlanes[i])
                     break;
                 }
             }

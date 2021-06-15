@@ -558,7 +558,7 @@ class ClienteAdo
     {
         try {
             $array = array();
-            $comando = Database::getInstance()->getDb()->prepare("SELECT idCliente,dni,apellidos,nombres,huella,imageHuella FROM clientetb");
+            $comando = Database::getInstance()->getDb()->prepare("SELECT idCliente,dni,apellidos,nombres,huella FROM clientetb");
             $comando->execute();
             while ($row = $comando->fetch()) {
 
@@ -591,7 +591,6 @@ class ClienteAdo
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
                     "huella" => $row["huella"],
-                    "imageHuella" => $row["imageHuella"],
                     "membresias" => $arrayMembresias
                 ));
             }
@@ -607,7 +606,7 @@ class ClienteAdo
     {
         try {
             $array = array();
-            $comando = Database::getInstance()->getDb()->prepare("SELECT idEmpleado,numeroDocumento,apellidos,nombres,huella,imageHuella FROM empleadotb");
+            $comando = Database::getInstance()->getDb()->prepare("SELECT idEmpleado,numeroDocumento,apellidos,nombres,huella FROM empleadotb");
             $comando->execute();
             while ($row = $comando->fetch()) {
 
@@ -616,8 +615,7 @@ class ClienteAdo
                     "dni" => $row["numeroDocumento"],
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
-                    "huella" => $row["huella"],
-                    "imageHuella" => $row["imageHuella"]
+                    "huella" => $row["huella"]
                 ));
             }
 
@@ -657,11 +655,20 @@ class ClienteAdo
                 Database::getInstance()->getDb()->commit();
                 return "salida";
             } else {
-                $codigoAsistencia = Database::getInstance()->getDb()->prepare("SELECT Fc_Asistencia_Codigo_Almanumerico();");
-                $codigoAsistencia->execute();
-                $idAsistencia = $codigoAsistencia->fetchColumn();
 
-                $cmdRgister = Database::getInstance()->getDb()->prepare("INSERT INTO asistenciatb ( 
+                $cmdAsistencia = Database::getInstance()->getDb()->prepare("SELECT * FROM asistenciatb WHERE idPersona = ? AND tipoPersona = 1  AND fechaApertura = CURDATE()");
+                $cmdAsistencia->bindValue(1, $idCliente, PDO::PARAM_STR);
+                $cmdAsistencia->execute();
+                if ($cmdAsistencia->fetch()) { 
+                    Database::getInstance()->getDb()->rollback();
+                    return "marcar";
+                } else {
+
+                    $codigoAsistencia = Database::getInstance()->getDb()->prepare("SELECT Fc_Asistencia_Codigo_Almanumerico();");
+                    $codigoAsistencia->execute();
+                    $idAsistencia = $codigoAsistencia->fetchColumn();
+
+                    $cmdRgister = Database::getInstance()->getDb()->prepare("INSERT INTO asistenciatb ( 
                     idAsistencia,
                     fechaApertura,
                     fechaCierre,
@@ -672,25 +679,26 @@ class ClienteAdo
                     tipoPersona)
                     VALUES(?,?,?,?,?,?,?,?)");
 
-                $cmdRgister->execute(
-                    array(
-                        $idAsistencia,
-                        $currenteDate->format('Y-m-d'),
-                        $currenteDate->format('Y-m-d'),
-                        $currenteDate->format('H:i:s'),
-                        $currenteDate->format('H:i:s'),
-                        $estado,
-                        $idCliente,
-                        $tipopersona
-                    )
-                );
+                    $cmdRgister->execute(
+                        array(
+                            $idAsistencia,
+                            $currenteDate->format('Y-m-d'),
+                            $currenteDate->format('Y-m-d'),
+                            $currenteDate->format('H:i:s'),
+                            $currenteDate->format('H:i:s'),
+                            $estado,
+                            $idCliente,
+                            $tipopersona
+                        )
+                    );
 
-                Database::getInstance()->getDb()->commit();
-                return "entrada";
+                    Database::getInstance()->getDb()->commit();
+                    return "entrada";
+                }
             }
-        } catch (PDOException $e) {
+        } catch (Exception $ex) {
             Database::getInstance()->getDb()->rollback();
-            return $e->getMessage();
+            return $ex->getMessage();
         }
     }
 }

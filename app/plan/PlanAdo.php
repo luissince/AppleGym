@@ -322,7 +322,6 @@ class PlanAdo
             $executedisciplinas = Database::getInstance()->getDb()->prepare($queryplandisciplina);
             $array = array();
             while ($rowp = $executeplan->fetch()) {
-                
                 $executedisciplinas->bindParam(1, $rowp['idPlan'], PDO::PARAM_STR);
                 $executedisciplinas->execute();
                 $arr_disciplinas = array();
