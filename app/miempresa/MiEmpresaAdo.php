@@ -2,13 +2,15 @@
 
 require '../database/DataBaseConexion.php';
 
-class MiEmpresaAdo {
+class MiEmpresaAdo
+{
 
-    function __construct() {
-        
+    function __construct()
+    {
     }
 
-    public static function registrar($body) {
+    public static function registrar($body)
+    {
         try {
             Database::getInstance()->getDb()->beginTransaction();
             $comando = Database::getInstance()->getDb()->prepare("INSERT INTO mi_empresatb(representante,nombreEmpresa,ruc,telefono,celular,email,paginaWeb,direccion,terminos)VALUES(?,?,?,?,?,?,?,?,?)");
@@ -31,7 +33,8 @@ class MiEmpresaAdo {
         }
     }
 
-    public static function actualizar($body) {
+    public static function actualizar($body)
+    {
         try {
             Database::getInstance()->getDb()->beginTransaction();
             $comando = Database::getInstance()->getDb()->prepare("UPDATE mi_empresatb SET representante = ?,nombreEmpresa = ?,ruc = ?,telefono = ?,celular = ?,email = ?,paginaWeb = ?,direccion = ?,terminos = ? WHERE idMiEmpresa = ?");
@@ -55,7 +58,8 @@ class MiEmpresaAdo {
         }
     }
 
-    public static function validate() {
+    public static function validate()
+    {
         $consulta = "SELECT COUNT(*) FROM mi_empresatb";
         try {
             // Preparar sentencia
@@ -68,7 +72,8 @@ class MiEmpresaAdo {
         }
     }
 
-    public static function getMiEmpresa() {
+    public static function getMiEmpresa()
+    {
         $consulta = "SELECT * FROM  mi_empresatb";
         try {
             $comando = Database::getInstance()->getDb()->prepare($consulta);
@@ -94,8 +99,9 @@ class MiEmpresaAdo {
         }
     }
 
-    public static function ListarDashboard(){
-        try{
+    public static function ListarDashboard()
+    {
+        try {
             $array = array();
 
             $cmdClientes = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  clientetb");
@@ -114,23 +120,30 @@ class MiEmpresaAdo {
             $cmdEmpleados->execute();
             $resuktTotalEmpleados = $cmdEmpleados->fetchColumn();
 
-            $cmdMembresiasPorVencer = Database::getInstance()->getDb()->prepare("SELECT c.apellidos,c.nombres,c.celular,m.fechaFin  FROM  membresiatb as m
+            $cmdMembresiasPorVencer = Database::getInstance()->getDb()->prepare("SELECT 
+            c.apellidos,
+            c.nombres,
+            c.celular,
+            m.fechaFin  
+            FROM  membresiatb as m
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10 AND m.estado = 1");
             $cmdMembresiasPorVencer->execute();
             $arrayMembresiasPorVencer = array();
-            while($row = $cmdMembresiasPorVencer->fetch()){
-                array_push($arrayMembresiasPorVencer,array(
-                    "apellidos"=>$row["apellidos"],
-                    "nombres"=>$row["nombres"],
-                    "celular"=>$row["celular"],
-                    "fechaFin"=>$row["fechaFin"]
+            while ($row = $cmdMembresiasPorVencer->fetch()) {
+                array_push($arrayMembresiasPorVencer, array(
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],
+                    "celular" => $row["celular"],
+                    "fechaFin" => $row["fechaFin"]
                 ));
             }
 
-            $cmdMembresiasPorVencerCount = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  membresiatb as m
+            $cmdMembresiasPorVencerCount = Database::getInstance()->getDb()->prepare("SELECT 
+            COUNT(*) 
+            FROM  membresiatb as m
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10 AND m.estado = 1");
             $cmdMembresiasPorVencerCount->execute();
             $resultMembresiasPorVencerTotal = $cmdMembresiasPorVencerCount->fetchColumn();
 
@@ -138,41 +151,44 @@ class MiEmpresaAdo {
             c.apellidos,c.nombres,c.celular,m.fechaFin  
             FROM  membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 OR m.estado = 0");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 AND m.estado = 1");
             $cmdMembresiasFinalizadas->execute();
 
             $arrayMembresiasFinalizadas = array();
-            while($row = $cmdMembresiasFinalizadas->fetch()){
-                array_push($arrayMembresiasFinalizadas,array(
-                    "apellidos"=>$row["apellidos"],
-                    "nombres"=>$row["nombres"],
-                    "celular"=>$row["celular"],
-                    "fechaFin"=>$row["fechaFin"]
+            while ($row = $cmdMembresiasFinalizadas->fetch()) {
+                array_push($arrayMembresiasFinalizadas, array(
+                    "apellidos" => $row["apellidos"],
+                    "nombres" => $row["nombres"],
+                    "celular" => $row["celular"],
+                    "fechaFin" => $row["fechaFin"]
                 ));
             }
 
-            $cmdMembresiasFinalizadasCount = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  membresiatb as m 
+            $cmdMembresiasFinalizadasCount = Database::getInstance()->getDb()->prepare("SELECT 
+            COUNT(*) 
+            FROM membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 OR m.estado = 0");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 AND m.estado = 1");
             $cmdMembresiasFinalizadasCount->execute();
             $resultMembresiasFinalizadasTotal = $cmdMembresiasFinalizadasCount->fetchColumn();
 
-            array_push($array,
-            $resultTotalCliente,
-            $resultIngresos,
-            $resultCuentasPorCobrar,
-            $resuktTotalEmpleados,
+            array_push(
+                $array,
+                $resultTotalCliente,
+                $resultIngresos,
+                $resultCuentasPorCobrar,
+                $resuktTotalEmpleados,
 
-            $arrayMembresiasPorVencer,
-            $resultMembresiasPorVencerTotal,
+                $arrayMembresiasPorVencer,
+                $resultMembresiasPorVencerTotal,
 
-            $arrayMembresiasFinalizadas,
-            $resultMembresiasFinalizadasTotal);
+                $arrayMembresiasFinalizadas,
+                $resultMembresiasFinalizadasTotal
+            );
 
             return $array;
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             return $ex->getMessage();
         }
     }
-
 }
