@@ -419,10 +419,10 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         <div class="form-group">
                                             <label for="cbServicios">Servicio/Inscripción: <i class="fa fa-fw fa-asterisk text-danger"></i></label>
                                             <select id="cbServicios" style="width: 100%;" class="form-control select2">
-                                                <option value="">- Selecciona -</option>                                               
+                                                <option value="">- Selecciona -</option>
                                             </select>
                                         </div>
-                                    </div>                                    
+                                    </div>
                                 </div>
 
                                 <div class="row">
@@ -514,6 +514,23 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                 <div class="bs-component">
                                     <div class="card">
                                         <h5 class="card-header">Reporte de Membresias - Mes</h5>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                                                    <img width="140" src="./images/asistencia.png" alt="Card image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                            <button class="btn btn-default" id="btnReporteServicio">
+                                <div class="bs-component">
+                                    <div class="card">
+                                        <h5 class="card-header">Reporte de Servicio/Inscripción</h5>
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
@@ -724,33 +741,33 @@ if (!isset($_SESSION["IdEmpleado"])) {
 
                     //-----------------------------------------------------------------------------------------------------
                     //inscripción
-                    $("#btnReporteServicio").click(function() {
-                        $("#modalServicioModal").modal("show");
-                        $("#cbServicios").select2();
-                    });
+                    // $("#btnReporteServicio").click(function() {
+                    //     $("#modalServicioModal").modal("show");
+                    //     $("#cbServicios").select2();
+                    // });
 
-                    $("#btnReporteServicio").keypress(function(event) {
-                        if (event.keyCode == 13) {
-                            $("#modalServicioModal").modal("show");
-                            $("#cbServicios").select2();
-                        }
-                        event.preventDefault();
-                    });
+                    // $("#btnReporteServicio").keypress(function(event) {
+                    //     if (event.keyCode == 13) {
+                    //         $("#modalServicioModal").modal("show");
+                    //         $("#cbServicios").select2();
+                    //     }
+                    //     event.preventDefault();
+                    // });
 
-                    $("#cbServicios").change(function(){
-                            console.log("Dd")
-                    });
+                    // $("#cbServicios").change(function(){
+                    //         console.log("Dd")
+                    // });
 
-                    $("#btnAceptarServiciosInscripcion").click(function(){
+                    // $("#btnAceptarServiciosInscripcion").click(function(){
 
-                    });
+                    // });
 
-                    $("#btnAceptarServiciosInscripcion").keypress(function(event){
-                        if(event.keyCode == 13){
+                    // $("#btnAceptarServiciosInscripcion").keypress(function(event){
+                    //     if(event.keyCode == 13){
 
-                        }
-                        event.preventDefault();
-                    });
+                    //     }
+                    //     event.preventDefault();
+                    // });
 
                 });
             </script>
