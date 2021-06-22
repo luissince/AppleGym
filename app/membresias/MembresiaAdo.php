@@ -17,7 +17,7 @@ class MembresiaAdo
             $membresia = Database::getInstance()->getDb()->prepare("SELECT 
             m.idMembresia,
             c.dni,
-            c.apellidos, 
+            c.apellidos,
             c.nombres,
             p.nombre AS 'nombrePlan',  
             m.tipoMembresia,

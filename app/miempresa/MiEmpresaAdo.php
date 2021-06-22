@@ -121,6 +121,7 @@ class MiEmpresaAdo
             $resuktTotalEmpleados = $cmdEmpleados->fetchColumn();
 
             $cmdMembresiasPorVencer = Database::getInstance()->getDb()->prepare("SELECT 
+            c.dni,
             c.apellidos,
             c.nombres,
             c.celular,
@@ -132,6 +133,7 @@ class MiEmpresaAdo
             $arrayMembresiasPorVencer = array();
             while ($row = $cmdMembresiasPorVencer->fetch()) {
                 array_push($arrayMembresiasPorVencer, array(
+                    "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
                     "celular" => $row["celular"],
@@ -148,15 +150,21 @@ class MiEmpresaAdo
             $resultMembresiasPorVencerTotal = $cmdMembresiasPorVencerCount->fetchColumn();
 
             $cmdMembresiasFinalizadas = Database::getInstance()->getDb()->prepare("SELECT 
-            c.apellidos,c.nombres,c.celular,m.fechaFin  
+            c.dni,
+            c.apellidos,
+            c.nombres,
+            c.celular,
+            m.fechaFin  
             FROM  membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 AND m.estado = 1");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >= -30 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 
+            AND m.estado = 1");
             $cmdMembresiasFinalizadas->execute();
 
             $arrayMembresiasFinalizadas = array();
             while ($row = $cmdMembresiasFinalizadas->fetch()) {
                 array_push($arrayMembresiasFinalizadas, array(
+                    "dni" => $row["dni"],
                     "apellidos" => $row["apellidos"],
                     "nombres" => $row["nombres"],
                     "celular" => $row["celular"],
@@ -168,7 +176,8 @@ class MiEmpresaAdo
             COUNT(*) 
             FROM membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 AND m.estado = 1");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >= -30 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 
+            AND m.estado = 1");
             $cmdMembresiasFinalizadasCount->execute();
             $resultMembresiasFinalizadasTotal = $cmdMembresiasFinalizadasCount->fetchColumn();
 

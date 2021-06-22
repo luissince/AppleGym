@@ -444,6 +444,59 @@ if (!isset($_SESSION["IdEmpleado"])) {
             </div>
             <!-- modal de resumen de membresia -->
 
+            <!-- modal de membresias vencias o por vencer -->
+            <div class="row">
+                <div class="modal fade show" id="modalVencidas" data-backdrop="static" aria-modal="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="titulo-modal">
+                                    <i class="fa fa-users"></i> Resumen de membresías vencidas o por vencer
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" id="renovaciones" type="radio" name="tipomembresia" checked="checked">Próximas Renovaciones
+                                                    <em>
+                                                        <b> (Membresías que vencerán en los próximos 10 días)</b>
+                                                    </em>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" id="recuperar" type="radio" name="tipomembresia">Clientes por Recuperar
+                                                    <em>
+                                                        <b> (Membresías que vencieron en los ultimos 30 días)</b>
+                                                    </em>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" id="btnAceptarMembresias">
+                                    <i class="fa fa-file-pdf-o"></i> Aceptar</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    <i class="fa fa-remove"></i> Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal de membresias vencidas o por vencer -->
+
             <main class="app-content">
                 <!-- Sidebar menu-->
                 <?php include "./marcarentrada.php"; ?>
@@ -527,14 +580,14 @@ if (!isset($_SESSION["IdEmpleado"])) {
                         </div>
 
                         <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
-                            <button class="btn btn-default" id="btnReporteServicio">
+                            <button class="btn btn-default" id="btnReporteMembresiaVencidas">
                                 <div class="bs-component">
                                     <div class="card">
-                                        <h5 class="card-header">Reporte de Servicio/Inscripción</h5>
+                                        <h5 class="card-header">Reporte de Membresias Vencidas/Por Vencer</h5>
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
-                                                    <img width="140" src="./images/asistencia.png" alt="Card image">
+                                                    <img width="140" src="./images/solicitud.png" alt="Card image">
                                                 </div>
                                             </div>
                                         </div>
@@ -735,6 +788,38 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     $("#btnReporteMembresia").keypress(function(event) {
                         if (event.keyCode === 13) {
                             $("#modalAsistenciaModal").modal("show");
+                        }
+                        event.preventDefault();
+                    });
+
+                    //-----------------------------------------------------------------------------------------------------
+                    //membresias vencidas o por vencer
+                    $("#btnReporteMembresiaVencidas").click(function() {
+                        $("#modalVencidas").modal("show");
+                    });
+
+                    $("#btnReporteMembresiaVencidas").keypress(function(event) {
+                        if (event.keyCode == 13) {
+                            $("#modalVencidas").modal("show");
+                        }
+                        event.preventDefault();
+                    });
+
+                    $("#btnAceptarMembresias").click(function() {
+                        if ($("#renovaciones").is(":checked")) {
+                            window.open("../app/reportes/resumenmembresiasporvencer.php", "_blank");
+                        } else {
+                            window.open("../app/reportes/resumenmembresiasvencidas.php", "_blank");
+                        }
+                    });
+
+                    $("#btnAceptarMembresias").keypress(function(event) {
+                        if (event.keyCode == 13) {
+                            if ($("#renovaciones").is(":checked")) {
+                                window.open("../app/reportes/resumenmembresiasporvencer.php", "_blank");
+                            } else {
+                                window.open("../app/reportes/resumenmembresiasvencidas.php", "_blank");
+                            }
                         }
                         event.preventDefault();
                     });
