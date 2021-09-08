@@ -16,7 +16,7 @@
         if ($_SESSION["Roles"][22]["ver"] == 1) {
             print ' <li class="dropdown">
              <a class="app-nav__item" href="javascript:void(0)" onclick="openMarcarEntrada()">
-                 <i class="fa fa-hand-pointer-o fa-lg"></i> <span class="app-nav_text">Marcar Entreda<span>
+                 <i class="fa fa-hand-pointer-o fa-lg"></i> <span class="app-nav_text">Marcar Entrada<span>
              </a>
          </li>';
         }

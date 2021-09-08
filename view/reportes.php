@@ -477,7 +477,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                 <label class="form-check-label">
                                                     <input class="form-check-input" id="recuperar" type="radio" name="tipomembresia">Clientes por Recuperar
                                                     <em>
-                                                        <b> (Membresías que vencieron en los ultimos 30 días)</b>
+                                                        <b> (Membresías que vencieron)</b>
                                                     </em>
                                                 </label>
                                             </div>

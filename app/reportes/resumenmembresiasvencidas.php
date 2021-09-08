@@ -92,7 +92,7 @@ mpdf-->
             </span>
             <br>
             <span style="font-size: 10pt; color: black; font-family: sans;">
-                Clientes por Recuperar (Membresías que vencieron en los ultimos 30 días)
+                Clientes por Recuperar (Membresías que vencieron)
             </span>
         </td>
     </tr>

@@ -118,7 +118,28 @@ class MiEmpresaAdo
 
             $cmdEmpleados = Database::getInstance()->getDb()->prepare("SELECT COUNT(*) FROM  empleadotb");
             $cmdEmpleados->execute();
-            $resuktTotalEmpleados = $cmdEmpleados->fetchColumn();
+            $resultTotalEmpleados = $cmdEmpleados->fetchColumn();
+
+
+
+            array_push(
+                $array,
+                $resultTotalCliente,
+                $resultIngresos,
+                $resultCuentasPorCobrar,
+                $resultTotalEmpleados,
+            );
+
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function ListarPorVencer($x, $y)
+    {
+        try {
+            $array = array();
 
             $cmdMembresiasPorVencer = Database::getInstance()->getDb()->prepare("SELECT 
             c.dni,
@@ -128,8 +149,12 @@ class MiEmpresaAdo
             m.fechaFin  
             FROM  membresiatb as m
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10 AND m.estado = 1");
+            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >=0 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <=10 AND m.estado = 1
+            ORDER BY c.apellidos DESC LIMIT ?,?");
+            $cmdMembresiasPorVencer->bindParam(1, $x, PDO::PARAM_INT);
+            $cmdMembresiasPorVencer->bindParam(2, $y, PDO::PARAM_INT);
             $cmdMembresiasPorVencer->execute();
+
             $arrayMembresiasPorVencer = array();
             while ($row = $cmdMembresiasPorVencer->fetch()) {
                 array_push($arrayMembresiasPorVencer, array(
@@ -149,16 +174,65 @@ class MiEmpresaAdo
             $cmdMembresiasPorVencerCount->execute();
             $resultMembresiasPorVencerTotal = $cmdMembresiasPorVencerCount->fetchColumn();
 
+
+            array_push(
+                $array,
+                $arrayMembresiasPorVencer,
+                $resultMembresiasPorVencerTotal
+            );
+
+            return $array;
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function ListarVencidos($x, $y)
+    {
+        try {
+            $array = array();
+
             $cmdMembresiasFinalizadas = Database::getInstance()->getDb()->prepare("SELECT 
             c.dni,
             c.apellidos,
             c.nombres,
             c.celular,
             m.fechaFin  
-            FROM  membresiatb as m 
+            FROM membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >= -30 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 
-            AND m.estado = 1");
+            WHERE 
+            CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=-30 
+            AND 
+            CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <0 
+            AND 
+            m.estado = 1
+            AND
+            c.idCliente
+            NOT IN(SELECT idCliente FROM membresiatb WHERE CAST(DATEDIFF(fechaFin,CURDATE()) AS int) >= 0 AND estado = 1)
+            ORDER BY c.apellidos DESC LIMIT ?,?");
+            /*
+            WHERE 
+            CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=-30 
+            AND 
+            CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <0 
+            AND m.estado = 1
+            */
+
+            /* 
+            WHERE m.estado = 1 
+            AND 
+            c.idCliente 
+            NOT IN (
+                SELECT idCliente 
+                FROM membresiatb 
+                WHERE 
+                CAST(DATEDIFF(fechaFin,CURDATE()) AS int) >= 0 
+                AND 
+                estado = 1) 
+            
+            */
+            $cmdMembresiasFinalizadas->bindParam(1, $x, PDO::PARAM_INT);
+            $cmdMembresiasFinalizadas->bindParam(2, $y, PDO::PARAM_INT);
             $cmdMembresiasFinalizadas->execute();
 
             $arrayMembresiasFinalizadas = array();
@@ -172,25 +246,25 @@ class MiEmpresaAdo
                 ));
             }
 
+
             $cmdMembresiasFinalizadasCount = Database::getInstance()->getDb()->prepare("SELECT 
-            COUNT(*) 
-            FROM membresiatb as m 
+            COUNT(c.idCliente) 
+            FROM  membresiatb as m 
             INNER JOIN clientetb AS c ON c.idCliente  = m.idCliente
-            WHERE CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) >= -30 AND CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) < 0 
-            AND m.estado = 1");
+            WHERE 
+            CAST(DATEDIFF(m.fechaFin,CURDATE()) AS INT) >=-30 
+            AND 
+            CAST(DATEDIFF(m.fechaFin,CURDATE()) AS int) <0 
+            AND 
+            m.estado = 1
+            AND
+            c.idCliente
+            NOT IN(SELECT idCliente FROM membresiatb WHERE CAST(DATEDIFF(fechaFin,CURDATE()) AS int) >= 0 AND estado = 1)");
             $cmdMembresiasFinalizadasCount->execute();
             $resultMembresiasFinalizadasTotal = $cmdMembresiasFinalizadasCount->fetchColumn();
 
             array_push(
                 $array,
-                $resultTotalCliente,
-                $resultIngresos,
-                $resultCuentasPorCobrar,
-                $resuktTotalEmpleados,
-
-                $arrayMembresiasPorVencer,
-                $resultMembresiasPorVencerTotal,
-
                 $arrayMembresiasFinalizadas,
                 $resultMembresiasFinalizadasTotal
             );

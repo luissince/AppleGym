@@ -80,43 +80,96 @@ if (!isset($_SESSION["IdEmpleado"])) {
               <h5 class="tile-title" id="lblProximasRenovaciones">Próximas Renovaciones(0)</h5>
               <span>Membresías que vencerán en los próximos 10 días</span>
               <div class="tile-body">
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Nombres</th>
-                        <th>Fecha Fin</th>
-                        <th>N° Celular</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbProximasRenovaciones">
 
-                    </tbody>
-                  </table>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Nombres</th>
+                              <th>Fecha Fin</th>
+                              <th>N° Celular</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tbProximasRenovaciones">
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                <div class="row">
+                  <div class="col-sm-12 col-md-12">
+                    <div class="form-group d-flex justify-content-end">
+                      <button class="btn btn-primary" id="btnAnteriorProximasRonovaciones">
+                        <i class="fa fa-arrow-circle-left"></i>
+                      </button>
+                      <span class="m-2" id="lblPaginaActualProximasRenovaciones">0</span>
+                      <span class="m-2">
+                        de
+                      </span>
+                      <span class="m-2" id="lblPaginaSiguienteProximasRenovaciones">0</span>
+                      <button class="btn btn-primary" id="btnSiguienteProximaRenovaciones">
+                        <i class="fa fa-arrow-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
           <div class="col-md-6">
             <div class="tile">
               <h5 class="tile-title" id="lblClientePorRecuperar">Clientes por Recuperar(0)</h5>
-              <span>Membresías que vencieron en los ultimos 30 días</span>
+              <span>Membresías vencidas en los ultimos 30 días</span>
               <div class="tile-body">
-                <div class="table-responsive">
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Nombres</th>
-                        <th>Fecha Fin</th>
-                        <th>N° Celular</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbClientesPorRecurar">
 
-                    </tbody>
-                  </table>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <div class="table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Nombres</th>
+                              <th>Fecha Fin</th>
+                              <th>N° Celular</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tbClientesPorRecurar">
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                <div class="row">
+                  <div class="col-sm-12 col-md-12">
+                    <div class="form-group d-flex justify-content-end">
+                      <button class="btn btn-primary" id="btnAnteriorPorRecuperar">
+                        <i class="fa fa-arrow-circle-left"></i>
+                      </button>
+                      <span class="m-2" id="lblPaginaActualPorRecuperar">0</span>
+                      <span class="m-2">
+                        de
+                      </span>
+                      <span class="m-2" id="lblPaginaSiguientePorRecuperar">0</span>
+                      <button class="btn btn-primary" id="btnSiguientePorRecuperar">
+                        <i class="fa fa-arrow-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+
             </div>
           </div>
         </div>
@@ -128,26 +181,124 @@ if (!isset($_SESSION["IdEmpleado"])) {
       <script type="text/javascript">
         let tools = new Tools();
 
+        let totalPaginacionPorVencer = 0;
+        let statePorVencer = false;
+        let paginacionPorVencer = 0;
+        let opcionPorVencer = 0;
+
+        let totalPaginacionVencidas = 0;
+        let stateVencidas = false;
+        let paginacionVencidas = 0;
+        let opcionVencidas = 0;
+
         $(document).ready(function() {
+
+          initComponentsProximasRenovaciones();
+          initComponentsPorRecuperar();
+
           loadDasboard();
+          loadInitPorVencer();
+          loadInitVencidas();
         });
+
+        function initComponentsProximasRenovaciones() {
+          $("#btnAnteriorProximasRonovaciones").click(function() {
+            if (!statePorVencer) {
+              if (paginacionPorVencer > 1) {
+                paginacionPorVencer--;
+                onEventPaginacionPorVencer();
+              }
+            }
+          });
+
+          $("#btnAnteriorProximasRonovaciones").keydown(function(event) {
+            if (event.keyCode == 13) {
+              if (!statePorVencer) {
+                if (paginacionPorVencer > 1) {
+                  paginacionPorVencer--;
+                  onEventPaginacionPorVencer();
+                }
+              }
+              event.preventDefault();
+            }
+          });
+
+          $("#btnSiguienteProximaRenovaciones").click(function() {
+            if (!statePorVencer) {
+              if (paginacionPorVencer < totalPaginacionPorVencer) {
+                paginacionPorVencer++;
+                onEventPaginacionPorVencer();
+              }
+            }
+          });
+
+          $("#btnSiguienteProximaRenovaciones").keydown(function(event) {
+            if (event.keyCode == 13) {
+              if (!statePorVencer) {
+                if (paginacionPorVencer < totalPaginacionPorVencer) {
+                  paginacionPorVencer++;
+                  onEventPaginacionPorVencer();
+                }
+              }
+              event.preventDefault();
+            }
+          });
+        }
+
+        function initComponentsPorRecuperar() {
+          $("#btnAnteriorPorRecuperar").click(function() {
+            if (!stateVencidas) {
+              if (paginacionVencidas > 1) {
+                paginacionVencidas--;
+                onEventPaginacionVencidas();
+              }
+            }
+          });
+          $("#btnAnteriorPorRecuperar").keydown(function(event) {
+            if (event.keyCode == 13) {
+              if (!stateVencidas) {
+                if (paginacionVencidas > 1) {
+                  paginacionVencidas--;
+                  onEventPaginacionVencidas();
+                }
+              }
+              event.preventDefault();
+            }
+          });
+
+          $("#btnSiguientePorRecuperar").click(function() {
+            if (!stateVencidas) {
+              if (paginacionVencidas < totalPaginacionVencidas) {
+                paginacionVencidas++;
+                onEventPaginacionVencidas();
+              }
+            }
+          });
+          $("#btnSiguientePorRecuperar").keydown(function(event) {
+            if (event.keyCode == 13) {
+              if (!stateVencidas) {
+                if (paginacionVencidas < totalPaginacionVencidas) {
+                  paginacionVencidas++;
+                  onEventPaginacionVencidas();
+                }
+              }
+              event.preventDefault();
+            }
+          });
+        }
 
         function loadDasboard() {
           $.ajax({
             url: "../app/miempresa/LoadDashboard.php",
             method: "GET",
             data: {
-
+              "type": "informacion"
             },
             beforeSend: function() {
               $("#lblCliente").html(0);
               $("#lblIngresos").html(0);
               $("#lblEmpleados").html(0);
               $("#lblCuentas").html(0);
-              $("#tbProximasRenovaciones").empty();
-              $("#lblProximasRenovaciones").html("Próximas Renovaciones(0)");
-              $("#tbClientesPorRecurar").empty();
-              $("#lblClientePorRecuperar").html("Clientes por Recuperar(0)");
             },
             success: function(result) {
               if (result.estado == 1) {
@@ -155,7 +306,46 @@ if (!isset($_SESSION["IdEmpleado"])) {
                 $("#lblIngresos").html("S/ " + tools.formatMoney(result.ingresos));
                 $("#lblEmpleados").html(result.empleados);
                 $("#lblCuentas").html(result.cuentas);
+              } else {}
+            },
+            error: function(error) {
 
+            }
+          });
+        }
+
+        function onEventPaginacionPorVencer() {
+          switch (opcionPorVencer) {
+            case 0:
+              loadTablePorVencer();
+              break;
+          }
+        }
+
+        function loadInitPorVencer() {
+          if (!statePorVencer) {
+            paginacionPorVencer = 1;
+            loadTablePorVencer();
+            opcionPorVencer = 0;
+          }
+        }
+
+        function loadTablePorVencer() {
+          $.ajax({
+            url: "../app/miempresa/LoadDashboard.php",
+            method: "GET",
+            data: {
+              "type": "porvencer",
+              "page": paginacionPorVencer
+            },
+            beforeSend: function() {
+              $("#tbProximasRenovaciones").empty();
+              $("#lblProximasRenovaciones").html("Próximas Renovaciones(0)");
+              totalPaginacionPorVencer = 0;
+              statePorVencer = true;
+            },
+            success: function(result) {
+              if (result.estado == 1) {
                 for (let value of result.memPorVencer) {
                   $("#tbProximasRenovaciones").append('<tr>' +
                     '<td>' + value.apellidos + "<br>" + value.nombres + '</td>' +
@@ -164,8 +354,55 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     '</tr>');
                 }
 
+                totalPaginacionPorVencer = parseInt(Math.ceil((parseFloat(result.memPorVencerTotal) / parseInt(10))));
+                $("#lblPaginaActualProximasRenovaciones").html(paginacionPorVencer);
+                $("#lblPaginaSiguienteProximasRenovaciones").html(totalPaginacionPorVencer);
+
                 $("#lblProximasRenovaciones").html("Próximas Renovaciones(" + result.memPorVencerTotal + ")");
 
+                statePorVencer = false;
+              } else {
+                statePorVencer = false;
+              }
+            },
+            error: function(error) {
+              statePorVencer = false;
+            }
+          });
+        }
+
+        function onEventPaginacionVencidas() {
+          switch (opcionVencidas) {
+            case 0:
+              loadTableVencidas();
+              break;
+          }
+        }
+
+        function loadInitVencidas() {
+          if (!stateVencidas) {
+            paginacionVencidas = 1;
+            loadTableVencidas();
+            opcionVencidas = 0;
+          }
+        }
+
+        function loadTableVencidas() {
+          $.ajax({
+            url: "../app/miempresa/LoadDashboard.php",
+            method: "GET",
+            data: {
+              "type": "vencido",
+              "page": paginacionVencidas
+            },
+            beforeSend: function() {
+              $("#tbClientesPorRecurar").empty();
+              $("#lblClientePorRecuperar").html("Próximas Renovaciones(0)");
+              totalPaginacionVencidas = 0;
+              stateVencidas = true;
+            },
+            success: function(result) {
+              if (result.estado == 1) {
                 for (let value of result.memFinazalidas) {
                   $("#tbClientesPorRecurar").append('<tr>' +
                     '<td>' + value.apellidos + "<br>" + value.nombres + '</td>' +
@@ -174,13 +411,18 @@ if (!isset($_SESSION["IdEmpleado"])) {
                     '</tr>');
                 }
 
-                $("#lblClientePorRecuperar").html("Clientes por Recuperar(" + result.memFinazalidasTotal + ")");
-              } else {
+                totalPaginacionVencidas = parseInt(Math.ceil((parseFloat(result.memFinazalidasTotal) / parseInt(10))));
+                $("#lblPaginaActualPorRecuperar").html(paginacionVencidas);
+                $("#lblPaginaSiguientePorRecuperar").html(totalPaginacionVencidas);
 
+                $("#lblClientePorRecuperar").html("Clientes por Recuperar(" + result.memFinazalidasTotal + ")");
+                stateVencidas = false;
+              } else {
+                stateVencidas = false;
               }
             },
             error: function(error) {
-              console.log(error)
+              stateVencidas = false;
             }
           });
         }

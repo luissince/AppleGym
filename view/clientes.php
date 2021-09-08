@@ -176,18 +176,16 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                     <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr>
-                                                <th class="sorting" style="width: 5%;">#</th>
-                                                <th class="sorting" style="width: 10%;">Dni</th>
-                                                <th class="sorting" style="width: 20%;">Apellidos y Nombres</th>
-                                                <th class="sorting" style="width: 10%;">Celular</th>
-                                                <th class="sorting" style="width: 10%;">Email</th>
-                                                <th class="sorting" style="width: 15%;">Membresia</th>
-                                                <th class="sorting" style="width: 15%;">Deuda</th>
-                                                <th class="sorting" style="width: 10%;">Descripción</th>
-                                                <th class="sorting" style="width: 5%;">Perfil</th>
-                                                <th class="sorting" style="width: 5%;">Editar</th>
-                                                <th class="sorting" style="width: 5%;">Eliminar</th>
-                                                <!-- <th class="sorting" style="width: 10%;">Eliminar</th> -->
+                                                <th width="5%;">#</th>
+                                                <th width="20%;">Apellidos y Nombres</th>
+                                                <th width="10%;">Celular</th>
+                                                <th width="10%;">Email</th>
+                                                <th width="15%;">Membresia</th>
+                                                <th width="15%;">Deuda</th>
+                                                <th width="10%;">Descripción</th>
+                                                <th width="5%;">Perfil</th>
+                                                <th width="5%;">Editar</th>
+                                                <th width="5%;">Eliminar</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbLista">
@@ -399,13 +397,12 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                         let vencidas = cliente.vencidas >= 1 ? '<span class="badge badge-pill badge-danger">' + cliente.porvencer + " VENCIDA(S)<br>" + '</span>' : '';
                                         let traspaso = cliente.traspado >= 1 ? '<span class="badge badge-pill badge-danger">' + cliente.traspado + " TRASPASO(S)" + '</span>' : '';
 
-                                        tbLista.append('<tr role="row" class="odd">' +
-                                            '<td class="sorting_1">' + cliente.id + '</td>' +
-                                            '<td>' + cliente.dni + '</td>' +
-                                            '<td>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
+                                        tbLista.append('<tr>' +
+                                            '<td>' + cliente.id + '</td>' +
+                                            '<td>' + cliente.dni + '<br>' + cliente.apellidos + " " + cliente.nombres + '</td>' +
                                             '<td>' + cliente.celular + '</td>' +
                                             '<td>' + cliente.email + '</td>' +
-                                            '<td>' + membresia + ' ' + porvencer + ' ' + vencidas +' ' + traspaso + '</td>' +
+                                            '<td>' + membresia + ' ' + porvencer + ' ' + vencidas + ' ' + traspaso + '</td>' +
                                             '<td>' + (cliente.venta == 1 ? cliente.venta + " deuda(s)" : "0 deudas") + '</td>' +
                                             '<td>' + cliente.descripcion + '</td>' +
                                             '<td>' + btnPerfil + '</td>' +

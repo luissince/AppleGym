@@ -8,25 +8,25 @@ function ModalListaPlanes() {
     let diasPlan = 0;
     let freezePlan = 0;
 
-    this.init = function() {
-        $("#inicio").change(function() {
+    this.init = function () {
+        $("#inicio").change(function () {
             $("#fechainicio").prop('disabled', !$("#inicio").is(':checked'));
         });
 
-        $("#btnPlan").click(function() {
+        $("#btnPlan").click(function () {
             $("#modalPlan").modal("show");
             listaPlanes();
         });
 
-        $("#btnCloseModalPlanes").click(function() {
+        $("#btnCloseModalPlanes").click(function () {
             clearPlanes();
         });
 
-        $("#btnCancelarModalPlanes").click(function() {
+        $("#btnCancelarModalPlanes").click(function () {
             clearPlanes();
         });
 
-        $("#plan").change(function() {
+        $("#plan").change(function () {
             for (let i = 0; i < listarPlanes.length; i++) {
                 if (listarPlanes[i].idPlan == $(this).val()) {
                     idPlan = listarPlanes[i].idPlan;
@@ -35,19 +35,32 @@ function ModalListaPlanes() {
                     mesesPlan = listarPlanes[i].meses;
                     diasPlan = listarPlanes[i].dias;
                     freezePlan = listarPlanes[i].freeze;
+                    disciplinas = listarPlanes[i].disciplinas;
 
                     $("#lblNombrePlan").html("Nombre: " + nombrePlan);
                     $("#lblPrecioPlan").html("Precio: S/ " + tools.formatMoney(precioPlan));
                     $("#lblDescripcionPlan").html("Descripcion: " + listarPlanes[i].descripcion);
                     $("#lblTiempoPlan").html("Tiempo: " + (mesesPlan == 1 ? mesesPlan + " Mes y " + (diasPlan == 1 ? diasPlan + " día" : diasPlan + " días") : mesesPlan + " Meses y " + (diasPlan == 1 ? diasPlan + " día" : diasPlan + " días")) + " Libre: " + freezePlan + " día(s)");
-                    $("#lblDisciplinasPlan").html("Disciplinas: Ilimitadas");
+                    if (disciplinas.length == 0) {
+                        $("#lblDisciplinasPlan").html("Disciplinas: Ilimitadas");
+                    } else {
+                        let listDistData = "";
+                        for (let i = 0; i < disciplinas.length; i++) {
+                            if (i == disciplinas.length - 1) {
+                                listDistData += disciplinas[i].nombre;
+                            } else {
+                                listDistData += disciplinas[i].nombre + ", ";
+                            }
+                        }
+                        $("#lblDisciplinasPlan").html("Disciplinas: " + listDistData);
+                    }
                     break;
                 }
             }
         });
 
 
-        $("#btnGuardarModalPlanes").click(function() {
+        $("#btnGuardarModalPlanes").click(function () {
             if (idPlan == '') {
                 tools.AlertWarning("Ventas: ", "Seleccione un plan.")
                 $("#plan").focus();
@@ -103,7 +116,7 @@ function ModalListaPlanes() {
             }
         });
 
-        $("#descuento").keypress(function() {
+        $("#descuento").keypress(function () {
             var key = window.Event ? event.which : event.keyCode;
             var c = String.fromCharCode(key);
             if ((c < '0' || c > '9') && (c != '\b') && (c != '.')) {
@@ -114,7 +127,7 @@ function ModalListaPlanes() {
             }
         });
 
-        $("#cantidad").keypress(function() {
+        $("#cantidad").keypress(function () {
             var key = window.Event ? event.which : event.keyCode;
             var c = String.fromCharCode(key);
             if ((c < '0' || c > '9') && (c != '\b')) {
@@ -130,13 +143,13 @@ function ModalListaPlanes() {
             url: "../app/plan/Obtener_Datos_Para_Select.php",
             method: "GET",
             data: {},
-            beforeSend: function() {
+            beforeSend: function () {
                 $("#lblTextOverlayActivacion").html("Cargando información...");
                 $("#divOverlaActivacion").removeClass("d-none");
                 listarPlanes = [];
                 $("#plan").empty();
             },
-            success: function(result) {
+            success: function (result) {
                 if (result.estado == 1) {
                     listarPlanes = result.planes;
                     $("#plan").append('<option value="">- Selecciona -</option>');
@@ -148,7 +161,7 @@ function ModalListaPlanes() {
                     $("#lblTextOverlayActivacion").html(result.mensaje);
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 $("#lblTextOverlayActivacion").html(error.responseText);
             }
         });

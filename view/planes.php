@@ -58,7 +58,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                             <div class="col-md-12">
                                                 <div class="tab-content" id="pills-tabContent">
                                                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
-                                                        <div class="col-md-12">
+                                                        <div class="p-2">
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <div class="form-group">
@@ -137,7 +137,7 @@ if (!isset($_SESSION["IdEmpleado"])) {
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane fade" id="pills-profile" role="tabpanel">
-                                                        <div class="col-md-12">
+                                                        <div class="p-2">
                                                             <div class="row">
                                                                 <div class="col-md-12 text-center">
                                                                     <div class="form-group">
